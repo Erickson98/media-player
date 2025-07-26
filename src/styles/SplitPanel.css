@@ -1,0 +1,70 @@
+.grid-layout {
+    display: grid;
+    height: 100vh;
+    grid-template-rows: 1fr auto;
+}
+
+.grid-default {
+    display: grid;
+    grid-template-columns: 1fr 5px 1fr 5px 1fr;
+    grid-template-rows: 100%;
+}
+
+.grid-library-main-content{
+grid-template-columns: 1fr 5px 2fr;
+}
+
+.panel {
+    background: #1e1e1e;
+    color: white;
+    border: 1px solid #333;
+}
+
+
+.gutter-col {
+    cursor: col-resize;
+    width: 5px;
+}
+
+.gutter-col::after {
+    content: "";
+    margin: 0 auto;
+    background: aqua;
+    height: 100%;
+    width: 1px;
+    display: block;
+}
+
+
+
+.player {
+    background: #111;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+.toggle-btn {
+    background: #222;
+    color: white;
+    border: 1px solid #444;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+.left-panel {
+    max-width: 400px;
+    min-width: 72px;
+    overflow: auto;
+    width: 100%;
+}
+
+.center-panel {
+    max-width: 700px;
+    min-width: 200px;
+}
+
+.right-panel {
+    max-width: 600px;
+    min-width: 300px;
+}
