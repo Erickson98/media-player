@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Split from "split-grid";
 import "../styles/SplitPanel.css";
+import SideBar from "./sideBar";
 
 export default function SplitLayout() {
   const [showRightPanel, setShowRightPanel] = useState(true);
@@ -41,19 +42,16 @@ export default function SplitLayout() {
               element: document.querySelector(".gutter-1"),
             },
           ],
-      columnMinSizes: { 0: 72, 2: 100, 4: 100 },
+      columnMinSizes: { 0: 80, 2: 100, 4: 100 },
       onDrag(direction, track, gridTemplateStyle) {
         const parts = gridTemplateStyle
           .split(" ")
           .map((val) => parseFloat(val.replace("fr", "")));
 
         if (track === 1 && parts[0] > updateFirstColum) {
-          console.log(updateFirstColum);
           const gridTemplateGrid = document.getElementById("HELLO")!;
-          console.log(updateSecondColum);
           forcedStyle = `${updateFirstColum}fr ${GUTTER}px ${updateSecondColum}fr ${GUTTER}px ${updateThirdColum}fr`;
           gridTemplateGrid.style.gridTemplateColumns = forcedStyle;
-          console.log(boolForce);
           boolForce = true;
         }
         if (track === 3 && parts[4] < MAX_SIZE_THIRD_COLUM) {
@@ -87,10 +85,13 @@ export default function SplitLayout() {
               ? "0.420483fr 5px 1.57696fr 5px 1fr"
               : "1fr 5px 2fr",
             gridTemplateRows: "100%",
+            overflowY: "auto",
           }}
           id="HELLO"
         >
-          <div className="panel">Izquierda</div>
+          <div className="panel">
+            <SideBar />
+          </div>
           <div className="gutter-col gutter-1"></div>
           <div className="panel">Centro</div>
           {showRightPanel && <div className="gutter-col gutter-3"></div>}

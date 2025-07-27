@@ -1,0 +1,56 @@
+[
+    {
+        "title": "Liked Songs",
+        "type": "playlist",
+        "owner": "You",
+        "extra": "661 songs",
+        "image": "https://picsum.photos/seed/liked/100"
+    },
+    {
+        "title": "Little Queen",
+        "type": "album",
+        "owner": "Heart",
+        "image": "https://picsum.photos/seed/littlequeen/100"
+    },
+    {
+        "title": "Charlie Parker",
+        "type": "artist",
+        "image": "https://picsum.photos/seed/charlieparker/100"
+    },
+    {
+        "title": "The Greatest Drummer That Ever Lived...",
+        "type": "ep",
+        "owner": "Buddy Rich",
+        "image": "https://picsum.photos/seed/buddyrich/100"
+    },
+    {
+        "title": "HITNRUN Phase One",
+        "type": "album",
+        "owner": "Prince",
+        "image": "https://picsum.photos/seed/hitnrun/100"
+    },
+    {
+        "title": "Women of Ambient",
+        "type": "playlist",
+        "owner": "Spotify",
+        "image": "https://picsum.photos/seed/womenambient/100"
+    },
+    {
+        "title": "Big Swing Face (Live)",
+        "type": "album",
+        "owner": "Buddy Rich",
+        "image": "https://picsum.photos/seed/bigswing/100"
+    },
+    {
+        "title": "Bird And Diz (Expanded Edition)",
+        "type": "album",
+        "owner": "Dizzy Gillespie",
+        "image": "https://picsum.photos/seed/birdanddiz/100"
+    },
+    {
+        "title": "The Complete Mercury Sessions",
+        "type": "album",
+        "owner": "Max Roach",
+        "image": "https://picsum.photos/seed/mercury/100"
+    }
+]
