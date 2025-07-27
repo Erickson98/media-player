@@ -1,32 +1,31 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import "../styles/SideBar.css";
+import RenderList from "./RenderList";
+import SearchBar from "./SearchBar";
+import type { library } from "../utils/interfaces";
 
 export default function SideBar(): ReactNode {
-  const [libraryItems, setLibraryItems] = useState([]);
+  const [libraryItems, setLibraryItems] = useState<library[]>([]);
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
     fetch("../../api/artist.json")
       .then((res) => res.json())
-      .then(setLibraryItems);
+      .then(setLibraryItems)
+      .catch((err) => console.error("Failed to fetch albums:", err));
   }, []);
-  {
-    return (
-      <div className="library-container">
-        {libraryItems.map((item) => {
-          return (
-            <div key={item.title} className="library-item">
-              <img src={item.image} alt={item.title} width={48} height={48} />
-              <div>
-                <div className="title">{item.title}</div>
-                <div className="meta">
-                  {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
-                  {item.owner && ` • ${item.owner}`}
-                  {item.extra && ` • ${item.extra}`}
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+  const filteredItems = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return libraryItems;
+
+    return libraryItems.filter((item) =>
+      item.title.toLowerCase().includes(query)
     );
-  }
+  }, [libraryItems, search]);
+  return (
+    <div className="library-container">
+      <SearchBar value={search} onChange={setSearch} />
+      <RenderList libraryItems={filteredItems} />
+    </div>
+  );
 }

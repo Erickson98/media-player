@@ -1,19 +1,10 @@
 import { useEffect, useState } from "react";
 import Split from "split-grid";
 import "../styles/SplitPanel.css";
-import SideBar from "./sideBar";
+import SideBar from "./SideBar";
 
 export default function SplitLayout() {
   const [showRightPanel, setShowRightPanel] = useState(true);
-  var parts_custom: any = "";
-  function handleRightPanel(prev: any) {
-    const gridTop = document.querySelector(".grid-default");
-    if (gridTop === null) {
-      return;
-    }
-    gridTop.classList.value = "grid-default";
-    setShowRightPanel(prev);
-  }
 
   useEffect(() => {
     let forcedStyle = null;
@@ -22,7 +13,6 @@ export default function SplitLayout() {
     let updateThirdColum = 1;
     let boolForce = false;
     const MAX_SIZE_THIRD_COLUM = 1;
-    const SNAP_TOLERANCE = 0.01;
     const GUTTER = 5;
     Split({
       columnGutters: showRightPanel
@@ -59,18 +49,10 @@ export default function SplitLayout() {
           updateThirdColum = parts[4];
         }
         if (track === 3 && parts[4] > MAX_SIZE_THIRD_COLUM) {
-          // updateSecondColum = parts[2];
-          // updateThirdColum = parts[4];
           const gridTemplateGrid = document.getElementById("HELLO")!;
           forcedStyle = `${parts[0]}fr ${GUTTER}px ${updateSecondColum}fr ${GUTTER}px ${updateThirdColum}fr`;
           gridTemplateGrid.style.gridTemplateColumns = forcedStyle;
         }
-        // // Snapping en la columna derecha (track 4)
-        // if (track === 3 && Math.abs(parts[4] - TARGET_FR) < SNAP_TOLERANCE) {
-        //   parts[4] = TARGET_FR;
-        // }
-
-        // Guardamos el estilo forzado
       },
     });
   }, [showRightPanel]);
