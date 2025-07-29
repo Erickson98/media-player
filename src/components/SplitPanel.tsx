@@ -5,16 +5,18 @@ import SideBar from "./SideBar";
 
 export default function SplitLayout() {
   const [showRightPanel, setShowRightPanel] = useState(true);
-
+  const [isFirstTrack, setIsFirstTrack] = useState(true);
   useEffect(() => {
     let forcedStyle = null;
-    let updateFirstColum = 0.420483;
-    let updateSecondColum = 1.57696;
+    let updateFirstColum = 0.804591;
+    let updateSecondColum = 1.19286;
     let updateThirdColum = 1;
     let boolForce = false;
     const MAX_SIZE_THIRD_COLUM = 1;
     const GUTTER = 5;
+    const SNAPOFFSET = 230;
     Split({
+      snapOffset: 0,
       columnGutters: showRightPanel
         ? [
             {
@@ -32,7 +34,7 @@ export default function SplitLayout() {
               element: document.querySelector(".gutter-1"),
             },
           ],
-      columnMinSizes: { 0: 80, 2: 100, 4: 100 },
+      // columnMinSizes: { 0: 72, 2: 100, 4: 290 },
       onDrag(direction, track, gridTemplateStyle) {
         const parts = gridTemplateStyle
           .split(" ")
@@ -64,7 +66,7 @@ export default function SplitLayout() {
           style={{
             display: "grid",
             gridTemplateColumns: showRightPanel
-              ? "0.420483fr 5px 1.57696fr 5px 1fr"
+              ? "0.804591fr 5px 1.19286fr 5px 1fr"
               : "1fr 5px 2fr",
             gridTemplateRows: "100%",
             overflowY: "auto",
