@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import "../styles/SideBar.css";
 import RenderList from "./RenderList";
 import SearchBar from "./SearchBar";
-import type { library } from "../utils/interfaces";
+import type { library } from "../models/interfaces";
 
 export default function SideBar(): ReactNode {
   const [libraryItems, setLibraryItems] = useState<library[]>([]);

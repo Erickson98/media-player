@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { library } from "../utils/interfaces";
+import type { library } from "../models/interfaces";
 
 type RenderListProps = {
   libraryItems: library[];
