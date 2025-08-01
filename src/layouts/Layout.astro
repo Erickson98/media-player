@@ -1,22 +1,38 @@
+---
+import SideBar from "../components/SideBar.astro";
+import Split from "../components/Split.astro";
+import "../styles/Layout.css";
+---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Media Player</title>
+  </head>
+  <body>
+    <div class="grid-layout">
+      <div class="default-grid-template-columns" id="split-wrapper">
+        <div class="panel aside-bar">
+          <SideBar />
+        </div>
+        <div class="gutter-col gutter-1"></div>
+        <div class="panel">
+          <slot name="central-panel" />
+        </div>
+        <div class="gutter-col gutter-3 gutter-right"></div>
+        <div class="panel right-panel">
+          <slot name="right-panel" />
+        </div>
+      </div>
+      <div class="player">
+        <button class="toggle">Toggle Right Panel</button>
+      </div>
+    </div>
+  </body>
 </html>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+<Split />

@@ -1,0 +1,142 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: black;
+}
+button {
+  all: unset;
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 10px 1fr 10px 1fr;
+  height: 100vh;
+}
+
+.default-grid-template-columns {
+  display: grid;
+  grid-template-columns: 409px 5px 1fr 5px 290px;
+  grid-template-rows: 100%;
+  overflow-y: auto;
+}
+
+.gutter {
+  grid-row: 1 / -1;
+  background: #666;
+  cursor: col-resize;
+}
+
+.gutter-1 {
+  grid-column: 2;
+}
+.gutter-3 {
+  grid-column: 4;
+}
+
+.hidden {
+  display: none;
+}
+
+
+
+  
+    .grid-layout {
+      display: grid;
+      height: 100vh;
+      grid-template-rows: 1fr 60px;
+      overflow-y: auto;
+    }
+  
+    .grid-default {
+      display: grid;
+      grid-template-columns: 1fr 5px 1fr 5px 1fr;
+      grid-template-rows: 100%;
+    }
+  
+    .grid-library-main-content {
+      grid-template-columns: 1fr 5px 2fr;
+    }
+  
+    .panel {
+  
+      color: white;
+      border: 1px solid #333;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #555 transparent;
+    }
+    .aside-bar{
+      overflow: hidden;
+    }
+    .panel::-webkit-scrollbar {
+      width: 8px;
+    }
+  
+    .panel::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  
+    .panel::-webkit-scrollbar-thumb {
+      background-color: #555;
+      border-radius: 4px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+  
+    .panel:hover::-webkit-scrollbar-thumb {
+      background-color: #888;
+    }
+  
+    .gutter-col {
+      cursor: col-resize;
+      width: 5px;
+    }
+  
+    .gutter-col::after {
+      content: "";
+      margin: 0 auto;
+      background: aqua;
+      height: 100%;
+      width: 1px;
+      display: block;
+    }
+  
+  
+  
+    .player {
+      background: #111;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+  
+    .toggle-btn {
+      background: #222;
+      color: white;
+      border: 1px solid #444;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+  
+    .left-panel {
+      max-width: 400px;
+      min-width: 72px;
+      width: 100%;
+      overflow-y: auto;
+      /* 👈 solo vertical */
+      height: 100%;
+      /* 👈 clave para que scroll funcione */
+      width: 100%;
+    }
+  
+    .center-panel {
+      max-width: 700px;
+      min-width: 200px;
+    }
+  
+    .right-panel {
+      max-width: 600px;
+      min-width: 300px;
+    }

@@ -1,10 +1,19 @@
-.container-search-bar {
+.container-search-bar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.search-bar {
+    display: flex;
+    margin-bottom: 10px;
+}
+.search-bar {
     display: flex;
     align-items: center;
     gap: 5px;
     margin-bottom: 10px;
 }
-.container-search-bar {
+.search-bar {
     display: flex;
     align-items: center;
     background-color: #2a2a2a;
@@ -16,11 +25,11 @@
     transition: background-color 0.3s ease;
 }
 
-.container-search-bar:hover {
+.search-bar:hover {
     background-color: #3a3a3a;
 }
 
-.container-search-bar input {
+.search-bar input {
     background: transparent;
     border: none;
     outline: none;
@@ -30,10 +39,18 @@
     padding-left: 8px;
 }
 
-.container-search-bar input::placeholder {
+.search-bar input::placeholder {
     color: #aaa;
     font-weight: 300;
 }
+
+.label-input{
+    width: 100%;
+}
+.img-library{
+    border-radius: 5px;
+}
+
 
 .clear-button{
     background: none;

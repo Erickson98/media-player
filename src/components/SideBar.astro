@@ -1,0 +1,129 @@
+---
+import SearchIcon from "../assets/icons/searchIcon.svg";
+import List from "../assets/icons/list-icon.svg";
+import XIcon from "../assets/icons/XIcon.svg";
+import OpenedLibrary from "../assets/icons/OpenLibrary.svg";
+
+import "../styles/SideBar.css";
+import "../styles/SearchBar.css";
+---
+
+<div class="library-container">
+  <div class="container-action-library-button">
+    <button class="button-to-collapse-library">
+      <img
+        id="OPEN"
+        class="library-icon"
+        src={OpenedLibrary.src}
+        width="24"
+        alt="Library Icon"
+      />
+      <div class="label-your-library">Your Library</div>
+    </button>
+  </div>
+  <div class="container-search-bar">
+    <div class="search-bar">
+      <img src={SearchIcon.src} width="15" height="15" alt="Search" />
+      <label class="label-input">
+        <input
+          id="inputSearch"
+          name="inputSearch"
+          placeholder="Search..."
+          autocomplete="off"
+        />
+      </label>
+
+      <button
+        type="button"
+        class="clear-button"
+        aria-label="delete-content-for-searchbar"
+      >
+        <img src={XIcon.src} width="15" height="15" alt="Clear" />
+      </button>
+    </div>
+    <div>
+      <List width={24} />
+    </div>
+  </div>
+  <div class="library">
+    <p>Loading...</p>
+  </div>
+</div>
+
+<script client:load>
+  const libraryContainer = document.querySelector(".library");
+
+  async function loadLibrary() {
+    try {
+      const response = await fetch("../../api/artist.json");
+      const libraryItems = await response.json();
+
+      if (libraryItems.length > 0) {
+        libraryContainer.innerHTML = libraryItems
+          .map(
+            (item) => `
+          <div class="library-item">
+            <img src="${item.image}" class="img-library" alt="${item.title}" width="48" height="48" />
+            <div class="container-title-meta">
+              <div class="title">${item.title}</div>
+              <div class="meta">
+                ${item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+                ${item.owner ? ` • ${item.owner}` : ""}
+                ${item.extra ? ` • ${item.extra}` : ""}
+              </div>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      } else {
+        libraryContainer.innerHTML = "<p>No items found</p>";
+      }
+    } catch (err) {
+      console.error("Failed to fetch library:", err);
+      libraryContainer.innerHTML = "<p>Error loading items</p>";
+    }
+  }
+
+  loadLibrary();
+</script>
+
+<script>
+  import OpenLibrary from "../assets/icons/OpenLibrary.svg";
+  import ClosedLibrary from "../assets/icons/ClosedLibrary.svg";
+
+  const button = document.querySelector(".button-to-collapse-library");
+  const icon = document.querySelector(".library-icon") as HTMLImageElement;
+  const searchBar = document.querySelector(
+    ".container-search-bar"
+  ) as HTMLElement;
+  const textYourLibrary = document.querySelector(
+    ".label-your-library"
+  ) as HTMLElement;
+  button?.addEventListener("click", () => {
+    if (icon === null) {
+      return;
+    }
+    const isOpen = icon.id;
+    icon.src = isOpen === "CLOSE" ? OpenLibrary.src : ClosedLibrary.src;
+    icon.id = isOpen === "CLOSE" ? "OPEN" : "CLOSE";
+
+    const gridTemplateGrid = document.getElementById("split-wrapper")!;
+    const styles = window.getComputedStyle(gridTemplateGrid);
+    const gridTemplateColumns = styles.gridTemplateColumns;
+
+    const parts = gridTemplateColumns
+      .split(" ")
+      .map((val) => parseFloat(val.replace("fr", "")));
+
+    const OPEN_PANEL = `${409}px 5px ${parts[2]}fr 5px ${parts[4]}px`;
+    const CLOSE_PANEL = `${104}px 5px ${parts[2]}fr 5px ${parts[4]}px`;
+
+    searchBar.style.display = isOpen === "CLOSE" ? "flex" : "none";
+
+    gridTemplateGrid.style.gridTemplateColumns =
+      isOpen === "CLOSE" ? OPEN_PANEL : CLOSE_PANEL;
+
+    textYourLibrary.style.display = isOpen === "CLOSE" ? "block" : "none";
+  });
+</script>

@@ -1,0 +1,128 @@
+<script>
+  import Split from "split-grid";
+  import OpenLibrary from "../assets/icons/OpenLibrary.svg";
+  import ClosedLibrary from "../assets/icons/ClosedLibrary.svg";
+
+  const gutterLeft = document.querySelector(".gutter-1");
+  const gutterRight = document.querySelector(".gutter-right");
+  const rightPanel = document.querySelector(".right-panel");
+  const toggleBtn = document.querySelector(".toggle");
+  const gridTemplateGrid = document.getElementById("split-wrapper")!;
+  let rightVisible = true;
+  const TwoSplit = [
+    {
+      track: 1,
+      element: gutterLeft!,
+    },
+    {
+      track: 3,
+      element: gutterRight!,
+    },
+  ];
+  const OneSplit = [
+    {
+      track: 1,
+      element: gutterLeft!,
+    },
+  ];
+  const setupSplit = () => {
+    let forcedStyle = null;
+    let updateFirstColum = 0.804591;
+    let updateSecondColum = 1.19286;
+    let updateThirdColum = 1;
+    let boolForce = false;
+    const MAX_SIZE_THIRD_COLUM = 409;
+    const MIN_SIZE_THIRD_COLUMN = 290;
+    const GUTTER = 5;
+    const SNAPOFFSET = 230;
+    const MIN_SIZE_FIRST_GUTTER = 260;
+    const MIN_SIZE_LEFT_PANEL = 104;
+    const MAX_SIZE_FIRST_COLUMN = 409;
+
+    const containerSearchInput = document.querySelector(
+      ".container-search-bar"
+    ) as HTMLElement;
+    const icon = document.querySelector(".library-icon") as HTMLImageElement;
+    const textYourLibrary = document.querySelector(
+      ".label-your-library"
+    ) as HTMLElement;
+    const containerContentMedia = document.querySelectorAll(
+      ".container-title-meta"
+    ) as NodeListOf<HTMLElement>;
+    const libraryContainer = document.querySelector(".library-container");
+    Split({
+      columnGutters: rightVisible ? [...TwoSplit] : [...OneSplit],
+      onDrag(direction, track, gridTemplateStyle) {
+        const parts = gridTemplateStyle
+          .split(" ")
+          .map((val) => parseFloat(val.replace("fr", "")));
+        if (rightVisible) {
+          if (track === 1 && parts[0] < MIN_SIZE_FIRST_GUTTER) {
+            forcedStyle = `${MIN_SIZE_LEFT_PANEL}px ${GUTTER}px ${1.73604}fr ${GUTTER}px ${parts[4]}px`;
+            gridTemplateGrid.style.gridTemplateColumns = forcedStyle;
+            containerSearchInput.style.display = "none";
+            textYourLibrary.style.display = "none";
+
+            icon.id = "CLOSE";
+            icon.src = ClosedLibrary.src;
+            containerContentMedia.forEach((element) => {
+              element.style.display = "none";
+            });
+            libraryContainer?.classList.remove("library-container");
+            libraryContainer?.classList.add("container-library-center-style");
+          } else if (track === 1 && parts[0] > MIN_SIZE_FIRST_GUTTER) {
+            icon.id = "OPEN";
+            icon.src = OpenLibrary.src;
+            textYourLibrary.style.display = "block";
+            containerSearchInput.style.display = "flex";
+            containerContentMedia.forEach((element) => {
+              element.style.display = "block";
+            });
+          }
+
+          if (track === 1 && parts[0] > MAX_SIZE_FIRST_COLUMN) {
+            forcedStyle = `${MAX_SIZE_FIRST_COLUMN}px ${GUTTER}px ${parts[2]}fr ${GUTTER}px ${parts[4]}px`;
+            gridTemplateGrid.style.gridTemplateColumns = forcedStyle;
+          }
+          if (track === 3 && parts[4] < MIN_SIZE_THIRD_COLUMN) {
+            forcedStyle = `${parts[0]}px ${GUTTER}px ${parts[2]}fr ${GUTTER}px ${MIN_SIZE_THIRD_COLUMN}px`;
+            gridTemplateGrid.style.gridTemplateColumns = forcedStyle;
+          }
+          if (track === 3 && parts[4] > MAX_SIZE_THIRD_COLUM) {
+            const gridTemplateGrid = document.getElementById("split-wrapper")!;
+            forcedStyle = `${parts[0]}px ${GUTTER}px ${parts[2]}fr ${GUTTER}px ${MAX_SIZE_THIRD_COLUM}px`;
+            gridTemplateGrid.style.gridTemplateColumns = forcedStyle;
+          }
+        } else {
+          if (track === 1 && parts[0] < MIN_SIZE_FIRST_GUTTER) {
+            forcedStyle = `${MIN_SIZE_LEFT_PANEL}px ${GUTTER}px ${1.73604}fr`;
+            gridTemplateGrid.style.gridTemplateColumns = forcedStyle;
+            containerSearchInput.style.display = "none";
+          } else if (track === 1 && parts[0] > MIN_SIZE_FIRST_GUTTER) {
+            containerSearchInput.style.display = "flex";
+          }
+
+          if (track === 1 && parts[0] > MAX_SIZE_FIRST_COLUMN) {
+            forcedStyle = `${MAX_SIZE_FIRST_COLUMN}px ${GUTTER}px ${parts[2]}fr`;
+            gridTemplateGrid.style.gridTemplateColumns = forcedStyle;
+          }
+        }
+      },
+    });
+  };
+
+  setupSplit();
+
+  toggleBtn.addEventListener("click", () => {
+    rightVisible = !rightVisible;
+
+    rightPanel.style.display = rightVisible ? "" : "none";
+    gutterRight.style.display = rightVisible ? "" : "none";
+    const parts = gridTemplateGrid.style.gridTemplateColumns
+      .split(" ")
+      .map((val) => parseFloat(val.replace("fr", "")));
+    gridTemplateGrid.style.gridTemplateColumns = `${parts[0]}px ${[parts[1]]}px ${parts[2]}`;
+    console.log(gridTemplateGrid.style.gridTemplateColumns);
+    setupSplit();
+  });
+</script>

@@ -1,12 +1,124 @@
 ---
-import SplitGrid from "../components/SplitPanel.js";
-import Welcome from "../components/Welcome.astro";
 import Layout from "../layouts/Layout.astro";
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
 <Layout>
-  <SplitGrid client:load />
+  <div slot="central-panel">
+    <html lang="es">
+      <style>
+        .container {
+          width: 90%;
+          max-width: 1200px;
+          margin: auto;
+        }
+
+        nav {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        nav ul {
+          display: flex;
+          list-style: none;
+          gap: 1rem;
+        }
+
+        nav ul li a {
+          color: #fff;
+          text-decoration: none;
+          font-weight: bold;
+        }
+
+        /* Sección principal */
+        .main {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 1.5rem;
+          margin: 2rem 0;
+        }
+
+        .card {
+          background: #fff;
+          padding: 1rem;
+          border-radius: 8px;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+          transform: translateY(-5px);
+        }
+
+        .card h3 {
+          margin-bottom: 0.5rem;
+        }
+
+        footer {
+          background: #1e1e2f;
+          color: #fff;
+          text-align: center;
+          padding: 1rem;
+          margin-top: 2rem;
+        }
+
+        /* Media Queries para pantallas pequeñas */
+
+        nav ul.active {
+          display: flex;
+        }
+
+        .menu-toggle {
+          display: block;
+          background: none;
+          border: none;
+          color: #fff;
+          font-size: 1.5rem;
+          cursor: pointer;
+        }
+      </style>
+      <body>
+        <header>
+          <div class="container">
+            <nav>
+              <h1>Mi Sitio</h1>
+              <button class="menu-toggle">☰</button>
+              <ul id="menu">
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Servicios</a></li>
+                <li><a href="#">Acerca de</a></li>
+                <li><a href="#">Contacto</a></li>
+              </ul>
+            </nav>
+          </div>
+        </header>
+
+        <main class="container">
+          <section class="main">
+            <div class="card">
+              <h3>Título 1</h3>
+              <p>Contenido de la tarjeta 1. Diseño simple y adaptable.</p>
+            </div>
+            <div class="card">
+              <h3>Título 2</h3>
+              <p>
+                Contenido de la tarjeta 2. Funciona en móviles y escritorio.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Título 3</h3>
+              <p>
+                Contenido de la tarjeta 3. Con un diseño moderno y responsive.
+              </p>
+            </div>
+          </section>
+        </main>
+
+        <footer>
+          <p>&copy; 2025 Mi Sitio Web. Todos los derechos reservados.</p>
+        </footer>
+      </body>
+    </html>
+  </div>
+  <div slot="right-panel">HELLO</div>
 </Layout>

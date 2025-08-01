@@ -73,7 +73,7 @@ export default function SplitLayout() {
           }}
           id="HELLO"
         >
-          <div className="panel">
+          <div className="panel aside-bar">
             <SideBar />
           </div>
           <div className="gutter-col gutter-1"></div>
