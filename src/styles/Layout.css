@@ -20,6 +20,7 @@ button {
   grid-template-columns: 409px 5px 1fr 5px 290px;
   grid-template-rows: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .gutter {

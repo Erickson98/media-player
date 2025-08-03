@@ -50,35 +50,62 @@ import "../styles/SearchBar.css";
   </div>
 </div>
 
-<script client:load>
+<script>
   const libraryContainer = document.querySelector(".library");
+  const searchBar = document.getElementById("inputSearch");
+
+  let contentLibrary = [];
+  let filteredList = [];
+
+  function renderLibrary(items) {
+    libraryContainer.innerHTML = items.length
+      ? items
+          .map(
+            (item) => `
+              <div class="library-item">
+                <img src="${item.image}" class="img-library" alt="${item.title}" width="48" height="48" />
+                <div class="container-title-meta">
+                  <div class="title">${item.title}</div>
+                  <div class="meta">
+                    ${item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+                    ${item.owner ? ` • ${item.owner}` : ""}
+                    ${item.extra ? ` • ${item.extra}` : ""}
+                  </div>
+                </div>
+              </div>
+            `
+          )
+          .join("")
+      : "<p>No items found</p>";
+  }
+
+  function debounce(fn, delay) {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn(...args), delay);
+    };
+  }
+
+  const handleSearch = debounce((query) => {
+    query = query.trim().toLowerCase();
+    filteredList = contentLibrary.filter((x) =>
+      x.title.toLowerCase().includes(query)
+    );
+    renderLibrary(filteredList);
+  }, 200);
+
+  searchBar.addEventListener("input", (e) => {
+    if (!contentLibrary.length) return;
+    handleSearch(e.target.value);
+  });
 
   async function loadLibrary() {
     try {
       const response = await fetch("../../api/artist.json");
-      const libraryItems = await response.json();
-
-      if (libraryItems.length > 0) {
-        libraryContainer.innerHTML = libraryItems
-          .map(
-            (item) => `
-          <div class="library-item">
-            <img src="${item.image}" class="img-library" alt="${item.title}" width="48" height="48" />
-            <div class="container-title-meta">
-              <div class="title">${item.title}</div>
-              <div class="meta">
-                ${item.type.charAt(0).toUpperCase() + item.type.slice(1)}
-                ${item.owner ? ` • ${item.owner}` : ""}
-                ${item.extra ? ` • ${item.extra}` : ""}
-              </div>
-            </div>
-          </div>
-        `
-          )
-          .join("");
-      } else {
-        libraryContainer.innerHTML = "<p>No items found</p>";
-      }
+      contentLibrary = await response.json();
+      filteredList = [...contentLibrary];
+      renderLibrary(filteredList);
     } catch (err) {
       console.error("Failed to fetch library:", err);
       libraryContainer.innerHTML = "<p>Error loading items</p>";
