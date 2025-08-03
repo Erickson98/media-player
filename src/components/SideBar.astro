@@ -1,4 +1,5 @@
 ---
+export const prerender = false;
 import SearchIcon from "../assets/icons/searchIcon.svg";
 import List from "../assets/icons/list-icon.svg";
 import XIcon from "../assets/icons/XIcon.svg";
@@ -50,42 +51,9 @@ import "../styles/SearchBar.css";
   </div>
 </div>
 
-<script client:load>
-  const libraryContainer = document.querySelector(".library");
-
-  async function loadLibrary() {
-    try {
-      const response = await fetch("../../api/artist.json");
-      const libraryItems = await response.json();
-
-      if (libraryItems.length > 0) {
-        libraryContainer.innerHTML = libraryItems
-          .map(
-            (item) => `
-          <div class="library-item">
-            <img src="${item.image}" class="img-library" alt="${item.title}" width="48" height="48" />
-            <div class="container-title-meta">
-              <div class="title">${item.title}</div>
-              <div class="meta">
-                ${item.type.charAt(0).toUpperCase() + item.type.slice(1)}
-                ${item.owner ? ` • ${item.owner}` : ""}
-                ${item.extra ? ` • ${item.extra}` : ""}
-              </div>
-            </div>
-          </div>
-        `
-          )
-          .join("");
-      } else {
-        libraryContainer.innerHTML = "<p>No items found</p>";
-      }
-    } catch (err) {
-      console.error("Failed to fetch library:", err);
-      libraryContainer.innerHTML = "<p>Error loading items</p>";
-    }
-  }
-
-  loadLibrary();
+<script>
+  import { loadLibrary } from "@/scripts/LoadLibrary";
+  loadLibrary(".library");
 </script>
 
 <script>

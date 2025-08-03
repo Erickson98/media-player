@@ -1,0 +1,165 @@
+---
+import GithubIcon from "../assets/icons/githubIcon.svg";
+import LinkedinIcon from "../assets/icons/linkedinIcon.svg";
+import MailIcon from "../assets/icons/mailIcon.svg";
+import NoteIcon from "../assets/icons/noteIcon.svg";
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login con Media Player</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        text-decoration: none;
+      }
+
+      body {
+        background: linear-gradient(135deg, #191414, #121212);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+      }
+
+      .login-container {
+        background: #1e1e1e;
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      .login-container h1 {
+        font-size: 1.6rem;
+        margin-bottom: 1rem;
+      }
+
+      .login-container p {
+        font-size: 0.95rem;
+        color: #b3b3b3;
+        margin-bottom: 2rem;
+      }
+
+      .mediaPlayer-btn {
+        background-color: #1db954;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        border-radius: 25px;
+        cursor: pointer;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: background 0.3s ease-in-out;
+      }
+
+      .mediaPlayer-btn:hover {
+        background-color: #1ed760;
+      }
+
+      .mediaPlayer-btn img {
+        width: 22px;
+        height: 22px;
+      }
+
+      .footer {
+        margin-top: 2rem;
+        font-size: 0.8rem;
+        color: #777;
+      }
+
+      .developer-info {
+        margin-top: 1.5rem;
+        font-size: 0.8rem;
+        color: #999;
+      }
+
+      .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 0.8rem;
+      }
+
+      .social-links a {
+        color: #1db954;
+        font-size: 1.2rem;
+        transition: color 0.3s ease-in-out;
+      }
+
+      .social-links a:hover {
+        color: #1ed760;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <h1>Login con Media Player</h1>
+      <p>Inicia sesión para disfrutar de tu música favorita.</p>
+      <a class="mediaPlayer-btn" href="/api/auth/login">
+        <img src={NoteIcon.src} alt="mediaPlayer" width="32" />
+        Iniciar sesión con Media Player
+      </a>
+      <div class="footer">
+        <div class="footer">
+          © 2025 Music Player. Proyecto <a
+            href="https://github.com/Erickson98/media-player"
+            target="_blank"
+            style="color:#1db954; text-decoration:none;">open source</a
+          >.
+        </div>
+      </div>
+      <div class="developer-info">
+        Desarrollado por Erickson
+        <div class="social-links">
+          <a
+            href="https://github.com/Erickson98"
+            target="_blank"
+            title="GitHub"
+          >
+            <img src={GithubIcon.src} alt="" srcset="" width="24" />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/erickson-ruck-agramonte-b0b60024a/"
+            target="_blank"
+            title="LinkedIn"
+            ><img src={LinkedinIcon.src} alt="" srcset="" width="24" /></a
+          >
+          <a
+            href="mailto:erickson.ruck07@gmail.com"
+            target="_blank"
+            title="Gmail"
+            ><img src={MailIcon.src} alt="" srcset="" width="24" /></a
+          >
+        </div>
+      </div>
+    </div>
+
+    <script></script>
+  </body>
+</html>

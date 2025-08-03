@@ -27,10 +27,7 @@
   ];
   const setupSplit = () => {
     let forcedStyle = null;
-    let updateFirstColum = 0.804591;
-    let updateSecondColum = 1.19286;
-    let updateThirdColum = 1;
-    let boolForce = false;
+
     const MAX_SIZE_THIRD_COLUM = 409;
     const MIN_SIZE_THIRD_COLUMN = 290;
     const GUTTER = 5;
@@ -46,10 +43,12 @@
     const textYourLibrary = document.querySelector(
       ".label-your-library"
     ) as HTMLElement;
-    const containerContentMedia = document.querySelectorAll(
-      ".container-title-meta"
-    ) as NodeListOf<HTMLElement>;
+
+    const library = document.querySelector(".library") as HTMLElement;
     const libraryContainer = document.querySelector(".library-container");
+    const containerActionLibraryButton = document.querySelector(
+      ".container-action-library-button"
+    ) as HTMLElement;
     Split({
       columnGutters: rightVisible ? [...TwoSplit] : [...OneSplit],
       onDrag(direction, track, gridTemplateStyle) {
@@ -57,6 +56,9 @@
           .split(" ")
           .map((val) => parseFloat(val.replace("fr", "")));
         if (rightVisible) {
+          const containerContentMedia = document.querySelectorAll(
+            ".container-title-meta"
+          ) as NodeListOf<HTMLElement>;
           if (track === 1 && parts[0] < MIN_SIZE_FIRST_GUTTER) {
             forcedStyle = `${MIN_SIZE_LEFT_PANEL}px ${GUTTER}px ${1.73604}fr ${GUTTER}px ${parts[4]}px`;
             gridTemplateGrid.style.gridTemplateColumns = forcedStyle;
@@ -65,16 +67,22 @@
 
             icon.id = "CLOSE";
             icon.src = ClosedLibrary.src;
+
             containerContentMedia.forEach((element) => {
               element.style.display = "none";
             });
             libraryContainer?.classList.remove("library-container");
             libraryContainer?.classList.add("container-library-center-style");
+            library.style.alignItems = "center";
+            containerActionLibraryButton.style.margin = "5px auto";
           } else if (track === 1 && parts[0] > MIN_SIZE_FIRST_GUTTER) {
             icon.id = "OPEN";
             icon.src = OpenLibrary.src;
             textYourLibrary.style.display = "block";
             containerSearchInput.style.display = "flex";
+            library.style.alignItems = "start";
+            containerActionLibraryButton.style.margin = "5px";
+
             containerContentMedia.forEach((element) => {
               element.style.display = "block";
             });
