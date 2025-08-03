@@ -53,45 +53,5 @@ import "../styles/SearchBar.css";
 
 <script>
   import { loadLibrary } from "@/scripts/LoadLibrary";
-  loadLibrary(".library");
-</script>
-
-<script>
-  import OpenLibrary from "../assets/icons/OpenLibrary.svg";
-  import ClosedLibrary from "../assets/icons/ClosedLibrary.svg";
-
-  const button = document.querySelector(".button-to-collapse-library");
-  const icon = document.querySelector(".library-icon") as HTMLImageElement;
-  const searchBar = document.querySelector(
-    ".container-search-bar"
-  ) as HTMLElement;
-  const textYourLibrary = document.querySelector(
-    ".label-your-library"
-  ) as HTMLElement;
-  button?.addEventListener("click", () => {
-    if (icon === null) {
-      return;
-    }
-    const isOpen = icon.id;
-    icon.src = isOpen === "CLOSE" ? OpenLibrary.src : ClosedLibrary.src;
-    icon.id = isOpen === "CLOSE" ? "OPEN" : "CLOSE";
-
-    const gridTemplateGrid = document.getElementById("split-wrapper")!;
-    const styles = window.getComputedStyle(gridTemplateGrid);
-    const gridTemplateColumns = styles.gridTemplateColumns;
-
-    const parts = gridTemplateColumns
-      .split(" ")
-      .map((val) => parseFloat(val.replace("fr", "")));
-
-    const OPEN_PANEL = `${409}px 5px ${parts[2]}fr 5px ${parts[4]}px`;
-    const CLOSE_PANEL = `${104}px 5px ${parts[2]}fr 5px ${parts[4]}px`;
-
-    searchBar.style.display = isOpen === "CLOSE" ? "flex" : "none";
-
-    gridTemplateGrid.style.gridTemplateColumns =
-      isOpen === "CLOSE" ? OPEN_PANEL : CLOSE_PANEL;
-
-    textYourLibrary.style.display = isOpen === "CLOSE" ? "block" : "none";
-  });
+  loadLibrary();
 </script>

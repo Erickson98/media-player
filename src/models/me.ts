@@ -74,7 +74,7 @@ interface SpotifyAlbum {
   popularity: number;
 }
 
-interface SpotifySavedAlbumItem {
+export interface SpotifySavedAlbumItem {
   added_at: string;
   album: SpotifyAlbum;
 }
