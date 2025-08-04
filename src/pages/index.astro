@@ -23,7 +23,6 @@ function formatDuration(ms: number) {
         }
 
         .album-container {
-          max-width: 900px;
           margin: 20px auto;
           padding: 20px;
         }
@@ -48,8 +47,9 @@ function formatDuration(ms: number) {
         }
 
         .album-title {
-          font-size: 24px;
+          font-size: clamp(20px, 2vw, 70px);
           font-weight: bold;
+          text-wrap-style: balance;
         }
 
         .album-artist {
@@ -59,6 +59,7 @@ function formatDuration(ms: number) {
 
         .album-controls {
           margin-top: 15px;
+          display: flex;
         }
 
         .btn-play {
@@ -70,6 +71,9 @@ function formatDuration(ms: number) {
           font-size: 20px;
           cursor: pointer;
           margin-right: 10px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         .btn-icon {
@@ -90,7 +94,6 @@ function formatDuration(ms: number) {
         .track-list td {
           text-align: left;
           padding: 10px;
-          border-bottom: 1px solid #333;
         }
 
         .track-title {
@@ -100,15 +103,33 @@ function formatDuration(ms: number) {
 
         .track-name {
           font-weight: bold;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: initial;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
         }
 
         .track-artist {
           font-size: 12px;
           color: #b3b3b3;
         }
+        .icon-time {
+          display: flex;
+          justify-content: center;
+        }
+        .track-duration {
+          display: flex;
+          justify-content: center;
+        }
+
+        .copyrights-container {
+          color: gray;
+        }
       </style>
       <body>
-        <div class="album-container">
+        <body class="album-container">
           <div class="album-header">
             <img
               src={album.images[1].url}
@@ -132,10 +153,10 @@ function formatDuration(ms: number) {
 
           <table class="track-list">
             <thead>
-              <tr>
+              <tr style="border-bottom: 1px solid #333;">
                 <th>#</th>
                 <th>Title</th>
-                <th>⏱</th>
+                <th class="icon-time">⏱</th>
               </tr>
             </thead>
             <tbody>
@@ -152,37 +173,20 @@ function formatDuration(ms: number) {
                       </div>
                     </td>
 
-                    <td>{formatDuration(track.duration_ms)}</td>
+                    <td class="track-duration">
+                      {formatDuration(track.duration_ms)}
+                    </td>
                   </tr>
                 ))
               }
-              <!-- <tr>
-                <td>1</td>
-                <td>
-                  <div class="track-title">
-                    <span class="track-name">The Glory Days</span>
-                    <span class="track-artist">Michael Giacchino</span>
-                  </div>
-                </td>
-                <td>12,205,430</td>
-                <td>3:32</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>
-                  <div class="track-title">
-                    <span class="track-name">Mr. Huph Will See You Now</span>
-                    <span class="track-artist">Michael Giacchino</span>
-                  </div>
-                </td>
-                <td>1,241,382</td>
-                <td>1:35</td>
-              </tr> -->
             </tbody>
           </table>
-        </div>
+          <div class="copyrights-container">
+            {album.copyrights.map((copyrights) => <div>{copyrights.text}</div>)}
+          </div>
+        </body>
       </body>
     </html>
   </div>
-  <div slot="right-panel">HELLO</div>
+  <div slot="right-panel"></div>
 </Layout>
