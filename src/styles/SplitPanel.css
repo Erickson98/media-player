@@ -68,7 +68,4 @@ grid-template-columns: 1fr 5px 2fr;
     min-width: 200px;
 }
 
-.right-panel {
-    max-width: 600px;
-    min-width: 300px;
-}
+ 

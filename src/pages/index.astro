@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 const album = await fetch(
-  `${Astro.url.origin}/api/album_1CHUXwuge9A7L2KiA3vnR6.json`
+  `${Astro.url.origin}/api/1CHUXwuge9A7L2KiA3vnR6.json`
 ).then((r) => r.json());
 function formatDuration(ms: number) {
   const minutes = Math.floor(ms / 60000);
@@ -16,7 +16,7 @@ function formatDuration(ms: number) {
       <style>
         body {
           font-family: Arial, sans-serif;
-          background-color: #121212;
+          background-color: #000;
           color: #fff;
           margin: 0;
           padding: 0;
@@ -188,5 +188,38 @@ function formatDuration(ms: number) {
       </body>
     </html>
   </div>
-  <div slot="right-panel"></div>
+  <div class="panel-right-container" slot="right-panel">
+    <html lang="en">
+      <style>
+        .panel-right-container {
+          height: 100%;
+          padding: 15px;
+          background: #121212;
+          margin: 8px;
+          border-radius: 8px;
+        }
+        .album-cover-rigth-panel {
+          max-width: 100%;
+          height: auto;
+          display: block;
+        }
+      </style>
+      <body>
+        <div>
+          <div>{album.name}</div>
+        </div>
+        <div>
+          <img
+            src={album.images[0].url}
+            width="500"
+            class="album-cover-rigth-panel"
+            alt=""
+            srcset=""
+          />
+        </div>
+        <h2>{album.name}</h2>
+        {album.artists.map((artist) => <p>{artist.name}</p>)}
+      </body>
+    </html>
+  </div>
 </Layout>

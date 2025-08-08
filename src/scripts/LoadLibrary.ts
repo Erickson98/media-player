@@ -75,7 +75,6 @@ export async function loadLibrary() {
         ? "../../api/albums.json"
         : "/api/spotify/me/albums?limit=5"
     ).then((r) => r.json());
-    console.log(contentLibrary);
     renderLibrary(contentLibrary.items);
   } catch (err) {
     console.error("Failed to fetch library:", err);
