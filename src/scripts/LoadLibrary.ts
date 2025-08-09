@@ -2,7 +2,6 @@ import type {
   SpotifySavedAlbumsResponse,
   SpotifySavedAlbumItem,
 } from "@models/me.ts";
-
 const libraryContainer = document.querySelector(".library")!;
 const searchBar = document.getElementById("inputSearch") as HTMLInputElement;
 const clearButton = document.querySelector(".clear-button");
@@ -15,11 +14,13 @@ function renderLibrary(items: SpotifySavedAlbumItem[]) {
         .map(
           (item) => `
             <div class="library-item">
-              <img src="${
-                item.album.images[2]?.url
-              }" class="img-library" alt="${
+              <button class="album-btn" data-id=${item.album.id}>
+                <img src="${
+                  item.album.images[2]?.url
+                }" class="img-library" alt="${
             item.album.name
           }" width="56" height="56" />
+            </button>
             <div class="container-title-meta">
               <div class="title">${item.album.name}</div>
               <div class="meta">
@@ -54,6 +55,7 @@ const handleSearch = debounce((query: string) => {
       x.album.name.toLowerCase().includes(query)
     )
   );
+  SPANavigation();
 }, 200);
 
 searchBar!.addEventListener("input", (e: Event) => {
@@ -68,6 +70,34 @@ clearButton!.addEventListener("click", () => {
   searchBar!.focus();
 });
 
+function SPANavigation() {
+  const buttons = document.querySelectorAll(".album-btn");
+  const content = document.querySelector(".container-main");
+
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.id;
+
+      history.pushState({}, "", `/album/${id}`);
+
+      content.innerHTML = `<h2>Cargando álbum ${id}...</h2>`;
+
+      content.innerHTML = `Album ${id}`;
+    });
+  });
+
+  window.addEventListener("popstate", () => {
+    const path = window.location.pathname;
+    const match = path.match(/\/album\/(\d+)/);
+    if (match) {
+      const id = match[1];
+      content.innerHTML = `<h2>Álbum ${id}</h2><p>Lista de canciones aquí...</p>`;
+    } else {
+      content.innerHTML = "<p>Selecciona un álbum...</p>";
+    }
+  });
+}
+
 export async function loadLibrary() {
   try {
     contentLibrary = await fetch(
@@ -75,7 +105,9 @@ export async function loadLibrary() {
         ? "../../api/albums.json"
         : "/api/spotify/me/albums?limit=5"
     ).then((r) => r.json());
+    console.log(contentLibrary);
     renderLibrary(contentLibrary.items);
+    SPANavigation();
   } catch (err) {
     console.error("Failed to fetch library:", err);
     libraryContainer.innerHTML = "<p>Error loading items</p>";
