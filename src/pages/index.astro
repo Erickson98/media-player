@@ -217,8 +217,50 @@ function formatDuration(ms: number) {
             srcset=""
           />
         </div>
-        <h2>{album.name}</h2>
-        {album.artists.map((artist) => <p>{artist.name}</p>)}
+        <div>
+          <h2>{album.name}</h2>
+          {album.artists.map((artist) => <p>{artist.name}</p>)}
+        </div>
+        <div>
+          <div>
+            <div
+              class="album-cover-rigth-panel"
+              style="background-position: 50% 50%;background-size: cover;aspect-ratio: 3 / 2;background-image: linear-gradient(rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 50%), url(	https://i.scdn.co/image/ab6772690000dd223d417ba08ad63c9309953c30);"
+            >
+              <p>about the artist</p>
+            </div>
+            <p>{album.artists[0].name}</p>
+            <span
+              style="display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    margin-bottom: 8px;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    text-overflow: ellipsis;"
+            >
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia
+              voluptatum repudiandae adipisci repellat, aliquam enim nam
+              voluptates magni accusantium iusto quod atque aliquid esse
+              corporis consequatur ipsam itaque quas quaerat. Tempora corrupti
+              ad optio officia veritatis exercitationem labore laboriosam! Fuga
+              accusamus vero necessitatibus deleniti eaque deserunt enim ipsum
+              veniam dicta tenetur quae, ducimus temporibus? Culpa cumque
+              expedita beatae aut accusantium. Ex odit repellat culpa id labore?
+              Suscipit exercitationem quo quibusdam sit. Nam illum culpa
+              doloremque voluptas iure accusantium officiis laudantium
+              aspernatur aliquam est, numquam voluptatibus earum eius!
+              Assumenda, fuga ullam. A at sequi cupiditate exercitationem sit
+              cumque illum sed! Officia, sapiente assumenda odio perspiciatis
+              rem et omnis tempora, nisi praesentium, commodi porro non maiores
+              sint eos cum. Eius, dignissimos a? Eligendi modi aliquid repellat
+              provident maxime minus suscipit, excepturi consequatur
+              praesentium, dicta vero sint cum obcaecati! Veritatis voluptates,
+              assumenda facilis a rerum quo modi, voluptas, consectetur placeat
+              incidunt hic debitis.
+            </span>
+          </div>
+        </div>
       </body>
     </html>
   </div>
