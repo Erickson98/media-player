@@ -4,6 +4,7 @@ import node from "@astrojs/node";
 import path from "path";
 import react from "@astrojs/react";
 
+
 // https://astro.build/config
 export default defineConfig({
   integrations: [react()],
