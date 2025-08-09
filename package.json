@@ -7,6 +7,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
+    "custom-host": "npm run dev -- --host 127.0.0.1",
     "build": "astro check && astro build"
   },
   "dependencies": {
