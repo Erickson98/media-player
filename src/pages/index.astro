@@ -11,7 +11,7 @@ function formatDuration(ms: number) {
 ---
 
 <Layout>
-  <div slot="central-panel">
+  <div slot="central-panel" id="central-panel">
     <html lang="es">
       <style>
         body {
@@ -128,63 +128,63 @@ function formatDuration(ms: number) {
           color: gray;
         }
       </style>
-      <body>
-        <body class="album-container">
-          <div class="album-header">
-            <img
-              src={album.images[1].url}
-              alt="Album Cover"
-              class="album-cover"
-              width="60"
-            />
-            <div class="album-info">
-              <h2 class="album-title">
-                {album.name}
-              </h2>
-              <p class="album-artist">
-                Michael Giacchino • 2004 • 19 songs, 55 min 21 sec
-              </p>
-              <div class="album-controls">
-                <button class="btn-play">▶</button>
-                <button class="btn-icon">❤️</button>
-              </div>
+
+      <body class="album-container">
+        <div class="container-main">dsds</div>
+        <div class="album-header">
+          <img
+            src={album.images[1].url}
+            alt="Album Cover"
+            class="album-cover"
+            width="60"
+          />
+          <div class="album-info">
+            <h2 class="album-title">
+              {album.name}
+            </h2>
+            <p class="album-artist">
+              Michael Giacchino • 2004 • 19 songs, 55 min 21 sec
+            </p>
+            <div class="album-controls">
+              <button class="btn-play">▶</button>
+              <button class="btn-icon">❤️</button>
             </div>
           </div>
+        </div>
 
-          <table class="track-list">
-            <thead>
-              <tr style="border-bottom: 1px solid #333;">
-                <th>#</th>
-                <th>Title</th>
-                <th class="icon-time">⏱</th>
-              </tr>
-            </thead>
-            <tbody>
-              {
-                album.tracks.items.map((track) => (
-                  <tr>
-                    <td>{track.track_number}</td>
-                    <td>
-                      <div class="track-title">
-                        <span class="track-name">{track.name}</span>
-                        <span class="track-artist">
-                          {track.artists.map((a) => a.name).join(", ")}
-                        </span>
-                      </div>
-                    </td>
+        <table class="track-list">
+          <thead>
+            <tr style="border-bottom: 1px solid #333;">
+              <th>#</th>
+              <th>Title</th>
+              <th class="icon-time">⏱</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              album.tracks.items.map((track) => (
+                <tr>
+                  <td>{track.track_number}</td>
+                  <td>
+                    <div class="track-title">
+                      <span class="track-name">{track.name}</span>
+                      <span class="track-artist">
+                        {track.artists.map((a) => a.name).join(", ")}
+                      </span>
+                    </div>
+                  </td>
 
-                    <td class="track-duration">
-                      {formatDuration(track.duration_ms)}
-                    </td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </table>
-          <div class="copyrights-container">
-            {album.copyrights.map((copyrights) => <div>{copyrights.text}</div>)}
-          </div>
-        </body>
+                  <td class="track-duration">
+                    {formatDuration(track.duration_ms)}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <div class="copyrights-container">
+          {album.copyrights.map((copyrights) => <div>{copyrights.text}</div>)}
+        </div>
       </body>
     </html>
   </div>
