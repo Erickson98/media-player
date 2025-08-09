@@ -1,0 +1,61 @@
+.library-container{
+     
+        background: rgb(18, 18, 18);
+        border-radius: 5px;
+        margin: 8px;
+        padding: 15px 5px 15px 15px;
+        height: 95%;
+}
+ 
+.meta{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.title{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.library-item{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.library{ 
+    overflow-y: auto;
+    width: 100%;
+    /* margin: 5px auto; */
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    height: 100%;
+}
+
+
+.button-to-collapse-library {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: transparent;
+}
+
+.container-action-library-button{
+    margin: 5px auto;
+}
+
+.container-library-center-style{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgb(18, 18, 18);
+    /* padding: 15px; */
+    border-radius: 5px;
+    /* margin: 8px; */
+    height: 100%;
+}
