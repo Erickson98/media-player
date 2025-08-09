@@ -4,11 +4,14 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro check",
+    "build": "astro check && astro build"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/node": "^9.3.3",
     "@astrojs/react": "^4.3.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
@@ -16,6 +19,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "split-grid": "^1.0.11",
-    "split.js": "^1.6.5"
+    "split.js": "^1.6.5",
+    "typescript": "^5.9.2"
   }
 }
