@@ -22,7 +22,6 @@ body {
 grid-template-columns: 1fr 5px 2fr;
 }
 
-
 .gutter-col {
     cursor: col-resize;
     width: 5px;
