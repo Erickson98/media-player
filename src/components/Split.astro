@@ -87,7 +87,7 @@
             containerActionLibraryButton.style.margin = "5px";
 
             containerContentMedia.forEach((element) => {
-              element.style.display = "block";
+              element.style.display = "inline-grid";
             });
           }
 
@@ -133,7 +133,6 @@
       .split(" ")
       .map((val) => parseFloat(val.replace("fr", "")));
     gridTemplateGrid.style.gridTemplateColumns = `${parts[0]}px ${[parts[1]]}px ${parts[2]}`;
-    console.log(gridTemplateGrid.style.gridTemplateColumns);
     setupSplit();
   });
 
@@ -170,7 +169,7 @@
 
     if (isOpen === "CLOSE") {
       containerContentMedia.forEach((element) => {
-        element.style.display = "block";
+        element.style.display = "inline-grid";
       });
       textYourLibrary.style.display = "block";
       containerSearchInput.style.display = "flex";

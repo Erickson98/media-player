@@ -1,0 +1,31 @@
+  .panel-right-container {
+      height: 100%;
+      padding: 15px;
+      background: #121212;
+      margin: 8px;
+      border-radius: 8px;
+  }
+
+  .album-cover-rigth-panel {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    background-position: 50% 50%;
+        background-size: cover;
+        aspect-ratio: 3 / 2;
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 50%), url(https://i.scdn.co/image/ab6772690000dd223d417ba08ad63c9309953c30);
+  }
+ 
+
+  
+
+.text-wrapper {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  margin-bottom: 8px;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  text-overflow: ellipsis;
+}
+  

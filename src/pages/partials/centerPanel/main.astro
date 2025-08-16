@@ -1,0 +1,81 @@
+---
+import Footer from "src/components/Footer.astro";
+import Home from "src/components/CentralPanel/Home.astro";
+import NewRelease from "src/components/CentralPanel/NewRelease.astro";
+import MightLike from "src/components/CentralPanel/MightLike.astro";
+import FavoriteArtists from "src/components/CentralPanel/FavoriteArtists.astro";
+const trackUrl = new URL(
+  "/api/spotify/me/top/tracks?time_range=short_term&limit=4",
+  Astro.url
+);
+
+const artistUrl = new URL(
+  "/api/spotify/me/top/artists?time_range=short_term&limit=4",
+  Astro.url
+);
+
+const newReleaseUrl = new URL(
+  "/api/spotify/browse/new-releases?limit=5",
+  Astro.url
+);
+
+const newMightLikeUrl = new URL(
+  "/api/spotify/albums?ids=382ObEPsp2rxGrnsizN5TX%2C1A2GTWGtFfWp7KSQTwWOyo%2C2noRn2Aes5aoNVsU6iWThc",
+  Astro.url
+);
+
+const newYourFavoriteArtistsUrl = new URL(
+  "/api/spotify/me/top/artists?limit=8",
+  Astro.url
+);
+
+const headers = new Headers({ Accept: "application/json" });
+const cookie = Astro.request.headers.get("cookie");
+if (cookie) headers.set("cookie", cookie);
+
+const resTracks = await fetch(trackUrl, { headers });
+if (!resTracks.ok) {
+  throw new Error(`No se pudo cargar el álbum  (status ${resTracks.status})`);
+}
+const tracks = await resTracks.json();
+const resArtists = await fetch(artistUrl, { headers });
+if (!resArtists.ok) {
+  throw new Error(`No se pudo cargar el álbum  (status ${resArtists.status})`);
+}
+const artists = await resArtists.json();
+
+const resNewRelease = await fetch(newReleaseUrl, { headers });
+if (!resNewRelease.ok) {
+  throw new Error(
+    `No se pudo cargar el new release  (status ${resNewRelease.status})`
+  );
+}
+const newRelease = await resNewRelease.json();
+
+const resMightLike = await fetch(newMightLikeUrl, { headers });
+if (!resMightLike.ok) {
+  throw new Error(
+    `No se pudo cargar el might like  (status ${resMightLike.status})`
+  );
+}
+const mightLike = await resMightLike.json();
+
+const resYourFavoriteArtists = await fetch(newYourFavoriteArtistsUrl, {
+  headers,
+});
+if (!resYourFavoriteArtists.ok) {
+  throw new Error(
+    `No se pudo cargar el might like  (status ${resYourFavoriteArtists.status})`
+  );
+}
+const yourFavoriteArtists = await resYourFavoriteArtists.json();
+console.log(yourFavoriteArtists);
+Astro.response.headers.set("Content-Type", "text/html; charset=utf-8");
+---
+
+<!-- <p>Selecciona un album...</p> -->
+<Home tracks={tracks} artists={artists} />
+<NewRelease newRelease={newRelease} />
+<MightLike mightLike={mightLike} />
+<FavoriteArtists favoretieArtists={yourFavoriteArtists} />
+<Footer />

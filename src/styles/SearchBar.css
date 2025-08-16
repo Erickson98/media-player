@@ -2,16 +2,19 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+        margin: 13px 0;
 }
 .search-bar {
     display: flex;
-    margin-bottom: 10px;
+        margin: 0px 8px;
+    
 }
 .search-bar {
     display: flex;
     align-items: center;
     gap: 5px;
-    margin-bottom: 10px;
+        margin: 0px 8px;
 }
 .search-bar {
     display: flex;
@@ -20,7 +23,7 @@
     border-radius: 8px;
     padding: 8px 12px;
     /* margin: 1rem; */
-    max-width: 300px;
+    max-width: 188px;
     color: white;
     transition: background-color 0.3s ease;
 }
@@ -36,7 +39,7 @@
     color: white;
     font-size: 14px;
     width: 100%;
-    padding-left: 8px;
+    /* padding-left: 8px; */
 }
 
 .search-bar input::placeholder {

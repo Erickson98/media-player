@@ -1,0 +1,76 @@
+---
+import "../styles/SideBar.css";
+import "../styles/Layout.css";
+import "../styles/SearchBar.css";
+import Footer from "./Footer.astro";
+---
+
+<div id="center-panel">
+  <Footer />
+</div>
+
+<script client:load>
+  const root = document.getElementById("center-panel");
+
+  async function renderHome() {
+    // root.innerHTML = `<p>Selecciona un álbum...</p>`;
+    const html = await fetch(`/partials/centerPanel/main`).then((r) => {
+      if (!r.ok) throw new Error("Album not found");
+      return r.text();
+    });
+
+    root.innerHTML = html;
+  }
+
+  async function renderAlbumById(albumId) {
+    root.innerHTML = `<p>Cargando álbum ${albumId}...</p>`;
+    try {
+      const html = await fetch(`/partials/album/${albumId}`).then((r) => {
+        if (!r.ok) throw new Error("Album not found");
+        return r.text();
+      });
+
+      root.innerHTML = html;
+
+      const titleElement = document.querySelector(".album-title");
+      const albumName = titleElement?.dataset.albumName;
+      const el = document.querySelector(".album-artist");
+      const artistName = el?.dataset.artistName;
+      const res = await fetch(
+        `/api/genius/artist-bio?q=${encodeURIComponent(artistName)}`
+      );
+      const { bio } = await res.json();
+
+      root.querySelectorAll(".track-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const artists = JSON.parse(btn.dataset.trackArtists);
+
+          window.dispatchEvent(
+            new CustomEvent("ui:track", {
+              detail: {
+                albumId: btn.dataset.albumId,
+                trackId: btn.dataset.trackId,
+                trackName: btn.dataset.trackName,
+                imgAlbum: btn.dataset.imgAlbum,
+                artistImg: btn.dataset.imgArtist,
+                trackArtists: artists,
+                bioArtist: bio,
+                artistName: artistName,
+                albumName: albumName,
+              },
+            })
+          );
+        });
+      });
+    } catch (e) {
+      root.innerHTML = `<p>Error cargando álbum.</p>`;
+      console.error(e);
+    }
+  }
+
+  window.addEventListener("route:home", renderHome);
+  window.addEventListener("route:album", (e) => {
+    const { albumId } = e.detail;
+    renderAlbumById(albumId);
+  });
+</script>

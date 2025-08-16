@@ -1,0 +1,99 @@
+---
+interface Artist {
+  name: string;
+}
+interface Track {
+  id: string;
+  name: string;
+  track_number: number;
+  duration_ms: number;
+  artists: Artist[];
+}
+interface Album {
+  id: string;
+  name: string;
+  images?: { url: string }[];
+  tracks: { items: Track[] };
+  copyrights?: { text: string }[];
+  release_date?: string;
+  total_tracks?: number;
+  artist_line?: string;
+}
+
+const { album } = Astro.props as { album: Album };
+
+const img = album.images?.[1]?.url ?? album.images?.[0]?.url ?? "";
+const year = (album.release_date ?? "").slice(0, 4) || "—";
+const total = album.total_tracks ?? album.tracks?.items?.length ?? 0;
+
+function formatDuration(ms: number) {
+  const m = Math.floor(ms / 60000);
+  const s = Math.floor((ms % 60000) / 1000)
+    .toString()
+    .padStart(2, "0");
+  return `${m}:${s}`;
+}
+---
+
+<div class="album-header">
+  {img && <img src={img} alt="Album Cover" class="album-cover" width="60" />}
+  <div class="album-info">
+    <h2 class="album-title" data-album-name={album.name}>{album.name}</h2>
+    <p class="album-artist" data-artist-name={album.artists[0].name}>
+      {album.artist_line || ""}
+    </p>
+    <p>{album.artist_line ? " • " : ""}{year} • {total} canciones</p>
+    <div class="album-controls">
+      <button class="btn-play" data-album-id={album.id}>▶</button>
+      <button class="btn-icon" aria-label="favorite">❤️</button>
+    </div>
+  </div>
+</div>
+
+<table class="track-list">
+  <thead>
+    <tr style="border-bottom: 1px solid #333;">
+      <th>#</th>
+      <th>Title</th>
+      <th class="icon-time">⏱</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      album.tracks.items.map((track) => (
+        <tr>
+          <td>{track.track_number}</td>
+          <td>
+            <div class="track-title">
+              <button
+                class="track-name track-btn"
+                data-track-artists={JSON.stringify(track.artists)}
+                data-img-album={img}
+                data-img-artist={JSON.stringify(album.images)}
+                data-album-id={album.id}
+                data-track-id={track.id}
+                data-track-name={track.name}
+              >
+                {track.name}
+              </button>
+              <span class="track-artist">
+                {track.artists.map((a) => a.name).join(", ")}
+              </span>
+            </div>
+          </td>
+          <td class="track-duration">{formatDuration(track.duration_ms)}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+
+{
+  album.copyrights?.length && (
+    <div class="copyrights-container">
+      {album.copyrights.map((c) => (
+        <div>{c.text}</div>
+      ))}
+    </div>
+  )
+}

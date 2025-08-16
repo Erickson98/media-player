@@ -1,0 +1,178 @@
+<!-- CONTENEDOR (solo para centrar en el ejemplo) -->
+<div class="dock central header-center">
+  <!-- Botón Home (izquierda, separado) -->
+  <button class="icon-btn" aria-label="Home">
+    <!-- Home icon -->
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M12 3.2 3 10v9a2 2 0 0 0 2 2h5v-6h4v6h5a2 2 0 0 0 2-2v-9l-9-6.8Z"
+      ></path>
+    </svg>
+  </button>
+
+  <!-- Barra de búsqueda -->
+  <form
+    class="searchbar"
+    role="search"
+    action="#"
+    method="get"
+    aria-label="Buscar"
+  >
+    <!-- Lupa -->
+    <span class="searchbar__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22">
+        <path
+          fill="currentColor"
+          d="M15.5 14h-.8l-.3-.3a6.5 6.5 0 1 0-.9.9l.3.3v.8l5 5 1.5-1.5-5-5Zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14Z"
+        ></path>
+      </svg>
+    </span>
+
+    <!-- Campo -->
+    <input
+      class="searchbar__input"
+      type="search"
+      name="q"
+      placeholder="What do you want to play?"
+      autocomplete="off"
+      aria-label="What do you want to play?"
+    />
+
+    <!-- Divisor -->
+    <span class="searchbar__divider" aria-hidden="true"></span>
+
+    <!-- Botón derecho (inbox/tray) -->
+    <button
+      class="icon-btn icon-btn--inset"
+      type="button"
+      aria-label="Open queue"
+    >
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path
+          fill="currentColor"
+          d="M19 3H5a2 2 0 0 0-2 2v14a1 1 0 0 0 1 1h6.4a1 1 0 0 0 .9-.6l.7-1.4h4.5l.7 1.4a1 1 0 0 0 .9.6H20a1 1 0 0 0 1-1V5a2 2 0 0 0-2-2Zm-1 12h-4.2a1 1 0 0 0-.9.6l-.7 1.4H6l1.7-3.3a1 1 0 0 1 .9-.6H18v1.9ZM18 6v6H8.6a2 2 0 0 0-1.8 1.1L5 16.7V5a1 1 0 0 1 1-1h12a0 0 0 0 1 0 0Z"
+        ></path>
+      </svg>
+    </button>
+  </form>
+</div>
+
+<style>
+  :root {
+    --bg: #0f0f0f; /* fondo página */
+    --pill: #1a1a1a; /* fondo barra */
+    --pill-border: #2a2a2a; /* borde barra */
+    --text: #e6e6e6; /* texto */
+    --muted: #b5b5b5; /* placeholder/iconos */
+    --focus: #3d85ff; /* foco accesible */
+  }
+
+  /* Layout de ejemplo */
+  .dock {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    max-width: 546px;
+    width: 100%;
+    min-width: auto;
+  }
+
+  /* Botones circulares */
+  .icon-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #171717;
+    border: 1px solid var(--pill-border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    transition:
+      transform 0.08s ease,
+      background 0.15s ease,
+      color 0.15s ease;
+  }
+  .icon-btn:hover {
+    background: #1f1f1f;
+    color: #ffffff;
+  }
+  .icon-btn:active {
+    transform: scale(0.98);
+  }
+  .icon-btn:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  /* Barra de búsqueda */
+  .searchbar {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: var(--pill);
+    border: 1px solid var(--pill-border);
+    border-radius: 999px;
+    height: 56px;
+    padding: 0 8px 0 12px;
+    color: var(--text);
+    gap: 10px;
+  }
+  .searchbar:focus-within {
+    border-color: #3a3a3a;
+    box-shadow: 0 0 0 3px rgba(61, 133, 255, 0.18);
+  }
+
+  .searchbar__icon {
+    display: inline-flex;
+    color: var(--muted);
+  }
+  .searchbar__input {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1;
+    min-width: 100px;
+  }
+  .searchbar__input::placeholder {
+    color: var(--muted);
+  }
+
+  .searchbar__divider {
+    width: 1px;
+    height: 28px;
+    background: var(--pill-border);
+    margin: 0 4px 0 2px;
+  }
+
+  /* Botón derecho “inset” pegado al borde de la pill */
+  .icon-btn--inset {
+    width: 48px;
+    height: 48px;
+    background: #212121;
+    border-color: transparent; /* se ve integrado */
+  }
+  .icon-btn--inset:hover {
+    background: #262626;
+  }
+
+  /* Responsivo */
+  @media (max-width: 600px) {
+    .searchbar {
+      height: 50px;
+    }
+    .icon-btn,
+    .icon-btn--inset {
+      width: 44px;
+      height: 44px;
+    }
+    .searchbar__input {
+      font-size: 15px;
+    }
+  }
+</style>

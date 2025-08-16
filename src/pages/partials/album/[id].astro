@@ -1,0 +1,24 @@
+---
+import Album from "../../../components/Album.astro";
+
+const { id } = Astro.params;
+
+const apiUrl = new URL(`/api/spotify/albums/${id}`, Astro.url);
+
+const headers = new Headers({ Accept: "application/json" });
+const cookie = Astro.request.headers.get("cookie");
+if (cookie) headers.set("cookie", cookie);
+
+const res = await fetch(apiUrl, { headers });
+if (!res.ok) {
+  throw new Error(`No se pudo cargar el álbum ${id} (status ${res.status})`);
+}
+
+const album = await res.json();
+
+album.artist_line = album.artists?.map((a: any) => a.name).join(", ") ?? "";
+
+Astro.response.headers.set("Content-Type", "text/html; charset=utf-8");
+---
+
+<Album album={album} />

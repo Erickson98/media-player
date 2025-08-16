@@ -1,0 +1,115 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #000;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+.album-container {
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.album-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.album-cover {
+    width: 200px;
+    height: 200px;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+
+.album-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.album-title {
+    font-size: clamp(20px, 2vw, 70px);
+    font-weight: bold;
+    text-wrap-style: balance;
+}
+
+.album-artist {
+    color: #b3b3b3;
+    margin-top: 5px;
+}
+
+.album-controls {
+    margin-top: 15px;
+    display: flex;
+}
+
+.btn-play {
+    background-color: #1db954;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    cursor: pointer;
+    margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.track-list {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.track-list th,
+.track-list td {
+    text-align: left;
+    padding: 10px;
+}
+
+.track-title {
+    display: flex;
+    flex-direction: column;
+}
+
+.track-name {
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: initial;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.track-artist {
+    font-size: 12px;
+    color: #b3b3b3;
+}
+
+.icon-time {
+    display: flex;
+    justify-content: center;
+}
+
+.track-duration {
+    display: flex;
+    justify-content: center;
+}
+
+.copyrights-container {
+    color: gray;
+}

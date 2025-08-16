@@ -1,0 +1,57 @@
+---
+export const prerender = false;
+import SearchIcon from "../assets/icons/searchIcon.svg";
+import List from "../assets/icons/list-icon.svg";
+import XIcon from "../assets/icons/XIcon.svg";
+import OpenedLibrary from "../assets/icons/OpenLibrary.svg";
+import "../styles/SideBar.css";
+import "../styles/Layout.css";
+import "../styles/SearchBar.css";
+import "../styles/CenterPanel.css";
+---
+
+<div class="library-container">
+  <div class="container-action-library-button">
+    <button class="button-to-collapse-library">
+      <img
+        id="OPEN"
+        class="library-icon"
+        src={OpenedLibrary.src}
+        width="24"
+        alt="Library Icon"
+      />
+      <div class="label-your-library">Your Library</div>
+    </button>
+  </div>
+  <div class="container-search-bar">
+    <div class="search-bar">
+      <img src={SearchIcon.src} width="15" height="15" alt="Search" />
+      <label class="label-input">
+        <input
+          id="inputSearch"
+          name="inputSearch"
+          maxlength="80"
+          placeholder="Search in Your Library"
+          autocomplete="off"
+        />
+      </label>
+
+      <button
+        type="button"
+        class="clear-button"
+        aria-label="delete-content-for-searchbar"
+      >
+        <img src={XIcon.src} width="15" height="15" alt="Clear" />
+      </button>
+    </div>
+    <div style="margin-right: 5px;">
+      <List width={20} />
+    </div>
+  </div>
+  <div id="album-list" class="library album-btn2"></div>
+</div>
+
+<script>
+  import { loadLibrary } from "@/scripts/LoadLibrary";
+  loadLibrary();
+</script>

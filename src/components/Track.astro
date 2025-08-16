@@ -1,0 +1,132 @@
+---
+
+---
+
+<div id="right-panel">
+  <p>Sin canción en reproducción</p>
+</div>
+
+<!-- ✨ Plantilla reutilizable -->
+<template id="right-panel-tpl">
+  <div class="rp-root">
+    <div class="rp-top"><div data-field="album-name-top"></div></div>
+
+    <div class="rp-cover">
+      <img
+        data-field="album-cover"
+        width="500"
+        class="album-cover-rigth-panel"
+        alt="Album cover"
+      />
+    </div>
+
+    <div class="rp-meta">
+      <h2 data-field="album-name"></h2>
+      <div data-list="artists"></div>
+    </div>
+
+    <div class="rp-hero">
+      <div class="album-cover-rigth-panel" data-field="hero-bg">
+        <p>about the artist</p>
+      </div>
+      <p data-field="main-artist"></p>
+      <span class="rp-desc" data-field="artist-bio"></span>
+    </div>
+
+    <div class="rp-now">
+      <h3>Reproduciendo</h3>
+      <p data-field="track-name"></p>
+    </div>
+  </div>
+</template>
+
+<script client:load>
+  const root = document.getElementById("right-panel");
+  const tpl = document.getElementById("right-panel-tpl");
+
+  function clearRight() {
+    root.innerHTML = `<p>Sin canción en reproducción</p>`;
+  }
+
+  function renderRight({ album, track }) {
+    root.replaceChildren(); // limpia
+
+    // Clonamos la plantilla
+    const node = tpl.content.cloneNode(true);
+
+    // Helpers
+    const q = (sel) => node.querySelector(sel);
+
+    // Datos base
+    const imgUrl = album?.images?.[0]?.url || "";
+    const artists = Array.isArray(album?.artists) ? album.artists : [];
+
+    // Rellenar campos
+    q('[data-field="album-name-top"]').textContent = album?.name ?? "";
+    q('[data-field="album-name"]').textContent = album?.name ?? "";
+
+    const imgEl = q('[data-field="album-cover"]');
+    if (imgUrl) {
+      imgEl.src = imgUrl;
+    } else {
+      imgEl.remove(); // sin imagen, quitamos el <img>
+    }
+
+    const heroBg = q('[data-field="hero-bg"]');
+    heroBg.style.backgroundPosition = "50% 50%";
+    heroBg.style.backgroundSize = "cover";
+    heroBg.style.aspectRatio = "3 / 2";
+    heroBg.style.backgroundImage = imgUrl
+      ? `linear-gradient(rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 50%), url(${imgUrl})`
+      : "none";
+
+    q('[data-field="main-artist"]').textContent = artists[0]?.name ?? "";
+
+    // Lista de artistas
+    const artistsContainer = q('[data-list="artists"]');
+    artistsContainer.replaceChildren(
+      ...artists.map((a) => {
+        const p = document.createElement("p");
+        p.textContent = a.name;
+        return p;
+      })
+    );
+
+    // Descripción (pon tu bio real si la tienes)
+    q('[data-field="artist-bio"]').textContent =
+      album?.artist_bio ?? "No description available.";
+
+    // Track actual
+    q('[data-field="track-name"]').textContent = track?.name ?? "";
+
+    // Montar
+    root.appendChild(node);
+  }
+
+  // Reset al cambiar de álbum o volver a home
+  window.addEventListener("route:home", clearRight);
+  window.addEventListener("route:album", clearRight);
+
+  // 🎯 Recibe album + track del CenterPanel (SIN fetch extra)
+  window.addEventListener("ui:track", (e) => {
+    const { album, track } = e.detail;
+    renderRight({ album, track });
+  });
+</script>
+
+<style>
+  /* Opcional: estilos mínimos para legibilidad */
+  .rp-root {
+    display: grid;
+    gap: 12px;
+  }
+  .rp-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    margin-bottom: 8px;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    text-overflow: ellipsis;
+  }
+</style>
