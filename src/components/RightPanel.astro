@@ -1,0 +1,130 @@
+---
+
+---
+
+<div id="right-panel">
+  <p>Sin canción en reproducción</p>
+</div>
+<style>
+  .img-album-cover {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+</style>
+<!-- Plantilla HTML -->
+<template id="right-panel-tpl">
+  <div>
+    <div data-field="album-name-top"></div>
+  </div>
+  <div>
+    <img data-field="album-cover" width="500" class="img-album-cover" alt="" />
+  </div>
+  <div>
+    <h2 data-field="album-name"></h2>
+    <div data-list="artists"></div>
+  </div>
+  <div>
+    <div class="album-cover-rigth-panel" data-field="hero-bg">
+      <p>about the artist</p>
+    </div>
+    <p data-field="main-artist"></p>
+    <span
+      style="
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        margin-bottom: 8px;
+        overflow: hidden;
+        overflow-wrap: anywhere;
+        text-overflow: ellipsis;
+      "
+      data-field="artist-description"></span>
+  </div>
+</template>
+
+<script client:load>
+  const root5 = document.getElementById("right-panel");
+  const tpl = document.getElementById("right-panel-tpl");
+
+  function clearRight() {
+    root5.innerHTML = `<p>Sin canción en reproducción</p>`;
+  }
+
+  function renderRight({
+    albumId,
+    trackId,
+    trackName,
+    imgAlbum,
+    artistImg,
+    trackArtists,
+    bioArtist,
+    artistName,
+    albumName,
+  }) {
+    root5.replaceChildren();
+
+    const node = tpl.content.cloneNode(true);
+    const q = (sel) => node.querySelector(sel);
+
+    const imgUrl = imgAlbum ?? "";
+
+    q('[data-field="album-name-top"]').textContent = albumName ?? "";
+    q('[data-field="album-name"]').textContent = trackName ?? "";
+
+    const imgEl = q('[data-field="album-cover"]');
+    if (imgUrl) {
+      imgEl.src = JSON.parse(artistImg)[0].url;
+    }
+
+    const artistsContainer = q('[data-list="artists"]');
+    artistsContainer.replaceChildren(
+      ...(trackArtists ?? []).map((a) => {
+        const p = document.createElement("p");
+        p.textContent = a.name;
+        return p;
+      })
+    );
+    const heroBg = q('[data-field="hero-bg"]');
+    heroBg.style.backgroundPosition = "50% 50%";
+    heroBg.style.backgroundSize = "cover";
+    heroBg.style.aspectRatio = "3 / 2";
+    const backgroundImage = JSON.parse(artistImg)[0].url;
+    heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 50%), url(${backgroundImage})`;
+
+    q('[data-field="main-artist"]').textContent = trackArtists?.[0]?.name ?? "";
+    q('[data-field="artist-description"]').textContent =
+      bioArtist ?? "No description available.";
+
+    root5.appendChild(node);
+  }
+
+  window.addEventListener("route:home", clearRight);
+  window.addEventListener("route:album", clearRight);
+
+  // Escucha evento con álbum
+  window.addEventListener("ui:track", (e) => {
+    const {
+      albumId,
+      trackId,
+      trackName,
+      imgAlbum,
+      artistImg,
+      trackArtists,
+      bioArtist,
+      artistName,
+      albumName,
+    } = e.detail;
+    renderRight({
+      albumId,
+      trackId,
+      trackName,
+      imgAlbum,
+      artistImg,
+      trackArtists,
+      bioArtist,
+      artistName,
+      albumName,
+    });
+  });
+</script>

@@ -1,0 +1,150 @@
+---
+import { formatFollowers } from "src/utils/FormatFollowersOpts";
+
+const { artist } = Astro.props;
+
+artist.followers.total = formatFollowers(artist.followers.total);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <style>
+      :root {
+        --radius: 18px;
+        --blue: #4b8bff;
+        --fg: #fff;
+        --muted: rgba(255, 255, 255, 0.85);
+        --dom: #333;
+        --dom-dark: #111;
+      }
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          sans-serif;
+      }
+
+      .artist-banner {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        padding: 24px 32px;
+        border-radius: var(--radius);
+        border-top: 3px solid var(--blue);
+        color: var(--fg);
+        overflow: hidden;
+        min-height: 200px;
+        background: linear-gradient(
+          180deg,
+          var(--dom) 0%,
+          var(--dom-dark) 100%
+        );
+      }
+
+      /* Fallback visual si el canvas falla (CORS): se muestra y queda el blur */
+      .artist-banner__bg-fallback {
+        display: none; /* JS la activa solo si hay fallo */
+        position: absolute;
+        inset: -20px;
+        background: center/cover no-repeat;
+        filter: blur(42px) saturate(1.1) brightness(0.85);
+        transform: scale(1.12);
+        pointer-events: none;
+        z-index: 0;
+      }
+      .artist-banner::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.1) 0%,
+          rgba(0, 0, 0, 0.55) 100%
+        );
+      }
+
+      .artist-banner__avatar {
+        position: relative;
+        z-index: 1;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex: 0 0 auto;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
+      }
+      .artist-banner__body {
+        position: relative;
+        z-index: 1;
+        min-width: 0;
+      }
+      .artist-banner__name {
+        margin: 0 0 8px;
+        font-weight: 800;
+        line-height: 0.9;
+        font-size: clamp(28px, 8vw, 92px);
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .artist-banner__stats {
+        margin: 0;
+        color: var(--muted);
+        font-size: clamp(14px, 2.6vw, 18px);
+      }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        .artist-banner {
+          gap: 20px;
+          padding: 18px 20px;
+        }
+        .artist-banner__avatar {
+          width: 128px;
+          height: 128px;
+        }
+      }
+      @media (max-width: 560px) {
+        .artist-banner {
+          gap: 14px;
+          padding: 14px 16px;
+          border-radius: 12px;
+        }
+        .artist-banner__avatar {
+          width: 84px;
+          height: 84px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="artist-banner" id="banner">
+      <div
+        class="artist-banner__bg-fallback"
+        id="bg-fallback"
+        aria-hidden="true"
+      >
+      </div>
+
+      <img
+        id="avatar"
+        class="artist-banner__avatar"
+        src={artist.images[0].url}
+        alt={artist.name}
+        width="180"
+        height="180"
+      />
+
+      <div class="artist-banner__body">
+        <h1 class="artist-banner__name">{artist.name}</h1>
+        <p class="artist-banner__stats">{artist.followers.total} Followers</p>
+      </div>
+    </div>
+  </body>
+</html>

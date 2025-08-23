@@ -1,0 +1,83 @@
+---
+
+---
+
+<script client:load>
+  function parsePath(pathname) {
+    const album = pathname.match(/^\/album\/(\w+)$/);
+    const artist = pathname.match(/^\/artist\/(\w+)$/);
+    const search = pathname.match(/^\/search\/(\w+)$/);
+
+    if (artist) return { type: "artist", artistId: artist[1] };
+    if (album) return { type: "album", albumId: album[1] };
+    if (search) return { type: "search", searchQuery: search[1] };
+    return { type: "home" };
+  }
+
+  function routeTo(url, replace = false) {
+    const state = {};
+    replace
+      ? history.replaceState(state, "", url)
+      : history.pushState(state, "", url);
+    handle();
+  }
+
+  function handle() {
+    const r = parsePath(location.pathname);
+    if (r.type === "home") {
+      dispatch("route:home");
+    } else if (r.type === "album") {
+      dispatch("route:album", { albumId: r.albumId });
+    } else if (r.type === "artist") {
+      dispatch("route:artist", { artistId: r.artistId });
+    } else if (r.type === "search") {
+      dispatch("route:search", { searchQuery: r.searchQuery });
+    }
+  }
+
+  function dispatch(name, detail) {
+    window.dispatchEvent(new CustomEvent(name, { detail }));
+  }
+
+  window.addEventListener("nav:album", (e) => {
+    const { albumId } = e.detail;
+    routeTo(`/album/${albumId}`);
+  });
+  window.addEventListener("nav:artist", (e) => {
+    const { artistId } = e.detail;
+    routeTo(`/artist/${artistId}`);
+  });
+  window.addEventListener("nav:search", (e) => {
+    const { searchQuery } = e.detail;
+    routeTo(`/search/${searchQuery}`);
+  });
+
+  window.addEventListener("ui:track", (e) => {
+    const {
+      albumId,
+      trackIdx,
+      trackName,
+      imgAlbum,
+      artistImg,
+      trackArtists,
+      bioArtist,
+      artistName,
+      albumName,
+    } = e.detail;
+
+    dispatch("route:track", {
+      albumId,
+      trackIdx,
+      trackName,
+      imgAlbum,
+      artistImg,
+      trackArtists,
+      bioArtist,
+      artistName,
+      albumName,
+    });
+  });
+
+  window.addEventListener("popstate", handle);
+  window.addEventListener("DOMContentLoaded", handle);
+</script>

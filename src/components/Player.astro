@@ -1,0 +1,77 @@
+<script>
+  function getCookie(name) {
+    console.log("first");
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  }
+  window.onSpotifyWebPlaybackSDKReady = () => {
+    let token = getCookie("access_token");
+
+    const player = new Spotify.Player({
+      name: "Web Playback SDK Example",
+      getOAuthToken: (cb) => {
+        cb(token);
+      },
+      volume: 0.5,
+    });
+
+    let deviceId = null;
+
+    player.addListener("ready", ({ device_id }) => {
+      deviceId = device_id;
+      console.log("Player ready with device ID", device_id);
+    });
+
+    player.addListener("initialization_error", ({ message }) => {
+      console.error(message);
+    });
+    player.addListener("authentication_error", ({ message }) => {
+      console.error(message);
+    });
+    player.addListener("account_error", ({ message }) => {
+      console.error(message);
+    });
+    player.addListener("playback_error", ({ message }) => {
+      console.error(message);
+    });
+
+    player.connect();
+  };
+</script>
+
+<!-- document.getElementById("playSong").onclick = async function () {
+      if (!deviceId) {
+        alert("Device not ready yet.");
+        return;
+      }
+      const track_uri = "spotify:track:11dFghVXANMlKmJXsNCbNl";
+      const res = await fetch(
+        `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({ uris: [track_uri] }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (res.status === 204) {
+        alert("Playback started!");
+      } else {
+        const data = await res.json();
+        alert("Failed: " + JSON.stringify(data));
+      }
+    };
+
+    document.getElementById("pauseSong").onclick = async function () {
+      await fetch("https://api.spotify.com/v1/me/player/pause", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Playback paused via Web API!");
+    }; -->

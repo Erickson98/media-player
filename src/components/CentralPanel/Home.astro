@@ -1,0 +1,67 @@
+---
+const { tracks, artists } = Astro.props;
+---
+
+<div class="grid8">
+  {
+    tracks.items?.map((item) => (
+      <div class="card">
+        <img src={item.album.images[0].url} alt="" srcset="" width="50" />
+        <span>{item.album.name}</span>
+      </div>
+    ))
+  }
+  {
+    artists.items?.map((item) => (
+      <div class="card">
+        <img src={item.images[0].url} alt="" srcset="" width="50" />
+        <span>{item.name}</span>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .grid8 {
+    display: grid;
+    gap: 16px;
+    /* Desktop: 4 columnas => con 8 items quedan 2 filas */
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  /* Tablet: opcional (3 columnas) */
+  @media (max-width: 900px) {
+    .grid8 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* Móvil: 2 columnas => con 8 items quedan 4 filas */
+  @media (max-width: 600px) {
+    .grid8 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .title {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    margin-bottom: 8px;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    text-overflow: ellipsis;
+  }
+
+  .card {
+    background: #1f1f1f;
+    color: #fff;
+    border-radius: 8px;
+
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font:
+      589 14px/1.2 system-ui,
+      sans-serif;
+  }
+</style>

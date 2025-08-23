@@ -75,14 +75,11 @@ function SPANavigation() {
   const content = document.querySelector(".container-main");
 
   buttons.forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const id = btn.dataset.id;
-
-      history.pushState({}, "", `/album/${id}`);
-
-      content.innerHTML = `<h2>Cargando álbum ${id}...</h2>`;
-
-      content.innerHTML = `Album ${id}`;
+    btn.addEventListener("click", () => {
+      const albumId = btn.dataset.id;
+      window.dispatchEvent(
+        new CustomEvent("nav:album", { detail: { albumId } })
+      );
     });
   });
 
@@ -105,7 +102,6 @@ export async function loadLibrary() {
         ? "../../api/albums.json"
         : "/api/spotify/me/albums?limit=5"
     ).then((r) => r.json());
-    console.log(contentLibrary);
     renderLibrary(contentLibrary.items);
     SPANavigation();
   } catch (err) {

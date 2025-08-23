@@ -10,6 +10,40 @@ button {
   cursor: pointer;
 }
 
+.header-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.header-side {
+  flex: 0 0 103px;
+  display: flex;
+  justify-content: center;
+}
+
+.header-center {
+  flex: 1 1 600px;
+  min-width: 0;
+}
+
+.header-center>* {
+  width: 100%;
+  min-width: 0;
+  /* por si es un input/contenedor */
+}
+
+/* opcional: si hay texto largo dentro del centro */
+.header-center {
+  overflow: hidden;
+}
+
+.header-center * {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 .grid {
   display: grid;
   grid-template-columns: 1fr 10px 1fr 10px 1fr;
@@ -47,7 +81,7 @@ button {
 .grid-layout {
   display: grid;
   height: 100vh;
-  grid-template-rows: 1fr 60px;
+  grid-template-rows: 60px 1fr 60px;
   overflow-y: auto;
 }
 

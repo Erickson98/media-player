@@ -1,0 +1,42 @@
+---
+const { Popular } = Astro.props;
+function formatDuration(ms: number) {
+  const m = Math.floor(ms / 60000);
+  const s = Math.floor((ms % 60000) / 1000)
+    .toString()
+    .padStart(2, "0");
+  return `${m}:${s}`;
+}
+---
+
+<a href="/" target="_blank" rel="noopener noreferrer">Popular</a>
+<table class="track-list">
+  <tbody>
+    {
+      Popular.tracks.map((info, index) => (
+        <tr>
+          <td>{++index}</td>
+          <td>
+            <div class="track-title">
+              <button
+                class="track-name track-btn"
+                data-track-artists={JSON.stringify(info.artists)}
+                data-img-album={info.album.images[0].url}
+                data-img-artist={JSON.stringify(info.album.images)}
+                data-album-id={info.album.id}
+                data-track-id={info.id}
+                data-track-name={info.name}
+              >
+                {info.name}
+              </button>
+              <span class="track-artist">
+                {info.artists.map((a) => a.name).join(", ")}
+              </span>
+            </div>
+          </td>
+          <td class="track-duration">{formatDuration(info.duration_ms)}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

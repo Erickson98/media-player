@@ -1,7 +1,9 @@
 ---
-import SideBar from "../components/SideBar.astro";
 import Split from "../components/Split.astro";
+import SearchBar from "src/components/Header/SearchBar.astro";
+import SocialMedia from "src/components/Header/SocialMedia.astro";
 import "../styles/Layout.css";
+const { title } = Astro.props;
 ---
 
 <!doctype html>
@@ -11,27 +13,82 @@ import "../styles/Layout.css";
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>Media Player</title>
+    <title>{title}</title>
   </head>
   <body>
     <div class="grid-layout">
-      <div class="default-grid-template-columns" id="split-wrapper">
-        <div class="panel aside-bar">
-          <SideBar />
+      <header class="header-container">
+        <div class="header-side">
+          <a href="/" rel="noopener noreferrer"
+            ><img
+              src="/public/icon.png"
+              width="50"
+              alt=""
+              srcset=""
+              class="side"
+            /></a
+          >
         </div>
+        <SearchBar />
+        <SocialMedia />
+      </header>
+
+      <div class="default-grid-template-columns" id="split-wrapper">
+        <aside class="panel aside-bar" id="left-panel">
+          <slot name="left" />
+        </aside>
+
         <div class="gutter-col gutter-1"></div>
         <div class="panel">
-          <slot name="central-panel" />
+          <main id="center-panel"><slot /></main>
         </div>
         <div class="gutter-col gutter-3 gutter-right"></div>
-        <div class="panel right-panel">
-          <slot name="right-panel" />
-        </div>
+
+        <aside class="panel right-panel" id="right-panel">
+          <slot name="right" />
+        </aside>
       </div>
       <div class="player">
         <button class="toggle">Toggle Right Panel</button>
       </div>
     </div>
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+
+    <script>
+      window.onSpotifyWebPlaybackSDKReady = () => {
+        let token = "TOKEN HERE";
+
+        const player = new Spotify.Player({
+          name: "Media Player",
+          getOAuthToken: (cb) => {
+            cb(token);
+          },
+          volume: 0.5,
+        });
+
+        window.deviceId = null;
+
+        player.addListener("ready", ({ device_id }) => {
+          window.deviceId = device_id;
+          console.log("Player ready with device ID", device_id);
+        });
+
+        player.addListener("initialization_error", ({ message }) => {
+          console.error(message);
+        });
+        player.addListener("authentication_error", ({ message }) => {
+          console.error(message);
+        });
+        player.addListener("account_error", ({ message }) => {
+          console.error(message);
+        });
+        player.addListener("playback_error", ({ message }) => {
+          console.error(message);
+        });
+
+        player.connect();
+      };
+    </script>
   </body>
 </html>
 

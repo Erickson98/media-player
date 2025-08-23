@@ -1,0 +1,15 @@
+---
+import ThreePanelLayout from "../layouts/Layout.astro";
+import RouterController from "../components/RouterController.astro";
+import LeftPanel from "../components/LeftPanel.astro";
+import CenterPanel from "../components/CentralPanel.astro";
+import RightPanel from "../components/RightPanel.astro";
+---
+
+<ThreePanelLayout title="Media-Player">
+  <div style="height: 100%;" slot="left"><LeftPanel client:load /></div>
+  <CenterPanel client:load />
+  <div slot="right"><RightPanel client:load /></div>
+</ThreePanelLayout>
+
+<RouterController client:load />
