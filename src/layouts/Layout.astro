@@ -55,12 +55,13 @@ const { title } = Astro.props;
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
 
     <script>
-      window.onSpotifyWebPlaybackSDKReady = () => {
-        let token = "TOKEN HERE";
+      import { getSpotifyToken } from "../utils/get-spotify-token";
 
+      window.onSpotifyWebPlaybackSDKReady = () => {
         const player = new Spotify.Player({
           name: "Media Player",
-          getOAuthToken: (cb) => {
+          getOAuthToken: async (cb) => {
+            let token = await getSpotifyToken();
             cb(token);
           },
           volume: 0.5,

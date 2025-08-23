@@ -8,6 +8,7 @@ interface Track {
   track_number: number;
   duration_ms: number;
   artists: Artist[];
+  uri: string;
 }
 interface Album {
   id: string;
@@ -43,7 +44,11 @@ function formatDuration(ms: number) {
     </p>
     <p>{album.artist_line ? " • " : ""}{year} • {total} canciones</p>
     <div class="album-controls">
-      <button id="playSong" class="btn-play" data-album-id={album.id}>▶</button
+      <button
+        id="playSong"
+        class="btn-play"
+        data-tracks-album={JSON.stringify(album.tracks.items.map((x) => x.uri))}
+        data-album-id={album.id}>▶</button
       >
       <button id="pauseSong">Pause Song</button>
       <!-- <button class="btn-icon" aria-label="favorite">❤️</button> -->
