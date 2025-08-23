@@ -69,7 +69,6 @@ if (!resYourFavoriteArtists.ok) {
   );
 }
 const yourFavoriteArtists = await resYourFavoriteArtists.json();
-console.log(yourFavoriteArtists);
 Astro.response.headers.set("Content-Type", "text/html; charset=utf-8");
 ---
 

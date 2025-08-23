@@ -176,3 +176,24 @@
     }
   }
 </style>
+<script>
+  const searchElement = document.querySelector(".searchbar__input");
+
+  function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
+    let timeout: ReturnType<typeof setTimeout>;
+    return (...args: Parameters<T>): void => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn(...args), delay);
+    };
+  }
+  const handleSearch = debounce((query: string) => {
+    const searchQuery = query.trim().toLowerCase();
+    window.dispatchEvent(
+      new CustomEvent("nav:search", { detail: { searchQuery } })
+    );
+  }, 200);
+  searchElement?.addEventListener("input", (e) => {
+    const target = e.target as HTMLInputElement;
+    handleSearch(target.value);
+  });
+</script>

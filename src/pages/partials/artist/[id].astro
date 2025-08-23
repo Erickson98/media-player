@@ -1,0 +1,38 @@
+---
+import Hero from "src/components/Artist/Hero.astro";
+import PopularTracks from "src/components/Artist/PopularTracks.astro";
+
+const { id } = Astro.params;
+
+const getArtist = new URL(`/api/spotify/artists/${id}`, Astro.url);
+const getPopularTracksArtist = new URL(
+  `/api/spotify/artists/${id}/top-tracks`,
+  Astro.url
+);
+
+const headers = new Headers({ Accept: "application/json" });
+const cookie = Astro.request.headers.get("cookie");
+if (cookie) headers.set("cookie", cookie);
+
+const res = await fetch(getArtist, { headers });
+if (!res.ok) {
+  throw new Error(`No se pudo cargar el álbum ${id} (status ${res.status})`);
+}
+
+const artist = await res.json();
+
+const resPopularTracks = await fetch(getPopularTracksArtist, { headers });
+if (!res.ok) {
+  throw new Error(
+    `No se pudo cargar el álbum ${id} (status ${resPopularTracks.status})`
+  );
+}
+
+const Popular = await resPopularTracks.json();
+// album.artist_line = album.artists?.map((a: any) => a.name).join(", ") ?? "";
+
+Astro.response.headers.set("Content-Type", "text/html; charset=utf-8");
+---
+
+<Hero artist={artist} />
+<PopularTracks Popular={Popular} />

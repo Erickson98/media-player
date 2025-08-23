@@ -52,6 +52,43 @@ const { title } = Astro.props;
         <button class="toggle">Toggle Right Panel</button>
       </div>
     </div>
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+
+    <script>
+      window.onSpotifyWebPlaybackSDKReady = () => {
+        let token = "TOKEN HERE";
+
+        const player = new Spotify.Player({
+          name: "Media Player",
+          getOAuthToken: (cb) => {
+            cb(token);
+          },
+          volume: 0.5,
+        });
+
+        window.deviceId = null;
+
+        player.addListener("ready", ({ device_id }) => {
+          window.deviceId = device_id;
+          console.log("Player ready with device ID", device_id);
+        });
+
+        player.addListener("initialization_error", ({ message }) => {
+          console.error(message);
+        });
+        player.addListener("authentication_error", ({ message }) => {
+          console.error(message);
+        });
+        player.addListener("account_error", ({ message }) => {
+          console.error(message);
+        });
+        player.addListener("playback_error", ({ message }) => {
+          console.error(message);
+        });
+
+        player.connect();
+      };
+    </script>
   </body>
 </html>
 

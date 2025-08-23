@@ -25,7 +25,6 @@ const { album } = Astro.props as { album: Album };
 const img = album.images?.[1]?.url ?? album.images?.[0]?.url ?? "";
 const year = (album.release_date ?? "").slice(0, 4) || "—";
 const total = album.total_tracks ?? album.tracks?.items?.length ?? 0;
-
 function formatDuration(ms: number) {
   const m = Math.floor(ms / 60000);
   const s = Math.floor((ms % 60000) / 1000)
@@ -44,8 +43,10 @@ function formatDuration(ms: number) {
     </p>
     <p>{album.artist_line ? " • " : ""}{year} • {total} canciones</p>
     <div class="album-controls">
-      <button class="btn-play" data-album-id={album.id}>▶</button>
-      <button class="btn-icon" aria-label="favorite">❤️</button>
+      <button id="playSong" class="btn-play" data-album-id={album.id}>▶</button
+      >
+      <button id="pauseSong">Pause Song</button>
+      <!-- <button class="btn-icon" aria-label="favorite">❤️</button> -->
     </div>
   </div>
 </div>

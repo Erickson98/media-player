@@ -1,0 +1,22 @@
+---
+import TopTracks from "src/components/Search/TopTracks.astro";
+const { id } = Astro.params;
+
+const searchQuery = new URL(
+  `/api/spotify/search?q=${id}&type=album%2Cartist%2Ctrack&limit=8`,
+  Astro.url
+);
+
+const headers = new Headers({ Accept: "application/json" });
+const cookie = Astro.request.headers.get("cookie");
+if (cookie) headers.set("cookie", cookie);
+
+const res = await fetch(searchQuery, { headers });
+if (!res.ok) {
+  throw new Error(`No se pudo cargar el álbum ${id} (status ${res.status})`);
+}
+
+const resQuery = await res.json();
+---
+
+<TopTracks tracks={resQuery.tracks} />

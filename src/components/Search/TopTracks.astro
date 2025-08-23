@@ -1,0 +1,62 @@
+---
+const { tracks } = Astro.props;
+function formatDuration(ms: number) {
+  const m = Math.floor(ms / 60000);
+  const s = Math.floor((ms % 60000) / 1000)
+    .toString()
+    .padStart(2, "0");
+  return `${m}:${s}`;
+}
+---
+
+<div>
+  <div>
+    <h2>Top Results</h2>
+    <div>
+      <img
+        src={tracks.items[0].album.images[0].url}
+        alt=""
+        srcset=""
+        width="92"
+        height="92"
+      />
+      <h2>{tracks?.items[0].name}</h2>
+      <span
+        >Song * {
+          tracks.items[0].artists.map((artist) => (
+            <a
+              href={`/artist/${artist.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {artist.name}
+            </a>
+          ))
+        }</span
+      >
+    </div>
+  </div>
+  <div>
+    <h2>Songs</h2>
+    <ul>
+      {
+        tracks.items.slice(0, 4).map((track) => (
+          <li>
+            <img
+              src={track.album.images[0].url}
+              alt=""
+              srcset=""
+              width="40"
+              height="40"
+            />
+            <div>
+              <span>{track.name}</span>
+              <span>{track.artists.map((a) => a.name).join(", ")}</span>
+            </div>
+            <span>{formatDuration(track.duration_ms)}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>

@@ -9,7 +9,9 @@ import Footer from "./Footer.astro";
   <Footer />
 </div>
 
-<script client:load>
+<script>
+  import { getColor } from "@/scripts/getColor";
+  import { loadSpotifyPlayer } from "@/scripts/player";
   const root = document.getElementById("center-panel");
 
   async function renderHome() {
@@ -20,8 +22,19 @@ import Footer from "./Footer.astro";
     });
 
     root.innerHTML = html;
+    addEventNavArtist();
   }
-
+  function addEventNavArtist() {
+    const buttons = document.querySelectorAll(".artist-favorite");
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const artistId = btn.dataset.artistId;
+        window.dispatchEvent(
+          new CustomEvent("nav:artist", { detail: { artistId } })
+        );
+      });
+    });
+  }
   async function renderAlbumById(albumId) {
     root.innerHTML = `<p>Cargando álbum ${albumId}...</p>`;
     try {
@@ -62,15 +75,98 @@ import Footer from "./Footer.astro";
           );
         });
       });
+      // loadSpotifyPlayer();
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+      }
+
+      // Uso
+      const token = getCookie("access_token");
+      document.getElementById("playSong").onclick = async function () {
+        const track_uri = "spotify:track:2q2Z2A0Mt8AsWyQEdB6wuu";
+        const res = await fetch(
+          `https://api.spotify.com/v1/me/player/play?device_id=${window.deviceId}`,
+          {
+            method: "PUT",
+            body: JSON.stringify({ uris: [track_uri] }),
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (res.status === 204) {
+          // alert("Playback started!");
+        } else {
+          const data = await res.json();
+          alert("Failed: " + JSON.stringify(data));
+        }
+      };
+
+      document.getElementById("pauseSong").onclick = async function () {
+        await fetch("https://api.spotify.com/v1/me/player/pause", {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log("Playback paused via Web API!");
+      };
+      /////////
     } catch (e) {
       root.innerHTML = `<p>Error cargando álbum.</p>`;
       console.error(e);
     }
   }
 
+  async function renderArtistById(artistId) {
+    root.innerHTML = `<p>Cargando artista ${artistId}...</p>`;
+
+    try {
+      const html = await fetch(`/partials/artist/${artistId}`).then((r) => {
+        if (!r.ok) throw new Error("Artist not found");
+        return r.text();
+      });
+
+      root.innerHTML = html;
+      getColor();
+    } catch (e) {
+      root.innerHTML = `<p>Error cargando álbum.</p>`;
+      console.error(e);
+    }
+
+    //
+  }
+
+  async function renderSearch(searchQuery) {
+    root.innerHTML = `<p>Procesando busqueda ${searchQuery}...</p>`;
+
+    try {
+      const html = await fetch(`/partials/search/${searchQuery}`).then((r) => {
+        if (!r.ok) throw new Error("Search not found");
+        return r.text();
+      });
+
+      root.innerHTML = html;
+      // getColor();
+    } catch (e) {
+      root.innerHTML = `<p>Error.</p>`;
+      console.error(e);
+    }
+  }
   window.addEventListener("route:home", renderHome);
   window.addEventListener("route:album", (e) => {
     const { albumId } = e.detail;
     renderAlbumById(albumId);
+  });
+  window.addEventListener("route:artist", (e) => {
+    const { artistId } = e.detail;
+    renderArtistById(artistId);
+  });
+  window.addEventListener("route:search", (e) => {
+    const { searchQuery } = e.detail;
+    renderSearch(searchQuery);
   });
 </script>

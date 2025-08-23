@@ -4,8 +4,7 @@ export const GET: APIRoute = async () => {
   const clientId = import.meta.env.SPOTIFY_CLIENT_ID;
   const redirectUri = import.meta.env.SPOTIFY_REDIRECT_URI;
   const scope =
-    "user-library-read user-read-email streaming user-read-email user-read-private user-modify-playback-state user-top-read";
-
+    "user-library-read user-read-email streaming user-read-email user-read-private user-modify-playback-state user-top-read user-read-playback-state";
   const url = new URL("https://accounts.spotify.com/authorize");
   url.searchParams.append("client_id", clientId);
   url.searchParams.append("response_type", "code");
