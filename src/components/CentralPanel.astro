@@ -23,15 +23,26 @@ import Footer from "./Footer.astro";
     });
 
     root.innerHTML = html;
-    addEventNavArtist();
+    addEventNavArtist(".artist-favorite");
   }
-  function addEventNavArtist() {
-    const buttons = document.querySelectorAll(".artist-favorite");
+  function addEventNavArtist(btnClass: string) {
+    const buttons = document.querySelectorAll(btnClass);
     buttons.forEach((btn) => {
       btn.addEventListener("click", () => {
         const artistId = btn.dataset.artistId;
         window.dispatchEvent(
           new CustomEvent("nav:artist", { detail: { artistId } })
+        );
+      });
+    });
+  }
+  function addEventNavAlbum(btnClass) {
+    const buttons = document.querySelectorAll(btnClass);
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const albumId = btn.dataset.albumId;
+        window.dispatchEvent(
+          new CustomEvent("nav:album", { detail: { albumId } })
         );
       });
     });
@@ -96,6 +107,7 @@ import Footer from "./Footer.astro";
         if (res.status === 204) {
           // alert("Playback started!");
         } else {
+          // TODO: IF FAIL, FETCH TOKEN TO FIND DEVICEID
           const data = await res.json();
           alert("Failed: " + JSON.stringify(data));
         }
@@ -146,6 +158,9 @@ import Footer from "./Footer.astro";
       });
 
       root.innerHTML = html;
+      debugger;
+      addEventNavArtist(".artist-with-search");
+      addEventNavAlbum(".btn-album-go-to");
       // getColor();
     } catch (e) {
       root.innerHTML = `<p>Error.</p>`;
