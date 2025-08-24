@@ -196,4 +196,11 @@
     const target = e.target as HTMLInputElement;
     handleSearch(target.value);
   });
+  const houseIcon = document.querySelector(".icon-btn");
+  houseIcon?.addEventListener("click", () => {
+    const isHome = window.location.href.split("/")[3];
+    if (isHome === "") return;
+    window.history.pushState({}, "", "/");
+    window.dispatchEvent(new Event("route:home"));
+  });
 </script>
