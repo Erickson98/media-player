@@ -1,5 +1,8 @@
 ---
+import AlbumCarrousel from "src/components/AlbumCarrousel.astro";
+import ArtistCarrousel from "src/components/ArtistCarrousel.astro";
 import TopTracks from "src/components/Search/TopTracks.astro";
+import Footer from "src/components/Footer.astro";
 const { id } = Astro.params;
 
 const searchQuery = new URL(
@@ -17,6 +20,19 @@ if (!res.ok) {
 }
 
 const resQuery = await res.json();
+const hasTracks = resQuery?.tracks?.items?.length > 0;
 ---
 
-<TopTracks tracks={resQuery.tracks} />
+{
+  hasTracks ? (
+    <TopTracks tracks={resQuery.tracks} />
+    <ArtistCarrousel artists={resQuery.artists} title="Artist"/>
+    <AlbumCarrousel album={resQuery.albums} title="Album"/>
+    <Footer/>
+  ) : (
+    <div class="empty-state">
+      <h2>No se encontraron resultados</h2>
+      <p>Intenta con otro artista, canción o álbum.</p>
+    </div>
+  )
+}

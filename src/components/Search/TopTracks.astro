@@ -9,10 +9,10 @@ function formatDuration(ms: number) {
 }
 ---
 
-<div>
-  <div>
+<div style="display: flex; gap:5px;">
+  <div style="flex:0.8">
     <h2>Top Results</h2>
-    <div>
+    <div style="padding: 20px; border-radius: 7px; background: #3a3a3a57;">
       <img
         src={tracks?.items[0]?.album?.images[0]?.url}
         alt=""
@@ -36,12 +36,14 @@ function formatDuration(ms: number) {
       >
     </div>
   </div>
-  <div>
+  <div style="flex:1;padding-right: 10px;">
     <h2>Songs</h2>
-    <ul>
+    <ul
+      style="display: flex; flex-direction: column; gap:15px;padding:10px;margin:0px;"
+    >
       {
         tracks.items.slice(0, 4).map((track) => (
-          <li>
+          <li style="display:flex;width: 100%;gap: 10px;">
             <img
               src={track?.album?.images[0]?.url}
               alt=""
@@ -49,11 +51,13 @@ function formatDuration(ms: number) {
               width="40"
               height="40"
             />
-            <div>
-              <span>{track?.name}</span>
-              <span>{track?.artists?.map((a) => a?.name).join(", ")}</span>
+            <div style="justify-content: space-between;display: flex;flex: 1;">
+              <div style="display: flex; flex-direction: column;">
+                <span>{track?.name}</span>
+                <span>{track?.artists?.map((a) => a?.name).join(", ")}</span>
+              </div>
+              <span>{formatDuration(track?.duration_ms)}</span>
             </div>
-            <span>{formatDuration(track?.duration_ms)}</span>
           </li>
         ))
       }

@@ -1,0 +1,44 @@
+---
+export const prerender = false;
+const { artists, title } = Astro.props;
+---
+
+<style>
+  .img-favorite-artists {
+    border-radius: 50%;
+
+    object-fit: cover;
+  }
+  .wrapper-for-img-your-favorite-artists {
+    height: 100%;
+  }
+  .container-for-albums-carrusel {
+    display: flex;
+    gap: 27px;
+  }
+</style>
+<div>
+  <button class="btn-artist-page">{title}</button>
+  <div class="container-for-albums-carrusel">
+    {
+      artists.items.map((item) => (
+        <button
+          class="artist-favorite artist-with-search"
+          data-artist-id={item.id}
+        >
+          <div class="wrapper-for-img-your-favorite-artists">
+            <img
+              class="img-favorite-artists"
+              src={item?.images[2].url}
+              alt=""
+              srcset=""
+              width="153"
+              height="153"
+            />
+            <div>{item?.name}</div>
+          </div>
+        </button>
+      ))
+    }
+  </div>
+</div>

@@ -1,0 +1,37 @@
+---
+const { album } = Astro.props;
+console.log(album);
+---
+
+<div>
+  <a href="/" target="_blank" rel="noopener noreferrer">Album</a>
+  <div class="container-for-albums-carrusel">
+    {
+      album.items.map((item) => (
+        <>
+          <div>
+            <img
+              class="img-album"
+              src={item?.images[1].url}
+              alt=""
+              srcset=""
+              width="153"
+            />
+            <div>{item?.name}</div>
+            {item?.artists?.map((a) => a.name).join(", ")}
+          </div>
+        </>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .img-album {
+    border-radius: 5px;
+  }
+  .container-for-albums-carrusel {
+    display: flex;
+    gap: 27px;
+  }
+</style>
