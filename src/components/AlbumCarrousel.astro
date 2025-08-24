@@ -7,19 +7,22 @@ const { album, title } = Astro.props;
   <div class="container-for-albums-carrusel">
     {
       album.items.map((item) => (
-        <button class="btn-album-go-to" data-album-id={item.id}>
-          <div>
-            <img
-              class="img-album"
-              src={item?.images[1].url}
-              alt=""
-              srcset=""
-              width="153"
-            />
-            <div>{item?.name}</div>
-            {item?.artists?.map((a) => a.name).join(", ")}
-          </div>
-        </button>
+        <div class="container-for-play" style="position: relative;">
+          <button class="btn-album-go-to" data-album-id={item.id}>
+            <div>
+              <img
+                class="img-album"
+                src={item?.images[1].url}
+                alt=""
+                srcset=""
+                width="153"
+              />
+              <div>{item?.name}</div>
+              <span>{item?.artists?.map((a) => a.name).join(", ")}</span>
+            </div>
+          </button>
+          <button class="btn-hidden">▶</button>
+        </div>
       ))
     }
   </div>
@@ -32,5 +35,13 @@ const { album, title } = Astro.props;
   .container-for-albums-carrusel {
     display: flex;
     gap: 27px;
+  }
+  .container-for-play:hover .btn-hidden {
+    opacity: 1;
+  }
+  .btn-hidden {
+    bottom: 15px;
+    right: -15px;
+    margin: 0px;
   }
 </style>

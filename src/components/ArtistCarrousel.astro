@@ -22,23 +22,35 @@ const { artists, title } = Astro.props;
   <div class="container-for-albums-carrusel">
     {
       artists.items.map((item) => (
-        <button
-          class="artist-favorite artist-with-search"
-          data-artist-id={item.id}
-        >
-          <div class="wrapper-for-img-your-favorite-artists">
-            <img
-              class="img-favorite-artists"
-              src={item?.images[2].url}
-              alt=""
-              srcset=""
-              width="153"
-              height="153"
-            />
-            <div>{item?.name}</div>
-          </div>
-        </button>
+        <div class="container-for-play" style="position: relative;">
+          <button
+            class="artist-favorite artist-with-search"
+            data-artist-id={item.id}
+          >
+            <div class="wrapper-for-img-your-favorite-artists">
+              <img
+                class="img-favorite-artists"
+                src={item?.images[2].url}
+                alt=""
+                srcset=""
+                width="153"
+                height="153"
+              />
+              <div>{item?.name}</div>
+            </div>
+          </button>
+          <button class="btn-hidden">▶</button>
+        </div>
       ))
     }
   </div>
 </div>
+
+<style>
+  .container-for-play:hover .btn-hidden {
+    opacity: 1;
+  }
+  .btn-hidden {
+    transform: translate(10px, -80px);
+  }
+</style>
