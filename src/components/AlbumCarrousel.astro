@@ -8,7 +8,7 @@ const { album, title } = Astro.props;
     {
       album.items.map((item) => (
         <div class="container-for-play" style="position: relative;">
-          <button class="btn-album-go-to" data-album-id={item.id}>
+          <button class="btn-album-go-to " data-album-id={item.id}>
             <div>
               <img
                 class="img-album"
@@ -21,7 +21,12 @@ const { album, title } = Astro.props;
               <span>{item?.artists?.map((a) => a.name).join(", ")}</span>
             </div>
           </button>
-          <button class="btn-hidden">▶</button>
+          <button
+            class="btn-hidden playSong-Album-Carrousel"
+            data-track-album={item.uri}
+          >
+            ▶
+          </button>
         </div>
       ))
     }

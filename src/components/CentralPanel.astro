@@ -12,7 +12,7 @@ import Footer from "./Footer.astro";
 <script>
   import { getColor } from "@/scripts/getColor";
   import { loadSpotifyPlayer } from "@/scripts/player";
-  import { getSpotifyToken } from "../utils/get-spotify-token";
+  import { spotifyPlayerAction } from "@/scripts/spotifyPlayerAction";
   const root = document.getElementById("center-panel");
 
   async function renderHome() {
@@ -46,6 +46,96 @@ import Footer from "./Footer.astro";
         );
       });
     });
+  }
+  function addEventTopResults() {
+    const btnElementTopResult = document.querySelector(".top-result");
+    const btnTopResultUriSong = btnElementTopResult.dataset.topResultSong;
+    document.querySelector(".playSong").onclick = async function () {
+      await spotifyPlayerAction("play", {
+        uris: [btnTopResultUriSong],
+        deviceId: window.deviceId,
+      });
+    };
+
+    ///
+    const parseJSON = (s, fb = null) => {
+      try {
+        return JSON.parse(s);
+      } catch {
+        return fb;
+      }
+    };
+
+    const isSameTrack = (a, b) => {
+      if (!a || !b) return false;
+      if (a.id !== b.id) return false;
+      if (a.name !== b.name) return false;
+      if (a.album?.id !== b.album?.id) return false;
+      if ((a.artists?.length || 0) !== (b.artists?.length || 0)) return false;
+      return a.artists.every((art, i) => art.id === b.artists[i].id);
+    };
+
+    const buttons = Array.from(
+      document.querySelectorAll(".playSong-top-songs")
+    );
+    const lastPlayed = parseJSON(localStorage.getItem("lastPlayedTrack"));
+
+    const matchedBtn = lastPlayed
+      ? buttons.find((btn) => {
+          const data = parseJSON(btn.dataset.track);
+          return isSameTrack(data, lastPlayed);
+        })
+      : null;
+
+    if (matchedBtn) {
+      console.log(
+        "Hay coincidencia con el último guardado:",
+        matchedBtn.dataset.track
+      );
+    }
+
+    buttons.forEach((btn) => {
+      const trackData = parseJSON(btn.dataset.track);
+
+      btn.onclick = async () => {
+        trackData.class = "playSong-top-songs";
+        localStorage.setItem("lastPlayedTrack", JSON.stringify(trackData));
+
+        const uri = btn.dataset.trackUri;
+        try {
+          await spotifyPlayerAction("play", {
+            uris: [uri],
+            deviceId: window.deviceId,
+          });
+        } catch (e) {
+          console.error("Error al reproducir:", e);
+        }
+      };
+    });
+
+    ///
+    document.querySelectorAll(".playSong-Artists-Carrousel").forEach((btn) => {
+      btn.onclick = async () => {
+        const uri = btn.dataset.trackArtist;
+        console.log(uri);
+        await spotifyPlayerAction("play", {
+          context_uri: uri,
+        });
+      };
+    });
+    document.querySelectorAll(".playSong-Album-Carrousel").forEach((btn) => {
+      btn.onclick = async () => {
+        const uri = btn.dataset.trackAlbum;
+        console.log(uri);
+        await spotifyPlayerAction("play", {
+          context_uri: uri,
+        });
+      };
+    });
+
+    // document.querySelector("pauseSong").onclick = async function () {
+    //   await spotifyPlayerAction("pause");
+    // };
   }
   async function renderAlbumById(albumId) {
     root.innerHTML = `<p>Cargando álbum ${albumId}...</p>`;
@@ -92,35 +182,14 @@ import Footer from "./Footer.astro";
         const track_uri = JSON.parse(
           document.querySelector(".btn-play")?.dataset.tracksAlbum
         );
-
-        const res = await fetch(
-          `https://api.spotify.com/v1/me/player/play?device_id=${window.deviceId}`,
-          {
-            method: "PUT",
-            body: JSON.stringify({ uris: track_uri }),
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${await getSpotifyToken()}`,
-            },
-          }
-        );
-        if (res.status === 204) {
-          // alert("Playback started!");
-        } else {
-          // TODO: IF FAIL, FETCH TOKEN TO FIND DEVICEID
-          const data = await res.json();
-          alert("Failed: " + JSON.stringify(data));
-        }
+        await spotifyPlayerAction("play", {
+          uris: track_uri,
+          deviceId: window.deviceId,
+        });
       };
 
       document.getElementById("pauseSong").onclick = async function () {
-        await fetch("https://api.spotify.com/v1/me/player/pause", {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        console.log("Playback paused via Web API!");
+        await spotifyPlayerAction("pause");
       };
       /////////
     } catch (e) {
@@ -160,6 +229,7 @@ import Footer from "./Footer.astro";
       root.innerHTML = html;
       addEventNavArtist(".artist-with-search");
       addEventNavAlbum(".btn-album-go-to");
+      addEventTopResults();
       // getColor();
     } catch (e) {
       root.innerHTML = `<p>Error.</p>`;

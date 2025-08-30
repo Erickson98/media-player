@@ -1,5 +1,9 @@
 ---
 export const prerender = false;
+
+import PlayIcon from "../assets/icons/play.svg?url";
+import PauseIcon from "../assets/icons/pause.svg?url";
+
 const { artists, title } = Astro.props;
 ---
 
@@ -30,7 +34,7 @@ const { artists, title } = Astro.props;
             <div class="wrapper-for-img-your-favorite-artists">
               <img
                 class="img-favorite-artists"
-                src={item?.images[2].url}
+                src={item?.images[1].url}
                 alt=""
                 srcset=""
                 width="153"
@@ -39,7 +43,12 @@ const { artists, title } = Astro.props;
               <div>{item?.name}</div>
             </div>
           </button>
-          <button class="btn-hidden">▶</button>
+          <button
+            class="btn-hidden playSong-Artists-Carrousel"
+            data-track-artist={item.uri}
+          >
+            <img src={PlayIcon} alt="play icon" srcset="" />
+          </button>
         </div>
       ))
     }
