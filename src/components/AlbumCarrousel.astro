@@ -1,5 +1,6 @@
 ---
 const { album, title } = Astro.props;
+import PlayIcon from "../assets/icons/play.svg?url";
 ---
 
 <div>
@@ -12,7 +13,7 @@ const { album, title } = Astro.props;
             <div>
               <img
                 class="img-album"
-                src={item?.images[1].url}
+                src={item?.images[1]?.url}
                 alt=""
                 srcset=""
                 width="153"
@@ -24,8 +25,19 @@ const { album, title } = Astro.props;
           <button
             class="btn-hidden playSong-Album-Carrousel"
             data-track-album={item.uri}
+            data-track={JSON.stringify({
+              id: item.id,
+              uri: item.uri,
+              name: item.name,
+            })}
           >
-            ▶
+            <img
+              src={PlayIcon}
+              alt="play icon"
+              srcset=""
+              data-state="play"
+              class={`btn-hidden-pause-${item.id}`}
+            />
           </button>
         </div>
       ))

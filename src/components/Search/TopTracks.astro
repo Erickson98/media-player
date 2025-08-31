@@ -1,5 +1,7 @@
 ---
 const { tracks } = Astro.props;
+import PlayIcon from "src/assets/icons/play.svg?url";
+
 function formatDuration(ms: number) {
   const m = Math.floor(ms / 60000);
   const s = Math.floor((ms % 60000) / 1000)
@@ -37,7 +39,29 @@ function formatDuration(ms: number) {
     </div>
     <button
       class="btn-hidden top-result playSong"
-      data-top-result-song={tracks.items[0].uri}>▶</button
+      data-top-result-song={tracks.items[0].uri}
+      data-track={JSON.stringify({
+        id: tracks?.items[0].id,
+        uri: tracks?.items[0].uri,
+        name: tracks?.items[0].name,
+        album: {
+          id: tracks?.items[0].album.id,
+          name: tracks?.items[0].album.name,
+          images: tracks?.items[0].album.images,
+        },
+        artists: tracks?.items[0].artists.map((a) => ({
+          id: a.id,
+          name: a.name,
+        })),
+      })}
+    >
+      <img
+        src={PlayIcon}
+        alt=""
+        srcset=""
+        data-state="play"
+        class={`btn-hidden-pause-${tracks?.items[0]?.id}`}
+      /></button
     >
   </div>
   <div style="flex:1;padding-right: 10px;">
@@ -75,13 +99,19 @@ function formatDuration(ms: number) {
                     })),
                   })}
                 >
-                  <span>▶</span>
+                  <img
+                    data-state="play"
+                    class={`btn-hidden-pause-${track.id}`}
+                    src={PlayIcon}
+                    alt=""
+                    srcset=""
+                  />
                 </button>
               </div>
             </div>
             <div style="justify-content: space-between;display: flex;flex: 1;">
               <div style="display: flex; flex-direction: column;">
-                <span>{track?.name}</span>
+                <span class={`track-song-${track.id}`}>{track?.name}</span>
                 <span>{track?.artists?.map((a) => a?.name).join(", ")}</span>
               </div>
               <span>{formatDuration(track?.duration_ms)}</span>

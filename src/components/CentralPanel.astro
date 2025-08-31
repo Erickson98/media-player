@@ -13,6 +13,8 @@ import Footer from "./Footer.astro";
   import { getColor } from "@/scripts/getColor";
   import { loadSpotifyPlayer } from "@/scripts/player";
   import { spotifyPlayerAction } from "@/scripts/spotifyPlayerAction";
+  import { localStorageGet, localStorageSet } from "src/utils/localStorage";
+  import { handleColorGreen } from "src/utils/handleColorGreen";
   const root = document.getElementById("center-panel");
 
   async function renderHome() {
@@ -50,21 +52,23 @@ import Footer from "./Footer.astro";
   function addEventTopResults() {
     const btnElementTopResult = document.querySelector(".top-result");
     const btnTopResultUriSong = btnElementTopResult.dataset.topResultSong;
-    document.querySelector(".playSong").onclick = async function () {
+    const mainTop = document.querySelector(".playSong");
+    mainTop.onclick = async function () {
+      debugger;
+      handleColorGreen({
+        allowed: "playSong-main-top-song",
+        trackData: JSON.parse(mainTop.dataset.track),
+      });
       await spotifyPlayerAction("play", {
         uris: [btnTopResultUriSong],
         deviceId: window.deviceId,
       });
+      const parsedMainTop = JSON.parse(mainTop.dataset.track);
+      parsedMainTop.class = "playSong-top-songs";
+      localStorageSet("lastPlayedTrack", parsedMainTop);
     };
 
     ///
-    const parseJSON = (s, fb = null) => {
-      try {
-        return JSON.parse(s);
-      } catch {
-        return fb;
-      }
-    };
 
     const isSameTrack = (a, b) => {
       if (!a || !b) return false;
@@ -78,11 +82,11 @@ import Footer from "./Footer.astro";
     const buttons = Array.from(
       document.querySelectorAll(".playSong-top-songs")
     );
-    const lastPlayed = parseJSON(localStorage.getItem("lastPlayedTrack"));
+    const lastPlayed = localStorageGet("lastPlayedTrack");
 
     const matchedBtn = lastPlayed
       ? buttons.find((btn) => {
-          const data = parseJSON(btn.dataset.track);
+          const data = JSON.parse(btn.dataset.track);
           return isSameTrack(data, lastPlayed);
         })
       : null;
@@ -95,11 +99,14 @@ import Footer from "./Footer.astro";
     }
 
     buttons.forEach((btn) => {
-      const trackData = parseJSON(btn.dataset.track);
+      const trackData = JSON.parse(btn.dataset.track);
 
       btn.onclick = async () => {
         trackData.class = "playSong-top-songs";
-        localStorage.setItem("lastPlayedTrack", JSON.stringify(trackData));
+        debugger;
+        handleColorGreen({ allowed: "playSong-top-songs", trackData });
+
+        localStorageSet("lastPlayedTrack", trackData);
 
         const uri = btn.dataset.trackUri;
         try {
@@ -116,6 +123,12 @@ import Footer from "./Footer.astro";
     ///
     document.querySelectorAll(".playSong-Artists-Carrousel").forEach((btn) => {
       btn.onclick = async () => {
+        const trackData = JSON.parse(btn.dataset.track);
+        trackData.class = "playSong-top-songs";
+        handleColorGreen({ allowed: "playSong-Artists-Carrousel", trackData });
+
+        localStorageSet("lastPlayedTrack", trackData);
+
         const uri = btn.dataset.trackArtist;
         console.log(uri);
         await spotifyPlayerAction("play", {
@@ -125,6 +138,12 @@ import Footer from "./Footer.astro";
     });
     document.querySelectorAll(".playSong-Album-Carrousel").forEach((btn) => {
       btn.onclick = async () => {
+        const trackData = JSON.parse(btn.dataset.track);
+        trackData.class = "playSong-top-songs";
+        handleColorGreen({ allowed: "playSong-Album-Carrousel", trackData });
+
+        localStorageSet("lastPlayedTrack", trackData);
+
         const uri = btn.dataset.trackAlbum;
         console.log(uri);
         await spotifyPlayerAction("play", {
@@ -230,7 +249,6 @@ import Footer from "./Footer.astro";
       addEventNavArtist(".artist-with-search");
       addEventNavAlbum(".btn-album-go-to");
       addEventTopResults();
-      // getColor();
     } catch (e) {
       root.innerHTML = `<p>Error.</p>`;
       console.error(e);
