@@ -6,7 +6,7 @@ import Footer from "src/components/Footer.astro";
 const { id } = Astro.params;
 
 const searchQuery = new URL(
-  `/api/spotify/search?q=${id}&type=album%2Cartist%2Ctrack&limit=8`,
+  `/api/spotify/search?q=${id}&type=album%2Cartist%2Ctrack&limit=10`,
   Astro.url
 );
 

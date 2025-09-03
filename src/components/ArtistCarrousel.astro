@@ -7,25 +7,104 @@ const { artists, title } = Astro.props;
 ---
 
 <style>
+  :root {
+    --gap: 20px;
+    --arrow-size: 40px;
+  }
+
+  .carousel {
+    position: relative;
+    padding: 16px 0;
+  }
+  .carousel-title {
+    margin: 0 0 12px 16px;
+  }
+
+  .carousel-track {
+    display: flex;
+    gap: var(--gap);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 16px;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px;
+    scrollbar-width: none;
+  }
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .container-for-play {
+    flex: 0 0 auto;
+    width: clamp(140px, 22vw, 162px);
+    scroll-snap-align: start;
+    /* text-align: center; */
+    position: relative;
+    font-size: smaller;
+  }
+
   .img-favorite-artists {
     border-radius: 50%;
-
     object-fit: cover;
+    width: 100%;
+    aspect-ratio: 1/1;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
   }
   .wrapper-for-img-your-favorite-artists {
     height: 100%;
   }
-  .container-for-albums-carrusel {
-    display: flex;
-    gap: 27px;
+
+  .btn-hidden {
+    position: absolute;
+    top: 70%;
+    left: 80%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .container-for-play:hover .btn-hidden {
+    opacity: 1;
+  }
+
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--arrow-size);
+    height: var(--arrow-size);
+    border: 0;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .arrow.left {
+    left: 4px;
+  }
+  .arrow.right {
+    right: 4px;
+  }
+  .arrow[disabled] {
+    opacity: 0.35;
+    cursor: default;
   }
 </style>
-<div>
-  <button class="btn-artist-page">{title}</button>
-  <div class="container-for-albums-carrusel">
+
+<div class="carousel">
+  <h2 class="carousel-title">{title}</h2>
+
+  <button class="arrow left" aria-label="Anterior">‹</button>
+  <button class="arrow right" aria-label="Siguiente">›</button>
+
+  <div class="carousel-track" id="artist-carousel">
     {
       artists.items.map((item) => (
-        <div class="container-for-play" style="position: relative;">
+        <div class="container-for-play">
           <button
             class="artist-favorite artist-with-search"
             data-artist-id={item.id}
@@ -34,8 +113,7 @@ const { artists, title } = Astro.props;
               <img
                 class="img-favorite-artists"
                 src={item?.images[1]?.url}
-                alt=""
-                srcset=""
+                alt={item?.name}
                 width="153"
                 height="153"
               />
@@ -54,7 +132,6 @@ const { artists, title } = Astro.props;
             <img
               src={PlayIcon}
               alt="play icon"
-              srcset=""
               data-state="play"
               class={`btn-hidden-pause-${item.id}`}
             />
@@ -64,12 +141,3 @@ const { artists, title } = Astro.props;
     }
   </div>
 </div>
-
-<style>
-  .container-for-play:hover .btn-hidden {
-    opacity: 1;
-  }
-  .btn-hidden {
-    transform: translate(10px, -80px);
-  }
-</style>

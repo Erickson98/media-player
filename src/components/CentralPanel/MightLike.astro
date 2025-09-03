@@ -1,36 +1,108 @@
 ---
-const { mightLike } = Astro.props;
+const { album } = Astro.props;
 ---
 
-<div>
+<div class="albums-carousel">
+  <button class="arrow left" aria-label="Anterior">‹</button>
+  <button class="arrow right" aria-label="Siguiente">›</button>
+
   <a href="/" target="_blank" rel="noopener noreferrer">You Might Like</a>
   <div class="container-for-albums-carrusel">
     {
-      mightLike.albums.map((item) => (
+      album.items.map(({ album }) => (
         <>
           <div>
             <img
               class="img-album"
-              src={item?.images[0].url}
+              src={album?.images[0].url}
               alt=""
               srcset=""
               width="153"
             />
-            <div>{item?.name}</div>
-            {item?.artists?.map((a) => a.name).join(", ")}
+            <div class="text-style">
+              <div class="album-name">{album?.name}</div>
+              <span class="album-artists">
+                {album?.artists?.map((a) => a.name).join(", ")}
+              </span>
+            </div>
           </div>
         </>
       ))
     }
   </div>
 </div>
-
 <style>
   .img-album {
     border-radius: 5px;
   }
   .container-for-albums-carrusel {
     display: flex;
-    gap: 27px;
+    gap: 20px;
+  }
+  :root {
+    --gap: 20px;
+    --arrow-size: 40px;
+  }
+
+  .albums-carousel {
+    position: relative;
+    padding: 16px 0;
+  }
+
+  .carousel-title {
+    display: inline-block;
+    margin: 0 0 12px 16px;
+    /* font-weight: 600; */
+    text-decoration: none;
+  }
+
+  /* Track del carrusel */
+  .container-for-albums-carrusel {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 16px;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px;
+    scrollbar-width: none;
+  }
+  .container-for-albums-carrusel::-webkit-scrollbar {
+    display: none;
+  }
+  /* Flechas */
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--arrow-size);
+    height: var(--arrow-size);
+    border: 0;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .arrow.left {
+    left: 4px;
+  }
+  .arrow.right {
+    right: 4px;
+  }
+  .arrow[disabled] {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .album-name {
+    margin-top: 8px;
+    font-weight: 600;
+  }
+  .album-artists {
+    display: block;
+    font-size: 0.9rem;
+    opacity: 0.8;
   }
 </style>

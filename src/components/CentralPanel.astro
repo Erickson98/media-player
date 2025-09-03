@@ -15,6 +15,7 @@ import Footer from "./Footer.astro";
   import { spotifyPlayerAction } from "@/scripts/spotifyPlayerAction";
   import { localStorageGet, localStorageSet } from "src/utils/localStorage";
   import { handleColorGreen } from "src/utils/handleColorGreen";
+  import { handleCarousel } from "@/scripts/handleCarousel";
   const root = document.getElementById("center-panel");
 
   async function renderHome() {
@@ -26,6 +27,18 @@ import Footer from "./Footer.astro";
 
     root.innerHTML = html;
     addEventNavArtist(".artist-favorite");
+    handleCarousel(
+      ".albums-carousel",
+      ".container-for-albums-carrusel",
+      ".arrow.left",
+      ".arrow.right"
+    );
+    handleCarousel(
+      ".carousel",
+      ".carousel-track",
+      ".arrow.left",
+      ".arrow.right"
+    );
   }
   function addEventNavArtist(btnClass: string) {
     const buttons = document.querySelectorAll(btnClass);
@@ -249,6 +262,18 @@ import Footer from "./Footer.astro";
       addEventNavArtist(".artist-with-search");
       addEventNavAlbum(".btn-album-go-to");
       addEventTopResults();
+      handleCarousel(
+        ".albums-carousel",
+        ".container-for-albums-carrusel",
+        ".arrow.left",
+        ".arrow.right"
+      );
+      handleCarousel(
+        ".carousel",
+        ".carousel-track",
+        ".arrow.left",
+        ".arrow.right"
+      );
     } catch (e) {
       root.innerHTML = `<p>Error.</p>`;
       console.error(e);
