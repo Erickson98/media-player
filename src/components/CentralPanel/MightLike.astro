@@ -1,30 +1,51 @@
 ---
 const { album } = Astro.props;
+import PlayIcon from "../../assets/icons/play.svg?url";
 ---
 
-<div class="albums-carousel">
-  <button class="arrow left" aria-label="Anterior">‹</button>
-  <button class="arrow right" aria-label="Siguiente">›</button>
+<div class="might-like">
+  <button class="arrow left mightLikeLeft" aria-label="Anterior">‹</button>
+  <button class="arrow right mightLikeRight" aria-label="Siguiente">›</button>
 
   <a href="/" target="_blank" rel="noopener noreferrer">You Might Like</a>
-  <div class="container-for-albums-carrusel">
+  <div class="container-for-albums-carrusel-might-like">
     {
       album.items.map(({ album }) => (
         <>
-          <div>
-            <img
-              class="img-album"
-              src={album?.images[0].url}
-              alt=""
-              srcset=""
-              width="153"
-            />
-            <div class="text-style">
-              <div class="album-name">{album?.name}</div>
-              <span class="album-artists">
-                {album?.artists?.map((a) => a.name).join(", ")}
-              </span>
-            </div>
+          <div class="container-for-play">
+            <button class="btn-album-go-to" data-album-id={album.id}>
+              <div>
+                <img
+                  class="img-album"
+                  src={album?.images[0].url}
+                  alt=""
+                  srcset=""
+                  width="153"
+                />
+                <div class="text-style">
+                  <div class="album-name">{album?.name}</div>
+                  <span class="album-artists">
+                    {album?.artists?.map((a) => a.name).join(", ")}
+                  </span>
+                </div>
+              </div>
+            </button>
+            <button
+              class="btn-hidden playSong-Album-Carrousel"
+              data-track-album={album.uri}
+              data-track={JSON.stringify({
+                id: album.id,
+                uri: album.uri,
+                name: album.name,
+              })}
+            >
+              <img
+                src={PlayIcon}
+                alt="play icon"
+                data-state="play"
+                class={`btn-hidden-pause-${album.id}`}
+              />
+            </button>
           </div>
         </>
       ))
@@ -35,7 +56,7 @@ const { album } = Astro.props;
   .img-album {
     border-radius: 5px;
   }
-  .container-for-albums-carrusel {
+  .container-for-albums-carrusel-might-like {
     display: flex;
     gap: 20px;
   }
@@ -44,7 +65,7 @@ const { album } = Astro.props;
     --arrow-size: 40px;
   }
 
-  .albums-carousel {
+  .might-like {
     position: relative;
     padding: 16px 0;
   }
@@ -57,7 +78,7 @@ const { album } = Astro.props;
   }
 
   /* Track del carrusel */
-  .container-for-albums-carrusel {
+  .container-for-albums-carrusel-might-like {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-padding-left: 16px;
@@ -65,7 +86,7 @@ const { album } = Astro.props;
     padding: 0 16px;
     scrollbar-width: none;
   }
-  .container-for-albums-carrusel::-webkit-scrollbar {
+  .container-for-albums-carrusel-might-like::-webkit-scrollbar {
     display: none;
   }
   /* Flechas */
@@ -104,5 +125,20 @@ const { album } = Astro.props;
     display: block;
     font-size: 0.9rem;
     opacity: 0.8;
+  }
+  .container-for-play {
+    position: relative; /* para el botón superpuesto */
+    /* flex: 0 0 auto; */
+    width: clamp(140px, 22vw, 182px);
+    scroll-snap-align: start;
+    text-align: left;
+  }
+  .container-for-play:hover .btn-hidden {
+    opacity: 1;
+  }
+  .btn-hidden {
+    bottom: 15px;
+    right: 0px;
+    margin: 0px;
   }
 </style>
