@@ -1,0 +1,77 @@
+---
+export interface Props {
+  title?: string;
+  step?: "card" | "viewport" | number;
+  id?: string;
+}
+const {
+  title,
+  step = "card",
+  id = "carousel-" + Math.random().toString(36).slice(2, 7),
+} = Astro.props;
+---
+
+<section class="carousel" data-step={step} id={id}>
+  {title && <h2 class="carousel-title">{title}</h2>}
+
+  <button class="arrow left" aria-label="Previous">‹</button>
+  <button class="arrow right" aria-label="Next">›</button>
+
+  <div class="carousel-track">
+    <slot />
+  </div>
+</section>
+
+<style>
+  :root {
+    --gap: 20px;
+    --arrow-size: 40px;
+  }
+  .carousel {
+    position: relative;
+    padding: 16px 0;
+  }
+  .carousel-title {
+    margin: 0 0 12px 16px;
+  }
+  .carousel-track {
+    display: flex;
+    gap: var(--gap);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 16px;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px;
+  }
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--arrow-size);
+    height: var(--arrow-size);
+    border: 0;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    font-size: 1.6rem;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .arrow.left {
+    left: 4px;
+  }
+  .arrow.right {
+    right: 4px;
+  }
+  .arrow[disabled] {
+    opacity: 0.35;
+    cursor: default;
+  }
+</style>
+
+<script></script>

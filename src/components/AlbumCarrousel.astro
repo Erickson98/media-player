@@ -3,25 +3,36 @@ const { album, title } = Astro.props;
 import PlayIcon from "../assets/icons/play.svg?url";
 ---
 
-<div>
-  <a href="/" target="_blank" rel="noopener noreferrer">{title}</a>
-  <div class="container-for-albums-carrusel">
+<div class="albums-carousel">
+  <a href="/" target="_blank" rel="noopener noreferrer" class="carousel-title"
+    >{title}</a
+  >
+
+  <button class="arrow left" aria-label="Anterior">‹</button>
+  <button class="arrow right" aria-label="Siguiente">›</button>
+
+  <div class="container-for-albums-carrusel" id="albums-track">
     {
       album.items.map((item) => (
-        <div class="container-for-play" style="position: relative;">
-          <button class="btn-album-go-to " data-album-id={item.id}>
+        <div class="container-for-play">
+          <button class="btn-album-go-to" data-album-id={item.id}>
             <div>
               <img
                 class="img-album"
-                src={item?.images[1]?.url}
-                alt=""
-                srcset=""
+                src={item?.images?.[0]?.url ?? item?.images?.[2]?.url}
+                alt={item?.name}
                 width="153"
+                height="153"
               />
-              <div>{item?.name}</div>
-              <span>{item?.artists?.map((a) => a.name).join(", ")}</span>
+              <div class="text-style">
+                <div class="album-name">{item?.name}</div>
+                <span class="album-artists">
+                  {item?.artists?.map((a) => a.name).join(", ")}
+                </span>
+              </div>
             </div>
           </button>
+
           <button
             class="btn-hidden playSong-Album-Carrousel"
             data-track-album={item.uri}
@@ -34,7 +45,6 @@ import PlayIcon from "../assets/icons/play.svg?url";
             <img
               src={PlayIcon}
               alt="play icon"
-              srcset=""
               data-state="play"
               class={`btn-hidden-pause-${item.id}`}
             />
@@ -46,19 +56,103 @@ import PlayIcon from "../assets/icons/play.svg?url";
 </div>
 
 <style>
+  :root {
+    --gap: 20px;
+    --arrow-size: 40px;
+  }
+
+  .albums-carousel {
+    position: relative;
+    padding: 16px 0;
+  }
+
+  .carousel-title {
+    display: inline-block;
+    margin: 0 0 12px 16px;
+    /* font-weight: 600; */
+    text-decoration: none;
+  }
+
+  /* Track del carrusel */
+  .container-for-albums-carrusel {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 16px;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px;
+    scrollbar-width: none;
+    gap: var(--gap);
+  }
+  .container-for-albums-carrusel::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Card/álbum */
+  .container-for-play {
+    position: relative; /* para el botón superpuesto */
+    /* flex: 0 0 auto; */
+    width: clamp(140px, 22vw, 182px);
+    scroll-snap-align: start;
+    text-align: left;
+  }
+
+  .album-name {
+    margin-top: 8px;
+    font-weight: 600;
+  }
+  .album-artists {
+    display: block;
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+
+  /* Botón play superpuesto */
+
+  .container-for-play:hover .btn-hidden {
+    opacity: 1;
+  }
+
+  /* Flechas */
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--arrow-size);
+    height: var(--arrow-size);
+    border: 0;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .arrow.left {
+    left: 4px;
+  }
+  .arrow.right {
+    right: 4px;
+  }
+  .arrow[disabled] {
+    opacity: 0.35;
+    cursor: default;
+  }
   .img-album {
     border-radius: 5px;
   }
   .container-for-albums-carrusel {
     display: flex;
-    gap: 27px;
+    /* gap: 40px; */
   }
   .container-for-play:hover .btn-hidden {
     opacity: 1;
   }
   .btn-hidden {
     bottom: 15px;
-    right: -15px;
+    right: 0px;
     margin: 0px;
   }
 </style>
