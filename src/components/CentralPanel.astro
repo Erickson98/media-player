@@ -169,10 +169,6 @@ import Footer from "./Footer.astro";
         });
       };
     });
-
-    // document.querySelector("pauseSong").onclick = async function () {
-    //   await spotifyPlayerAction("pause");
-    // };
   }
   function addEventHomeView() {
     const isSameTrack = (a, b) => {
@@ -182,7 +178,7 @@ import Footer from "./Footer.astro";
       if (a.album?.id !== b.album?.id) return false;
       if ((a.artists?.length || 0) !== (b.artists?.length || 0)) return false;
       return true;
-    }; 
+    };
     const buttons = Array.from(
       document.querySelectorAll(".playSong-Album-Carrousel")
     );
@@ -210,19 +206,9 @@ import Footer from "./Footer.astro";
         handleColorGreen({ allowed: "playSong-Album-Carrousel", trackData });
 
         localStorageSet("lastPlayedTrack", trackData);
-
-        const uri = btn.dataset.uri ?? btn.dataset.trackAlbum;
-        try {
-          await spotifyPlayerAction("play", {
-            context_uri: uri,
-            deviceId: window.deviceId,
-          });
-        } catch (e) {
-          console.error("Error al reproducir:", e);
-        }
       };
     });
- 
+
     document.querySelectorAll(".playSong-Artists-Carrousel").forEach((btn) => {
       btn.onclick = async () => {
         const trackData = JSON.parse(btn.dataset.track);
@@ -230,14 +216,8 @@ import Footer from "./Footer.astro";
         handleColorGreen({ allowed: "playSong-Artists-Carrousel", trackData });
 
         localStorageSet("lastPlayedTrack", trackData);
-
-        const uri = btn.dataset.trackArtist;
-        await spotifyPlayerAction("play", {
-          context_uri: uri,
-        });
       };
     });
-    
   }
   async function renderAlbumById(albumId) {
     root.innerHTML = `<p>Cargando álbum ${albumId}...</p>`;

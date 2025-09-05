@@ -1,3 +1,4 @@
+import { spotifyPlayerAction } from "@/scripts/spotifyPlayerAction";
 import { localStorageGet } from "./localStorage";
 import PauseIcon from "src/assets/icons/pause.svg?url";
 import PlayIcon from "src/assets/icons/play.svg?url";
@@ -90,7 +91,7 @@ function handleMainTopSong(trackData: Object) {
   }
 }
 
-function handleArtistCarrousel(trackData: object) {
+async function handleArtistCarrousel(trackData: object) {
   const lastPlayed = localStorageGet("lastPlayedTrack");
   if (lastPlayed.id !== trackData.id) {
     removeLastPlayed(lastPlayed);
@@ -102,10 +103,22 @@ function handleArtistCarrousel(trackData: object) {
     imgButton.forEach((img) => {
       toggleBtnIcon(img);
     });
+  }
+  if (imgButton[0].dataset.state === "stopped") {
+    try {
+      await spotifyPlayerAction("play", {
+        context_uri: trackData.uri,
+        deviceId: window.deviceId,
+      });
+    } catch (e) {
+      console.error("Error al reproducir:", e);
+    }
+  } else {
+    await spotifyPlayerAction("pause", { deviceId: window.deviceId });
   }
 }
 
-function handleAlbumCarrousel(trackData: object) {
+async function handleAlbumCarrousel(trackData: object) {
   const lastPlayed = localStorageGet("lastPlayedTrack");
   if (lastPlayed.id !== trackData.id) {
     removeLastPlayed(lastPlayed);
@@ -117,6 +130,19 @@ function handleAlbumCarrousel(trackData: object) {
     imgButton.forEach((img) => {
       toggleBtnIcon(img);
     });
+  }
+
+  if (imgButton[0].dataset.state === "stopped") {
+    try {
+      await spotifyPlayerAction("play", {
+        context_uri: trackData.uri,
+        deviceId: window.deviceId,
+      });
+    } catch (e) {
+      console.error("Error al reproducir:", e);
+    }
+  } else {
+    await spotifyPlayerAction("pause", { deviceId: window.deviceId });
   }
 }
 
