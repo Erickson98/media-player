@@ -45,12 +45,9 @@ export const ALL: APIRoute = async ({ params, request, cookies }) => {
     });
   }
   const path = Array.isArray(params.path) ? params.path.join("/") : params.path;
-  console.log(path);
   const url = `https://api.spotify.com/v1/${path}${
     request.url.split(path)[1] || ""
   }`;
-  console.log("##############");
-  console.log(url);
   const res = await fetch(url, {
     method: request.method,
     headers: {
@@ -59,6 +56,5 @@ export const ALL: APIRoute = async ({ params, request, cookies }) => {
     },
     body: request.method !== "GET" ? await request.text() : undefined,
   });
-  console.log(url);
   return new Response(await res.text(), { status: res.status });
 };
