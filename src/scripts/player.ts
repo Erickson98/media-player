@@ -1,8 +1,6 @@
 function getCookie(name) {
-  console.log("first");
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  debugger;
   if (parts.length === 2) return parts.pop().split(";").shift();
   return null;
 }

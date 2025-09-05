@@ -28,6 +28,7 @@ import Footer from "./Footer.astro";
     root.innerHTML = html;
     addEventNavArtist(".artist-favorite");
     addEventNavAlbum(".btn-album-go-to");
+    addEventHomeView();
     handleCarousel(
       ".albums-carousel",
       ".container-for-albums-carrusel",
@@ -75,7 +76,6 @@ import Footer from "./Footer.astro";
     const btnTopResultUriSong = btnElementTopResult.dataset.topResultSong;
     const mainTop = document.querySelector(".playSong");
     mainTop.onclick = async function () {
-      debugger;
       handleColorGreen({
         allowed: "playSong-main-top-song",
         trackData: JSON.parse(mainTop.dataset.track),
@@ -124,7 +124,6 @@ import Footer from "./Footer.astro";
 
       btn.onclick = async () => {
         trackData.class = "playSong-top-songs";
-        debugger;
         handleColorGreen({ allowed: "playSong-top-songs", trackData });
 
         localStorageSet("lastPlayedTrack", trackData);
@@ -151,7 +150,6 @@ import Footer from "./Footer.astro";
         localStorageSet("lastPlayedTrack", trackData);
 
         const uri = btn.dataset.trackArtist;
-        console.log(uri);
         await spotifyPlayerAction("play", {
           context_uri: uri,
         });
@@ -166,7 +164,6 @@ import Footer from "./Footer.astro";
         localStorageSet("lastPlayedTrack", trackData);
 
         const uri = btn.dataset.trackAlbum;
-        console.log(uri);
         await spotifyPlayerAction("play", {
           context_uri: uri,
         });
@@ -176,6 +173,71 @@ import Footer from "./Footer.astro";
     // document.querySelector("pauseSong").onclick = async function () {
     //   await spotifyPlayerAction("pause");
     // };
+  }
+  function addEventHomeView() {
+    const isSameTrack = (a, b) => {
+      if (!a || !b) return false;
+      if (a.id !== b.id) return false;
+      if (a.name !== b.name) return false;
+      if (a.album?.id !== b.album?.id) return false;
+      if ((a.artists?.length || 0) !== (b.artists?.length || 0)) return false;
+      return true;
+    }; 
+    const buttons = Array.from(
+      document.querySelectorAll(".playSong-Album-Carrousel")
+    );
+    const lastPlayed = localStorageGet("lastPlayedTrack");
+
+    const matchedBtn = lastPlayed
+      ? buttons.find((btn) => {
+          const data = JSON.parse(btn.dataset.track);
+          return isSameTrack(data, lastPlayed);
+        })
+      : null;
+
+    if (matchedBtn) {
+      console.log(
+        "Hay coincidencia con el último guardado:",
+        matchedBtn.dataset.track
+      );
+    }
+
+    buttons.forEach((btn) => {
+      const trackData = JSON.parse(btn.dataset.track);
+
+      btn.onclick = async () => {
+        trackData.class = "playSong-home-top-album";
+        handleColorGreen({ allowed: "playSong-Album-Carrousel", trackData });
+
+        localStorageSet("lastPlayedTrack", trackData);
+
+        const uri = btn.dataset.uri ?? btn.dataset.trackAlbum;
+        try {
+          await spotifyPlayerAction("play", {
+            context_uri: uri,
+            deviceId: window.deviceId,
+          });
+        } catch (e) {
+          console.error("Error al reproducir:", e);
+        }
+      };
+    });
+ 
+    document.querySelectorAll(".playSong-Artists-Carrousel").forEach((btn) => {
+      btn.onclick = async () => {
+        const trackData = JSON.parse(btn.dataset.track);
+        trackData.class = "playSong-top-songs";
+        handleColorGreen({ allowed: "playSong-Artists-Carrousel", trackData });
+
+        localStorageSet("lastPlayedTrack", trackData);
+
+        const uri = btn.dataset.trackArtist;
+        await spotifyPlayerAction("play", {
+          context_uri: uri,
+        });
+      };
+    });
+    
   }
   async function renderAlbumById(albumId) {
     root.innerHTML = `<p>Cargando álbum ${albumId}...</p>`;
