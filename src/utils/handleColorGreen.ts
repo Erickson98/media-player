@@ -17,8 +17,6 @@ function removeColorGreen(element: HTMLElement | Element) {
   element.classList.remove(CLASSNAME);
 }
 function toggleBtnIcon(imgButton: HTMLImageElement | Element) {
-  debugger;
-  console.log(imgButton.dataset.state);
   if (imgButton.dataset.state === "play") {
     imgButton.src = PauseIcon;
     imgButton.dataset.state = "stopped";
@@ -29,7 +27,7 @@ function toggleBtnIcon(imgButton: HTMLImageElement | Element) {
 }
 
 function removeLastPlayed(lastPlayed: string) {
-  if (lastPlayed && lastPlayed.class === "playSong-top-songs") {
+  if (lastPlayed) {
     //search for the last song
     const textSong = document.querySelector(`.track-song-${lastPlayed.id}`);
     if (textSong !== null) {
