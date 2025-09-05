@@ -1,4 +1,5 @@
 ---
+import PlayIcon from "src/assets/icons/play.svg?url";
 const { tracks, artists } = Astro.props;
 ---
 
@@ -7,7 +8,25 @@ const { tracks, artists } = Astro.props;
     tracks.items?.map((item) => (
       <div class="card">
         <img src={item.album.images[2].url} alt="" srcset="" width="50" />
-        <span>{item.album.name}</span>
+        <div style="display: flex;flex:1; justify-content: space-between;">
+          <span>{item.album.name}</span>
+          <button
+            class="btn-hidden playSong-Album-Carrousel"
+            data-track-album={item.album.uri}
+            data-track={JSON.stringify({
+              id: item.album.id,
+              uri: item.album.uri,
+              name: item.album.name,
+            })}
+          >
+            <img
+              src={PlayIcon}
+              alt="play icon"
+              data-state="play"
+              class={`btn-hidden-pause-${item.album.id}`}
+            />
+          </button>
+        </div>
       </div>
     ))
   }
@@ -15,7 +34,26 @@ const { tracks, artists } = Astro.props;
     artists.items?.map((item) => (
       <div class="card">
         <img src={item.images[2].url} alt="" srcset="" width="50" />
-        <span>{item.name}</span>
+
+        <div style="display: flex;flex:1; justify-content: space-between;">
+          <span>{item.name}</span>
+          <button
+            class="btn-hidden playSong-Album-Carrousel"
+            data-track-album={item.uri}
+            data-track={JSON.stringify({
+              id: item.id,
+              uri: item.uri,
+              name: item.name,
+            })}
+          >
+            <img
+              src={PlayIcon}
+              alt="play icon"
+              data-state="play"
+              class={`btn-hidden-pause-${item.id}`}
+            />
+          </button>
+        </div>
       </div>
     ))
   }
@@ -63,5 +101,13 @@ const { tracks, artists } = Astro.props;
     font:
       589 14px/1.2 system-ui,
       sans-serif;
+  }
+  .card:hover .btn-hidden {
+    opacity: 1;
+  }
+  .btn-hidden {
+    margin: 0px;
+    position: initial;
+    transform: translate(0px, 0px);
   }
 </style>
