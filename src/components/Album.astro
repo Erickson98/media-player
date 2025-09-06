@@ -68,7 +68,7 @@ function formatDuration(ms: number) {
     {
       album.tracks.items.map((track) => (
         <tr>
-          <td>{track.track_number}</td>
+          <td class="td-track-number">{track.track_number}</td>
           <td>
             <div class="track-title">
               <button
@@ -93,13 +93,14 @@ function formatDuration(ms: number) {
     }
   </tbody>
 </table>
-
-{
-  album.copyrights?.length && (
-    <div class="copyrights-container">
-      {album.copyrights.map((c) => (
-        <div>{c.text}</div>
-      ))}
-    </div>
-  )
-}
+<div>
+  {
+    album.copyrights?.length && (
+      <div class="copyrights-container">
+        {album.copyrights.map((c) => (
+          <div>{c.text}</div>
+        ))}
+      </div>
+    )
+  }
+</div>

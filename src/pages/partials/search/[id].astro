@@ -28,7 +28,7 @@ const hasTracks = resQuery?.tracks?.items?.length > 0;
     <TopTracks tracks={resQuery.tracks} />
     <ArtistCarrousel artists={resQuery.artists} title="Artist"/>
     <AlbumCarrousel album={resQuery.albums} title="Album"/>
-    <Footer/>
+    // <Footer/>
   ) : (
     <div class="empty-state">
       <h2>No se encontraron resultados</h2>

@@ -112,6 +112,8 @@ body {
 
 .copyrights-container {
     color: gray;
+    font-size: small;
+    margin: 50px 0;
 }
 
 
@@ -155,4 +157,12 @@ align-items: center;
 
 .text-playing{
     color: #0077ff;
+}
+ 
+.td-track-number{
+    width: 50px;
+}
+
+.footer{
+    margin-top: 50px;
 }
