@@ -51,7 +51,7 @@ function removeLastPlayed(lastPlayed: string) {
     }
   }
 }
-function addCurrentSong(trackData: Object) {
+async function addCurrentSong(trackData: Object) {
   const textSong = document.querySelector(`.track-song-${trackData.id}`);
   if (textSong !== null) {
     setColorGreen(textSong);
@@ -64,6 +64,18 @@ function addCurrentSong(trackData: Object) {
       toggleBtnIcon(img);
     });
   }
+  if (imgButton[0].dataset.state === "stopped") {
+    try {
+      await spotifyPlayerAction("play", {
+        uris: [trackData.uri],
+        deviceId: window.deviceId,
+      });
+    } catch (e) {
+      console.error("Error al reproducir:", e);
+    }
+  } else {
+    await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+  }
 }
 
 function handleTopSongs(trackData: Object) {
@@ -75,7 +87,7 @@ function handleTopSongs(trackData: Object) {
   addCurrentSong(trackData);
 }
 
-function handleMainTopSong(trackData: Object) {
+async function handleMainTopSong(trackData: Object) {
   //remove top song
   const lastPlayed = localStorageGet("lastPlayedTrack");
   if (lastPlayed.id !== trackData.id) {
@@ -88,6 +100,18 @@ function handleMainTopSong(trackData: Object) {
     imgButton.forEach((img) => {
       toggleBtnIcon(img);
     });
+  }
+  if (imgButton[0].dataset.state === "stopped") {
+    try {
+      await spotifyPlayerAction("play", {
+        uris: [trackData.uri],
+        deviceId: window.deviceId,
+      });
+    } catch (e) {
+      console.error("Error al reproducir:", e);
+    }
+  } else {
+    await spotifyPlayerAction("pause", { deviceId: window.deviceId });
   }
 }
 

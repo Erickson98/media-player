@@ -80,16 +80,10 @@ import Footer from "./Footer.astro";
         allowed: "playSong-main-top-song",
         trackData: JSON.parse(mainTop.dataset.track),
       });
-      await spotifyPlayerAction("play", {
-        uris: [btnTopResultUriSong],
-        deviceId: window.deviceId,
-      });
       const parsedMainTop = JSON.parse(mainTop.dataset.track);
       parsedMainTop.class = "playSong-top-songs";
       localStorageSet("lastPlayedTrack", parsedMainTop);
     };
-
-    ///
 
     const isSameTrack = (a, b) => {
       if (!a || !b) return false;
@@ -127,32 +121,15 @@ import Footer from "./Footer.astro";
         handleColorGreen({ allowed: "playSong-top-songs", trackData });
 
         localStorageSet("lastPlayedTrack", trackData);
-
-        const uri = btn.dataset.trackUri;
-        try {
-          await spotifyPlayerAction("play", {
-            uris: [uri],
-            deviceId: window.deviceId,
-          });
-        } catch (e) {
-          console.error("Error al reproducir:", e);
-        }
       };
     });
 
-    ///
     document.querySelectorAll(".playSong-Artists-Carrousel").forEach((btn) => {
       btn.onclick = async () => {
         const trackData = JSON.parse(btn.dataset.track);
         trackData.class = "playSong-top-songs";
         handleColorGreen({ allowed: "playSong-Artists-Carrousel", trackData });
-
         localStorageSet("lastPlayedTrack", trackData);
-
-        const uri = btn.dataset.trackArtist;
-        await spotifyPlayerAction("play", {
-          context_uri: uri,
-        });
       };
     });
     document.querySelectorAll(".playSong-Album-Carrousel").forEach((btn) => {
@@ -160,13 +137,7 @@ import Footer from "./Footer.astro";
         const trackData = JSON.parse(btn.dataset.track);
         trackData.class = "playSong-top-songs";
         handleColorGreen({ allowed: "playSong-Album-Carrousel", trackData });
-
         localStorageSet("lastPlayedTrack", trackData);
-
-        const uri = btn.dataset.trackAlbum;
-        await spotifyPlayerAction("play", {
-          context_uri: uri,
-        });
       };
     });
   }
