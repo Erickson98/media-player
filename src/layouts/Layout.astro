@@ -3,6 +3,7 @@ import Split from "../components/Split.astro";
 import SearchBar from "src/components/Header/SearchBar.astro";
 import SocialMedia from "src/components/Header/SocialMedia.astro";
 import "../styles/Layout.css";
+import Footer from "src/components/Footer.astro";
 const { title } = Astro.props;
 ---
 
@@ -41,6 +42,7 @@ const { title } = Astro.props;
         <div class="gutter-col gutter-1"></div>
         <div class="panel">
           <main id="center-panel"><slot /></main>
+          <Footer/>
         </div>
         <div class="gutter-col gutter-3 gutter-right"></div>
 
