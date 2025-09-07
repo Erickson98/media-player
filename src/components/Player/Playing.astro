@@ -1,0 +1,36 @@
+---
+const { lastPlayed } = Astro.props;
+---
+
+<div class="container-playing-component">
+  <div>
+    <img
+      src={lastPlayed.items[0].track.album.images[2].url}
+      alt="Hy"
+      srcset=""
+      width="60"
+      class="img-playing-view"
+    />
+  </div>
+  <div class="container-meta-description-song">
+    <span>{lastPlayed.items[0].track.name}</span>
+    <span>{lastPlayed.items[0].track.artists[0].name}</span>
+  </div>
+</div>
+
+<style>
+  .container-playing-component {
+    display: flex;
+    align-items: center;
+    font-size: small;
+    gap: 20px;
+  }
+  .container-meta-description-song {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+  .img-playing-view {
+    border-radius: 5px;
+  }
+</style>

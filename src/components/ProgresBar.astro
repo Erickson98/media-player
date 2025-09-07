@@ -1,0 +1,22 @@
+<div class="progress-container">
+  <div class="progress-bar"></div>
+</div>
+<style>
+  .progress-container {
+    height: 4px;
+    /* width: 100%; */
+    width: 80px;
+    background: #333; /* Barra gris */
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-bar {
+    height: 100%;
+    width: 0%; /* empieza vacía */
+    background: #fff; /* Progreso blanco */
+    border-radius: 8px 0 0 8px;
+    transition: width 0.2s linear;
+  }
+</style>

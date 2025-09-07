@@ -1,0 +1,66 @@
+---
+import NextIcon from "src/assets/icons/next.svg?url";
+import PreviousIcon from "src/assets/icons/previous.svg?url";
+import PlayIcon from "src/assets/icons/iconPlay.svg?url";
+---
+
+<div class="container-play">
+  <div class="top-play-component-actions">
+    <img src={PreviousIcon} width="15" alt="" srcset="" />
+    <img src={PlayIcon} width="15" alt="" srcset="" />
+    <img src={NextIcon} width="15" alt="" srcset="" />
+  </div>
+
+  <div class="bottom-play-component-actions">
+    <span class="time">0:00</span>
+    <div class="progress-container">
+      <div class="progress-bar"></div>
+    </div>
+    <span class="time">3:30</span>
+  </div>
+</div>
+
+<style>
+  .container-play {
+    width: 42%;
+    display: flex;
+    flex-direction: column; /* acciones arriba y barra abajo */
+    /* gap: 12px; */
+    color: #fff;
+    font-family: system-ui, sans-serif;
+  }
+
+  .top-play-component-actions {
+    /* estilos para los botones de arriba */
+  }
+
+  .bottom-play-component-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+  }
+
+  .bottom-play-component-actions .time {
+    font-size: 12px;
+    width: 40px; /* ancho fijo para alinear */
+    text-align: center;
+  }
+
+  .progress-container {
+    height: 4px;
+    width: 100%;
+    background: #333; /* Barra gris */
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-bar {
+    height: 100%;
+    width: 0%; /* empieza vacía */
+    background: #fff; /* Progreso blanco */
+    border-radius: 8px 0 0 8px;
+    transition: width 0.2s linear;
+  }
+</style>
