@@ -99,7 +99,6 @@
     // Track actual
     q('[data-field="track-name"]').textContent = track?.name ?? "";
 
-    // Montar
     root.appendChild(node);
   }
 
@@ -107,7 +106,7 @@
   window.addEventListener("route:home", clearRight);
   window.addEventListener("route:album", clearRight);
 
-  // 🎯 Recibe album + track del CenterPanel (SIN fetch extra)
+  // Recibe album + track del CenterPanel (SIN fetch extra)
   window.addEventListener("ui:track", (e) => {
     const { album, track } = e.detail;
     renderRight({ album, track });
@@ -115,7 +114,6 @@
 </script>
 
 <style>
-  /* Opcional: estilos mínimos para legibilidad */
   .rp-root {
     display: grid;
     gap: 12px;

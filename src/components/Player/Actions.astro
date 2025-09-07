@@ -1,0 +1,24 @@
+---
+import PlayingViewIcon from "src/assets/icons/playingView.svg?url";
+import ProgresBar from "src/components/ProgresBar.astro";
+import VolumeMax from "src/assets/icons/volumeMax.svg?url";
+---
+
+<div class="container-actions">
+  <button><img src={PlayingViewIcon} alt="" srcset="" width="20" /></button>
+  <button>
+    <img src={VolumeMax} alt="" width="15" />
+  </button>
+  <ProgresBar />
+</div>
+
+<style>
+  .container-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .progress-container {
+    margin-bottom: 4px;
+  }
+</style>
