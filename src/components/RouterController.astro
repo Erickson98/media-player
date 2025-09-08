@@ -32,6 +32,8 @@
       dispatch("route:artist", { artistId: r.artistId });
     } else if (r.type === "search") {
       dispatch("route:search", { searchQuery: r.searchQuery });
+    } else if (r.type === "playing") {
+      dispatch("route:playing");
     }
   }
 

@@ -2,24 +2,10 @@
 import Actions from "./Actions.astro";
 import Play from "./Play.astro";
 import Playing from "./Playing.astro";
-const apiUrl = new URL(
-  `/api/spotify/me/player/recently-played?limit=2`,
-  Astro.url
-);
-
-const headers = new Headers({ Accept: "application/json" });
-const cookie = Astro.request.headers.get("cookie");
-if (cookie) headers.set("cookie", cookie);
-
-const res = await fetch(apiUrl, { headers });
-if (!res.ok) {
-  throw new Error(`No se pudo cargar (status ${res.status})`);
-}
-const lastPlayed = await res.json();
 ---
 
 <div class="container-playing">
-  <Playing lastPlayed={lastPlayed} />
+  <Playing />
   <Play />
   <Actions />
 </div>
@@ -31,21 +17,4 @@ const lastPlayed = await res.json();
   }
 </style>
 
-<script define:vars={{ lastPlayed }}>
-  console.log(lastPlayed);
-  window.dispatchEvent(
-    new CustomEvent("ui:track", {
-      detail: {
-        albumId: lastPlayed.items[0].track.album.id,
-        trackId: lastPlayed.items[0].track.id,
-        trackName: lastPlayed.items[0].track.name,
-        imgAlbum: lastPlayed.items[0].track.album.images,
-        artistImg: JSON.stringify(lastPlayed.items[0].track.album.images),
-        trackArtists: lastPlayed.items[0].track.artists,
-        bioArtist: "Something",
-        artistName: "SADE",
-        albumName: lastPlayed.items[0].track.album.name,
-      },
-    })
-  );
-</script>
+
