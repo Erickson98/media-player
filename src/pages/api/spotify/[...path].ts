@@ -56,5 +56,13 @@ export const ALL: APIRoute = async ({ params, request, cookies }) => {
     },
     body: request.method !== "GET" ? await request.text() : undefined,
   });
+  const noBody =
+    res.status === 204 ||
+    res.status === 304 ||
+    res.headers.get("content-length") === "0";
+
+  if (noBody) {
+    return new Response(null, { status: res.status });
+  }
   return new Response(await res.text(), { status: res.status });
 };
