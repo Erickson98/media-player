@@ -126,14 +126,22 @@
 
   toggleBtn.addEventListener("click", () => {
     rightVisible = !rightVisible;
-
+    const gridTemplateGrid = document.getElementById("split-wrapper")!;
     rightPanel.style.display = rightVisible ? "" : "none";
     gutterRight.style.display = rightVisible ? "" : "none";
     const parts = gridTemplateGrid.style.gridTemplateColumns
       .split(" ")
       .map((val) => parseFloat(val.replace("fr", "")));
-    gridTemplateGrid.style.gridTemplateColumns = `${parts[0]}px ${[parts[1]]}px ${parts[2]}`;
-    setupSplit();
+    if (Number.isNaN(parts[0])) {
+      gridTemplateGrid.style.gridTemplateColumns = "401px 5px 1fr 5px 0px";
+    } else {
+      if (rightVisible) {
+        gridTemplateGrid.style.gridTemplateColumns = `${parts[0]}px 5px ${1}fr 5px ${290}px`;
+      } else {
+        gridTemplateGrid.style.gridTemplateColumns = `${parts[0]}px 5px ${1}fr 5px ${0}px`;
+      }
+    }
+    // setupSplit();
   });
 
   const button = document.querySelector(".button-to-collapse-library");
