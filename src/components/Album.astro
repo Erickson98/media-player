@@ -74,7 +74,7 @@ function formatDuration(ms: number) {
               <button
                 class="track-name track-btn"
                 data-track-artists={JSON.stringify(track.artists)}
-                data-img-album={img}
+                data-img-album={JSON.stringify(album.images)}
                 data-img-artist={JSON.stringify(album.images)}
                 data-album-id={album.id}
                 data-track-id={track.id}

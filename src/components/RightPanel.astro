@@ -1,5 +1,5 @@
 ---
-
+export const prerender = false;
 ---
 
 <div id="right-panel">
@@ -43,7 +43,7 @@
   </div>
 </template>
 
-<script client:load>
+<script>
   const root5 = document.getElementById("right-panel");
   const tpl = document.getElementById("right-panel-tpl");
 
@@ -74,7 +74,7 @@
 
     const imgEl = q('[data-field="album-cover"]');
     if (imgUrl) {
-      imgEl.src = JSON.parse(artistImg)[0].url;
+      imgEl.src = imgAlbum;
     }
 
     const artistsContainer = q('[data-list="artists"]');
@@ -89,8 +89,7 @@
     heroBg.style.backgroundPosition = "50% 50%";
     heroBg.style.backgroundSize = "cover";
     heroBg.style.aspectRatio = "3 / 2";
-    const backgroundImage = JSON.parse(artistImg)[0].url;
-    heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 50%), url(${backgroundImage})`;
+    heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 50%), url(${artistImg})`;
 
     q('[data-field="main-artist"]').textContent = trackArtists?.[0]?.name ?? "";
     q('[data-field="artist-description"]').textContent =
