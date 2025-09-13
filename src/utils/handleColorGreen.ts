@@ -70,6 +70,31 @@ async function addCurrentSong(trackData: Object) {
         uris: [trackData.uri],
         deviceId: window.deviceId,
       });
+      async function getLastPlayed() {
+        const lastPlayed = await fetch(
+          "/api/spotify/me/player/currently-playing"
+        );
+        return await lastPlayed.json();
+      }
+      let lastPlayed = await getLastPlayed();
+      if (lastPlayed) {
+        localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
+        window.dispatchEvent(
+          new CustomEvent("ui:track", {
+            detail: {
+              albumId: lastPlayed.item.album.id,
+              trackId: lastPlayed.item.id,
+              trackName: lastPlayed.item.name,
+              imgAlbum: lastPlayed.items[0].track.album.images[0].url,
+              artistImg: lastPlayed.items[0].track.album.images[0].url,
+              trackArtists: lastPlayed.item.artists,
+              bioArtist: "Something",
+              artistName: "SADE",
+              albumName: lastPlayed.item.album.name,
+            },
+          })
+        );
+      }
     } catch (e) {
       console.error("Error al reproducir:", e);
     }
@@ -107,6 +132,39 @@ async function handleMainTopSong(trackData: Object) {
         uris: [trackData.uri],
         deviceId: window.deviceId,
       });
+
+      async function getLastPlayed(retries = 5, delay = 500) {
+        for (let i = 0; i < retries; i++) {
+          const res = await fetch(
+            `/api/spotify/artists/${trackData.id}/top-tracks`
+          );
+          if (res.ok) {
+            const data = await res.json();
+            if (data?.item) return data;
+          }
+          await new Promise((r) => setTimeout(r, delay)); // esperar antes del próximo intento
+        }
+        return null; // si después de X intentos no hay nada
+      }
+      let sd = await getLastPlayed();
+      if (sd) {
+        localStorage.setItem("lastPlayed", JSON.stringify(sd));
+        window.dispatchEvent(
+          new CustomEvent("ui:track", {
+            detail: {
+              albumId: sd.item.album.id,
+              trackId: sd.item.id,
+              trackName: sd.item.name,
+              imgAlbum: sd.item.album.images,
+              artistImg: JSON.stringify(sd.item.album.images),
+              trackArtists: sd.item.artists,
+              bioArtist: "Something",
+              artistName: "SADE",
+              albumName: sd.item.album.name,
+            },
+          })
+        );
+      }
     } catch (e) {
       console.error("Error al reproducir:", e);
     }
@@ -134,6 +192,38 @@ async function handleArtistCarrousel(trackData: object) {
         context_uri: trackData.uri,
         deviceId: window.deviceId,
       });
+      async function getLastPlayed(retries = 5, delay = 500) {
+        for (let i = 0; i < retries; i++) {
+          const res = await fetch(
+            `/api/spotify/artists/${trackData.id}/top-tracks`
+          );
+          if (res.ok) {
+            const data = await res.json();
+            if (data?.tracks) return data;
+          }
+          await new Promise((r) => setTimeout(r, delay));
+        }
+        return null;
+      }
+      let lastPlayed = await getLastPlayed();
+      if (lastPlayed) {
+        localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
+        window.dispatchEvent(
+          new CustomEvent("ui:track", {
+            detail: {
+              albumId: lastPlayed.tracks[0].album.id,
+              trackId: lastPlayed.tracks[0].id,
+              trackName: lastPlayed.tracks[0].name,
+              imgAlbum: lastPlayed.tracks[0].album.images,
+              artistImg: JSON.stringify(lastPlayed.tracks[0].album.images),
+              trackArtists: lastPlayed.tracks[0].artists,
+              bioArtist: "Something",
+              artistName: "SADE",
+              albumName: lastPlayed.tracks[0].album.name,
+            },
+          })
+        );
+      }
     } catch (e) {
       console.error("Error al reproducir:", e);
     }

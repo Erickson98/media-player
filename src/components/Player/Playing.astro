@@ -66,9 +66,10 @@
         if (lastPlayed?.items?.length) {
           renderPlaying(lastPlayed);
           localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
-        } else {
-          container.innerHTML = `<p>Sin canción en reproducción</p>`;
         }
+        // else {
+        //   container.innerHTML = `<p>Sin canción en reproducción</p>`;
+        // }
       }
       return lastPlayed;
     } catch (e) {
@@ -76,14 +77,15 @@
     }
   }
   let lastPlayed = await main();
+
   window.dispatchEvent(
     new CustomEvent("ui:track", {
       detail: {
         albumId: lastPlayed.items[0].track.album.id,
         trackId: lastPlayed.items[0].track.id,
         trackName: lastPlayed.items[0].track.name,
-        imgAlbum: lastPlayed.items[0].track.album.images,
-        artistImg: JSON.stringify(lastPlayed.items[0].track.album.images),
+        imgAlbum: lastPlayed.items[0].track.album.images[0].url,
+        artistImg: lastPlayed.items[0].track.album.images[0].url,
         trackArtists: lastPlayed.items[0].track.artists,
         bioArtist: "Something",
         artistName: "SADE",
@@ -92,8 +94,6 @@
     })
   );
   window.addEventListener("route:playing", (e) => {
-    console.log("YOOOOOOOOOO");
-    console.log(e.detail.lastPlayed);
     renderPlaying(e.detail.lastPlayed);
   });
 </script>

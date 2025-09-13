@@ -83,34 +83,6 @@ import Footer from "./Footer.astro";
       const parsedMainTop = JSON.parse(mainTop.dataset.track);
       parsedMainTop.class = "playSong-top-songs";
       localStorageSet("lastPlayedTrack", parsedMainTop);
-
-      setTimeout(async () => {
-        async function getLastPlayed() {
-          const lastPlayed = await fetch(
-            "/api/spotify/me/player/currently-playing"
-          );
-          return await lastPlayed.json();
-        }
-        let lastPlayed = await getLastPlayed();
-        if (lastPlayed) {
-          localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
-          window.dispatchEvent(
-            new CustomEvent("ui:track", {
-              detail: {
-                albumId: lastPlayed.item.album.id,
-                trackId: lastPlayed.item.id,
-                trackName: lastPlayed.item.name,
-                imgAlbum: lastPlayed.item.album.images,
-                artistImg: JSON.stringify(lastPlayed.item.album.images),
-                trackArtists: lastPlayed.item.artists,
-                bioArtist: "Something",
-                artistName: "SADE",
-                albumName: lastPlayed.item.album.name,
-              },
-            })
-          );
-        }
-      }, 500);
     };
 
     const isSameTrack = (a, b) => {
@@ -159,33 +131,7 @@ import Footer from "./Footer.astro";
         handleColorGreen({ allowed: "playSong-Artists-Carrousel", trackData });
         localStorageSet("lastPlayedTrack", trackData);
 
-        setTimeout(async () => {
-          async function getLastPlayed() {
-            const lastPlayed = await fetch(
-              "/api/spotify/me/player/currently-playing"
-            );
-            return await lastPlayed.json();
-          }
-          let lastPlayed = await getLastPlayed();
-          if (lastPlayed) {
-            localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
-            window.dispatchEvent(
-              new CustomEvent("ui:track", {
-                detail: {
-                  albumId: lastPlayed.item.album.id,
-                  trackId: lastPlayed.item.id,
-                  trackName: lastPlayed.item.name,
-                  imgAlbum: lastPlayed.item.album.images,
-                  artistImg: JSON.stringify(lastPlayed.item.album.images),
-                  trackArtists: lastPlayed.item.artists,
-                  bioArtist: "Something",
-                  artistName: "SADE",
-                  albumName: lastPlayed.item.album.name,
-                },
-              })
-            );
-          }
-        }, 500);
+        setTimeout(async () => {}, 500);
       };
     });
     document.querySelectorAll(".playSong-Album-Carrousel").forEach((btn) => {
@@ -200,8 +146,6 @@ import Footer from "./Footer.astro";
             const lastPlayed = await fetch(
               "/api/spotify/me/player/currently-playing"
             );
-            console.log("flsdkflksjflksjflk sjdfl js");
-            console.log(lastPlayed);
             return await lastPlayed.json();
           }
           let lastPlayed = await getLastPlayed();
@@ -216,8 +160,8 @@ import Footer from "./Footer.astro";
                   albumId: lastPlayed.item.album.id,
                   trackId: lastPlayed.item.id,
                   trackName: lastPlayed.item.name,
-                  imgAlbum: lastPlayed.item.album.images,
-                  artistImg: JSON.stringify(lastPlayed.item.album.images),
+                  imgAlbum: lastPlayed.items[0].track.album.images[0].url,
+                  artistImg: lastPlayed.items[0].track.album.images[0].url,
                   trackArtists: lastPlayed.item.artists,
                   bioArtist: "Something",
                   artistName: "SADE",
@@ -296,20 +240,21 @@ import Footer from "./Footer.astro";
       const res = await fetch(
         `/api/genius/artist-bio?q=${encodeURIComponent(artistName)}`
       );
-      const { bio } = await res.json();
-
+      const { bio, image } = await res.json();
       root.querySelectorAll(".track-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
           const artists = JSON.parse(btn.dataset.trackArtists);
-
+          window.dispatchEvent(
+            new CustomEvent("route:playing", { detail: { lastPlayed } })
+          );
           window.dispatchEvent(
             new CustomEvent("ui:track", {
               detail: {
                 albumId: btn.dataset.albumId,
                 trackId: btn.dataset.trackId,
                 trackName: btn.dataset.trackName,
-                imgAlbum: btn.dataset.imgAlbum,
-                artistImg: btn.dataset.imgArtist,
+                imgAlbum: JSON.parse(btn.dataset.imgAlbum)[0].url,
+                artistImg: image,
                 trackArtists: artists,
                 bioArtist: bio,
                 artistName: artistName,
