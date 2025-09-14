@@ -77,7 +77,7 @@ export async function spotifyPlayerAction(
     },
   });
 
-  if (res.status === 204) {
+  if (res.status === 204 || res.status === 200) {
     console.log(`✅ Acción ${action} ejecutada correctamente`);
     return { ok: true };
   }
