@@ -1,22 +1,94 @@
-<div class="progress-container">
-  <div class="progress-bar"></div>
+<div class="progress-container" id="volume-container">
+  <div class="progress-bar" id="volume-bar"></div>
+  <div class="progress-knob" id="volume-knob"></div>
 </div>
+
 <style>
   .progress-container {
-    height: 4px;
-    /* width: 100%; */
-    width: 80px;
-    background: #333; /* Barra gris */
-    border-radius: 8px;
-    overflow: hidden;
+    height: 6px;
+    width: 200px;
+    background: #333;
+    border-radius: 6px;
     position: relative;
+    cursor: pointer;
   }
 
   .progress-bar {
     height: 100%;
-    width: 0%; /* empieza vacía */
-    background: #fff; /* Progreso blanco */
-    border-radius: 8px 0 0 8px;
-    transition: width 0.2s linear;
+    width: 100%;
+    background: #fff;
+    transform: scaleX(0.5);
+    transform-origin: left center;
+    will-change: transform;
+    transition: transform 0.15s ease-out;
+  }
+
+  .progress-knob {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    transform: translate(100px, -50%);
+    will-change: transform;
+    transition: transform 0.15s ease-out;
+    pointer-events: none;
   }
 </style>
+
+<script>
+  const container = document.getElementById("volume-container");
+  const bar = document.getElementById("volume-bar");
+  const knob = document.getElementById("volume-knob");
+
+  let dragging = false;
+  let targetPercent = 0.5;
+  let currentPercent = 0.5;
+
+  function updatePercent(e) {
+    const { left, width } = container.getBoundingClientRect();
+    const percent = Math.min(Math.max((e.clientX - left) / width, 0), 1);
+    targetPercent = percent;
+  }
+
+  function animate() {
+    currentPercent += (targetPercent - currentPercent) * 0.2;
+
+    bar.style.transform = `scaleX(${currentPercent})`;
+    knob.style.transform = `translate(${currentPercent * container.clientWidth}px, -50%)`;
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+
+  container.addEventListener("mousedown", (e) => {
+    dragging = true;
+    updatePercent(e);
+  });
+
+  window.addEventListener("mousemove", (e) => dragging && updatePercent(e));
+
+  window.addEventListener("mouseup", async () => {
+    if (!dragging) return;
+    dragging = false;
+
+    const finalPercent = Math.round(targetPercent * 100); // 0–100
+    console.log("Sending volume:", finalPercent);
+
+    const deviceId = window.deviceId;
+
+    try {
+      await fetch(
+        `/api/spotify/me/player/volume?volume_percent=${finalPercent}&device_id=${deviceId}`,
+        {
+          method: "PUT",
+        }
+      );
+    } catch (err) {
+      console.error("Error updating Spotify volume:", err);
+    }
+  });
+</script>
