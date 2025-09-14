@@ -1,3 +1,7 @@
+---
+export const prerender = false;
+---
+
 <div id="playing-container">
   <p>Sin canción en reproducción</p>
 </div>
@@ -22,26 +26,22 @@
 <script>
   const container = document.getElementById("playing-container");
   const tpl = document.getElementById("playing-tpl");
-
-  function renderPlaying(lastPlayed) {
+  const KEY_FOR_LAST_PLAYED = "lastPlayedHistory";
+  function renderPlaying() {
+    const lastPlayed = JSON.parse(localStorage.getItem(KEY_FOR_LAST_PLAYED));
     container.replaceChildren();
     console.log(lastPlayed);
     const node = tpl.content.cloneNode(true);
     const q = (sel) => node.querySelector(sel);
 
-    let track = lastPlayed?.items?.[0]?.track;
-    if (!track) {
-      track = lastPlayed?.item;
-    }
-    if (!track) {
-      container.innerHTML = `<p>Sin canción en reproducción</p>`;
+    if (!lastPlayed) {
+      container.innerHTML = "";
       return;
     }
 
-    q('[data-field="album-cover"]').src = track.album.images?.[2]?.url || "";
-    q('[data-field="track-name"]').textContent = track.name || "—";
-    q('[data-field="artist-name"]').textContent =
-      track.artists?.[0]?.name || "—";
+    q('[data-field="album-cover"]').src = lastPlayed.imgAlbum || "";
+    q('[data-field="track-name"]').textContent = lastPlayed.trackName || "";
+    q('[data-field="artist-name"]').textContent = lastPlayed.artistName || "";
 
     container.appendChild(node);
   }
@@ -50,9 +50,9 @@
 
   async function main() {
     try {
-      let lastPlayed = JSON.parse(localStorage.getItem("lastPlayed"));
+      let lastPlayed = JSON.parse(localStorage.getItem(KEY_FOR_LAST_PLAYED));
 
-      if (lastPlayed && lastPlayed.items?.length) {
+      if (lastPlayed) {
         renderPlaying(lastPlayed);
       } else {
         // 2) Si no hay, usar lo que vino del SSR (props de Astro)
@@ -71,30 +71,28 @@
         //   container.innerHTML = `<p>Sin canción en reproducción</p>`;
         // }
       }
-      return lastPlayed;
+      window.dispatchEvent(
+        new CustomEvent("ui:track", {
+          detail: {
+            albumId: lastPlayed.albumId,
+            trackId: lastPlayed.id,
+            trackName: lastPlayed.name,
+            imgAlbum: lastPlayed.imgAlbum,
+            artistImg: lastPlayed.artistImg,
+            trackArtists: lastPlayed.trackArtists,
+            bioArtist: lastPlayed.bioArtist,
+            artistName: lastPlayed.artistName,
+            albumName: lastPlayed.albumName,
+          },
+        })
+      );
     } catch (e) {
       console.warn("Error parsing lastPlayed from localStorage", e);
     }
   }
-  let lastPlayed = await main();
-
-  window.dispatchEvent(
-    new CustomEvent("ui:track", {
-      detail: {
-        albumId: lastPlayed.items[0].track.album.id,
-        trackId: lastPlayed.items[0].track.id,
-        trackName: lastPlayed.items[0].track.name,
-        imgAlbum: lastPlayed.items[0].track.album.images[0].url,
-        artistImg: lastPlayed.items[0].track.album.images[0].url,
-        trackArtists: lastPlayed.items[0].track.artists,
-        bioArtist: "Something",
-        artistName: "SADE",
-        albumName: lastPlayed.items[0].track.album.name,
-      },
-    })
-  );
+  await main();
   window.addEventListener("route:playing", (e) => {
-    renderPlaying(e.detail.lastPlayed);
+    main();
   });
 </script>
 

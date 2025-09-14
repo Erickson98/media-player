@@ -1,5 +1,5 @@
 import { spotifyPlayerAction } from "@/scripts/spotifyPlayerAction";
-import { localStorageGet } from "./localStorage";
+import { localStorageGet, localStorageSet } from "./localStorage";
 import PauseIcon from "src/assets/icons/pause.svg?url";
 import PlayIcon from "src/assets/icons/play.svg?url";
 const CLASSNAME = "text-playing";
@@ -70,31 +70,25 @@ async function addCurrentSong(trackData: Object) {
         uris: [trackData.uri],
         deviceId: window.deviceId,
       });
-      async function getLastPlayed() {
-        const lastPlayed = await fetch(
-          "/api/spotify/me/player/currently-playing"
-        );
-        return await lastPlayed.json();
-      }
-      let lastPlayed = await getLastPlayed();
-      if (lastPlayed) {
-        localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
-        window.dispatchEvent(
-          new CustomEvent("ui:track", {
-            detail: {
-              albumId: lastPlayed.item.album.id,
-              trackId: lastPlayed.item.id,
-              trackName: lastPlayed.item.name,
-              imgAlbum: lastPlayed.items[0].track.album.images[0].url,
-              artistImg: lastPlayed.items[0].track.album.images[0].url,
-              trackArtists: lastPlayed.item.artists,
-              bioArtist: "Something",
-              artistName: "SADE",
-              albumName: lastPlayed.item.album.name,
-            },
-          })
-        );
-      }
+      const res = await fetch(
+        `/api/genius/artist-bio?q=${encodeURIComponent(
+          trackData.artists[0].name
+        )}`
+      );
+      const { bio, image } = await res.json();
+      console.log(trackData);
+      localStorageSet("lastPlayedHistory", {
+        albumId: trackData.album.id,
+        trackId: trackData.id,
+        trackName: trackData.name,
+        imgAlbum: trackData.album.images[0].url,
+        artistImg: image,
+        trackArtists: trackData.artists,
+        bioArtist: bio,
+        artistName: trackData.artists[0].name,
+        albumName: trackData.album.name,
+      });
+      window.dispatchEvent(new CustomEvent("route:playing"));
     } catch (e) {
       console.error("Error al reproducir:", e);
     }
@@ -113,7 +107,6 @@ function handleTopSongs(trackData: Object) {
 }
 
 async function handleMainTopSong(trackData: Object) {
-  //remove top song
   const lastPlayed = localStorageGet("lastPlayedTrack");
   if (lastPlayed.id !== trackData.id) {
     removeLastPlayed(lastPlayed);
@@ -132,39 +125,25 @@ async function handleMainTopSong(trackData: Object) {
         uris: [trackData.uri],
         deviceId: window.deviceId,
       });
-
-      async function getLastPlayed(retries = 5, delay = 500) {
-        for (let i = 0; i < retries; i++) {
-          const res = await fetch(
-            `/api/spotify/artists/${trackData.id}/top-tracks`
-          );
-          if (res.ok) {
-            const data = await res.json();
-            if (data?.item) return data;
-          }
-          await new Promise((r) => setTimeout(r, delay)); // esperar antes del próximo intento
-        }
-        return null; // si después de X intentos no hay nada
-      }
-      let sd = await getLastPlayed();
-      if (sd) {
-        localStorage.setItem("lastPlayed", JSON.stringify(sd));
-        window.dispatchEvent(
-          new CustomEvent("ui:track", {
-            detail: {
-              albumId: sd.item.album.id,
-              trackId: sd.item.id,
-              trackName: sd.item.name,
-              imgAlbum: sd.item.album.images,
-              artistImg: JSON.stringify(sd.item.album.images),
-              trackArtists: sd.item.artists,
-              bioArtist: "Something",
-              artistName: "SADE",
-              albumName: sd.item.album.name,
-            },
-          })
-        );
-      }
+      const res = await fetch(
+        `/api/genius/artist-bio?q=${encodeURIComponent(
+          lastPlayed.artists[0].name
+        )}`
+      );
+      const { bio, image } = await res.json();
+      console.log(trackData);
+      localStorageSet("lastPlayedHistory", {
+        albumId: lastPlayed.album.id,
+        trackId: lastPlayed.id,
+        trackName: lastPlayed.name,
+        imgAlbum: lastPlayed.album.images[0].url,
+        artistImg: image,
+        trackArtists: lastPlayed.artists,
+        bioArtist: bio,
+        artistName: lastPlayed.artists[0].name,
+        albumName: lastPlayed.album.name,
+      });
+      window.dispatchEvent(new CustomEvent("route:playing"));
     } catch (e) {
       console.error("Error al reproducir:", e);
     }
@@ -192,7 +171,7 @@ async function handleArtistCarrousel(trackData: object) {
         context_uri: trackData.uri,
         deviceId: window.deviceId,
       });
-      async function getLastPlayed(retries = 5, delay = 500) {
+      async function getTopArtistTrack(retries = 5, delay = 500) {
         for (let i = 0; i < retries; i++) {
           const res = await fetch(
             `/api/spotify/artists/${trackData.id}/top-tracks`
@@ -205,24 +184,28 @@ async function handleArtistCarrousel(trackData: object) {
         }
         return null;
       }
-      let lastPlayed = await getLastPlayed();
+      let lastPlayed = await getTopArtistTrack();
+      debugger;
       if (lastPlayed) {
         localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
-        window.dispatchEvent(
-          new CustomEvent("ui:track", {
-            detail: {
-              albumId: lastPlayed.tracks[0].album.id,
-              trackId: lastPlayed.tracks[0].id,
-              trackName: lastPlayed.tracks[0].name,
-              imgAlbum: lastPlayed.tracks[0].album.images,
-              artistImg: JSON.stringify(lastPlayed.tracks[0].album.images),
-              trackArtists: lastPlayed.tracks[0].artists,
-              bioArtist: "Something",
-              artistName: "SADE",
-              albumName: lastPlayed.tracks[0].album.name,
-            },
-          })
+        const res = await fetch(
+          `/api/genius/artist-bio?q=${encodeURIComponent(
+            lastPlayed.tracks[0].artists[0].name
+          )}`
         );
+        const { bio, image } = await res.json();
+        localStorageSet("lastPlayedHistory", {
+          albumId: lastPlayed.tracks[0].album.id,
+          trackId: lastPlayed.tracks[0].id,
+          trackName: lastPlayed.tracks[0].name,
+          imgAlbum: lastPlayed.tracks[0].album.images[0].url,
+          artistImg: image,
+          trackArtists: lastPlayed.tracks[0].artists,
+          bioArtist: bio,
+          artistName: lastPlayed.tracks[0].artists[0].name,
+          albumName: lastPlayed.tracks[0].album.name,
+        });
+        window.dispatchEvent(new CustomEvent("route:playing"));
       }
     } catch (e) {
       console.error("Error al reproducir:", e);
@@ -252,6 +235,39 @@ async function handleAlbumCarrousel(trackData: object) {
         context_uri: trackData.uri,
         deviceId: window.deviceId,
       });
+      // localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
+      async function getAlbumInfo(retries = 5, delay = 500) {
+        for (let i = 0; i < retries; i++) {
+          const res = await fetch(`/api/spotify/albums/${trackData.id}/tracks`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data?.items) return data;
+          }
+          await new Promise((r) => setTimeout(r, delay));
+        }
+        return null;
+      }
+      let lastPlayed = await getAlbumInfo();
+      const res = await fetch(
+        `/api/genius/artist-bio?q=${encodeURIComponent(
+          trackData.artists[0].name
+        )}`
+      );
+      const { bio, image } = await res.json();
+      console.log(trackData);
+      debugger;
+      localStorageSet("lastPlayedHistory", {
+        albumId: trackData.id,
+        trackId: lastPlayed.items[0].id,
+        trackName: lastPlayed.items[0].name,
+        imgAlbum: trackData.imgAlbum[0].url,
+        artistImg: image,
+        trackArtists: trackData.artists,
+        bioArtist: bio,
+        artistName: trackData.artists[0].name,
+        albumName: trackData.name,
+      });
+      window.dispatchEvent(new CustomEvent("route:playing"));
     } catch (e) {
       console.error("Error al reproducir:", e);
     }

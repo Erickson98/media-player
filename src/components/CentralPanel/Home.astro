@@ -17,6 +17,16 @@ const { tracks, artists } = Astro.props;
               id: item.album.id,
               uri: item.album.uri,
               name: item.album.name,
+              album: {
+                id: item.album.id,
+                name: item.album.name,
+                images: item.album.images,
+              },
+              imgAlbum: item.album.images,
+              artists: item.artists.map((a) => ({
+                id: a.id,
+                name: a.name,
+              })),
             })}
           >
             <img
@@ -38,7 +48,7 @@ const { tracks, artists } = Astro.props;
         <div style="display: flex;flex:1; justify-content: space-between;">
           <span>{item.name}</span>
           <button
-            class="btn-hidden playSong-Album-Carrousel"
+            class="btn-hidden playSong-Artists-Carrousel"
             data-track-album={item.uri}
             data-track={JSON.stringify({
               id: item.id,
