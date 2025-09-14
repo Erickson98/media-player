@@ -24,6 +24,9 @@ export const prerender = false;
 </template>
 
 <script>
+  import { spotifyPlayerAction } from "@/scripts/spotifyPlayerAction";
+  import { localStorageGet } from "src/utils/localStorage";
+
   const container = document.getElementById("playing-container");
   const tpl = document.getElementById("playing-tpl");
   const KEY_FOR_LAST_PLAYED = "lastPlayedHistory";
@@ -93,6 +96,14 @@ export const prerender = false;
   await main();
   window.addEventListener("route:playing", (e) => {
     main();
+  });
+  window.addEventListener("DOMContentLoaded", async () => {
+    const lastPlayed = localStorageGet("lastPlayedHistory");
+    await spotifyPlayerAction("play", {
+      context_uri: `spotify:album:${lastPlayed.albumId}`,
+      deviceId: window.deviceId,
+    });
+    await spotifyPlayerAction("pause", { deviceId: window.deviceId });
   });
 </script>
 

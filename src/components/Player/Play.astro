@@ -6,9 +6,24 @@ import PlayIcon from "src/assets/icons/iconPlay.svg?url";
 
 <div class="container-play">
   <div class="top-play-component-actions">
-    <img src={PreviousIcon} width="15" alt="" srcset="" />
-    <img src={PlayIcon} width="15" alt="" srcset="" />
-    <img src={NextIcon} width="15" alt="" srcset="" />
+    <button class="previous-action">
+      <img src={PreviousIcon} width="15" alt="" srcset="" />
+    </button>
+
+    <button class="play-action">
+      <img
+        src={PlayIcon}
+        class="play-action-icon"
+        data-action="pause"
+        width="15"
+        alt=""
+        srcset=""
+      />
+    </button>
+
+    <button class="next-action">
+      <img src={NextIcon} width="15" alt="" srcset="" />
+    </button>
   </div>
 
   <div class="bottom-play-component-actions">
@@ -64,3 +79,51 @@ import PlayIcon from "src/assets/icons/iconPlay.svg?url";
     transition: width 0.2s linear;
   }
 </style>
+
+<script>
+  import { spotifyPlayerAction } from "@/scripts/spotifyPlayerAction";
+  import { localStorageGet } from "src/utils/localStorage";
+  import PauseIcon from "src/assets/icons/iconPause.svg?url";
+  import PlayIcon from "src/assets/icons/iconPlay.svg?url";
+
+  const previousElement = document.querySelector(
+    ".previous-action"
+  ) as HTMLElement;
+  previousElement?.addEventListener("click", async () => {
+    try {
+      await spotifyPlayerAction("previous", { deviceId: window.deviceId });
+    } catch (error) {}
+  });
+
+  const playElement = document.querySelector(".play-action");
+
+  playElement?.addEventListener("click", async () => {
+    const imgElement = document.querySelector(
+      ".play-action-icon"
+    ) as HTMLImageElement;
+    if (imgElement.dataset.action === "pause") {
+      imgElement.src = PauseIcon;
+      imgElement.dataset.action = "play";
+      const lastPlayed = localStorageGet("lastPlayedHistory");
+
+      await spotifyPlayerAction("play", {
+        context_uri: `spotify:album:${lastPlayed.albumId}`,
+        deviceId: window.deviceId,
+      });
+    } else if (imgElement.dataset.action === "play") {
+      imgElement.src = PlayIcon;
+      imgElement.dataset.action = "pause";
+      await spotifyPlayerAction("pause", {
+        deviceId: window.deviceId,
+      });
+    }
+  });
+
+  const nextElement = document.querySelector(".next-action");
+  nextElement?.addEventListener("click", async () => {
+    try {
+      debugger;
+      await spotifyPlayerAction("next", { deviceId: window.deviceId });
+    } catch (error) {}
+  });
+</script>
