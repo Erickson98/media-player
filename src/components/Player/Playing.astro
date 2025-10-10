@@ -97,14 +97,6 @@ export const prerender = false;
   window.addEventListener("route:playing", (e) => {
     main();
   });
-  window.addEventListener("DOMContentLoaded", async () => {
-    const lastPlayed = localStorageGet("lastPlayedHistory");
-    await spotifyPlayerAction("play", {
-      context_uri: `spotify:album:${lastPlayed.albumId}`,
-      deviceId: window.deviceId,
-    });
-    await spotifyPlayerAction("pause", { deviceId: window.deviceId });
-  });
 </script>
 
 <style>

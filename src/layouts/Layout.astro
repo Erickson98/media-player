@@ -59,6 +59,7 @@ const { title } = Astro.props;
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
 
     <script>
+      import { playerEvents } from "src/utils/playerEvents";
       import { getSpotifyToken } from "../utils/get-spotify-token";
       window.onSpotifyWebPlaybackSDKReady = () => {
         const player = new Spotify.Player({
@@ -71,7 +72,11 @@ const { title } = Astro.props;
         });
 
         window.deviceId = null;
-
+        player.addListener("player_state_changed", (state) => {
+          playerEvents.dispatchEvent(
+            new CustomEvent("state", { detail: state })
+          );
+        });
         player.addListener("ready", ({ device_id }) => {
           window.deviceId = device_id;
           console.log("Player ready with device ID", device_id);
@@ -91,6 +96,14 @@ const { title } = Astro.props;
         });
 
         player.connect();
+        playerEvents.addEventListener("pause", () => player.pause());
+        playerEvents.addEventListener("resume", () => player.resume());
+        playerEvents.addEventListener("toggle", () => player.togglePlay());
+        playerEvents.addEventListener("next", () => player.nextTrack());
+        playerEvents.addEventListener("prev", () => player.previousTrack());
+        playerEvents.addEventListener("seek", (e) =>
+          player.seek(e.detail.position)
+        );
       };
     </script>
   </body>

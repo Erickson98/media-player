@@ -11,15 +11,21 @@ let contentLibrary: SpotifySavedAlbumsResponse;
 function renderLibrary(items: SpotifySavedAlbumItem[]) {
   libraryContainer.innerHTML = items
     ? items
-        .map(
-          (item) => `
+        .map((item) => {
+          const src = item.album.images[2]?.url;
+          return `
             <div class="library-item">
               <button class="album-btn" data-id=${item.album.id}>
-                <img src="${
-                  item.album.images[2]?.url
-                }" class="img-library" alt="${
-            item.album.name
-          }" width="56" height="56" />
+                <img 
+            src="${src}" 
+            srcset="${src}?w=56 56w, ${src}?w=112 112w" 
+            sizes="56px" 
+            width="56" 
+            height="56" 
+            loading="lazy" 
+            decoding="async"
+            alt="${item.album.name}" 
+          />
             </button>
             <div class="container-title-meta">
               <div class="title">${item.album.name}</div>
@@ -33,8 +39,8 @@ function renderLibrary(items: SpotifySavedAlbumItem[]) {
               </div>
             </div>
           </div>
-        `
-        )
+        `;
+        })
         .join("")
     : "<p>No items found</p>";
 }
