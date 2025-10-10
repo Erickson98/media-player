@@ -75,8 +75,9 @@ async function addCurrentSong(trackData: Object) {
           trackData.artists[0].name
         )}`
       );
+      const resQue = await fetch("/api/spotify/me/player/queue");
+      localStorageSet("queue", resQue);
       const { bio, image } = await res.json();
-      console.log(trackData);
       localStorageSet("lastPlayedHistory", {
         albumId: trackData.album.id,
         trackId: trackData.id,
@@ -131,7 +132,6 @@ async function handleMainTopSong(trackData: Object) {
         )}`
       );
       const { bio, image } = await res.json();
-      console.log(trackData);
       localStorageSet("lastPlayedHistory", {
         albumId: lastPlayed.album.id,
         trackId: lastPlayed.id,
@@ -185,7 +185,6 @@ async function handleArtistCarrousel(trackData: object) {
         return null;
       }
       let lastPlayed = await getTopArtistTrack();
-      debugger;
       if (lastPlayed) {
         localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
         const res = await fetch(
@@ -254,8 +253,6 @@ async function handleAlbumCarrousel(trackData: object) {
         )}`
       );
       const { bio, image } = await res.json();
-      console.log(trackData);
-      debugger;
       localStorageSet("lastPlayedHistory", {
         albumId: trackData.id,
         trackId: lastPlayed.items[0].id,

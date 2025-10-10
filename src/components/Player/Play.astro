@@ -25,13 +25,13 @@ import PlayIcon from "src/assets/icons/iconPlay.svg?url";
       <img src={NextIcon} width="15" alt="" srcset="" />
     </button>
   </div>
-
-  <div class="bottom-play-component-actions">
-    <span class="time">0:00</span>
-    <div class="progress-container">
-      <div class="progress-bar"></div>
+  <div class="container-for-play-component">
+    <span id="time-current">0:00</span>
+    <div class="progress-container" id="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+      <div class="progress-knob" id="progress-knob"></div>
     </div>
-    <span class="time">3:30</span>
+    <span id="time-total">0:00</span>
   </div>
 </div>
 
@@ -78,13 +78,88 @@ import PlayIcon from "src/assets/icons/iconPlay.svg?url";
     border-radius: 8px 0 0 8px;
     transition: width 0.2s linear;
   }
+  .progress-container {
+    height: 6px;
+    /* width: 300px; */
+    background: #333;
+    border-radius: 6px;
+    position: relative;
+    cursor: pointer;
+  }
+  .progress-bar {
+    height: 100%;
+    width: 100%;
+    background: #1db954;
+    transform: scaleX(0);
+    transform-origin: left center;
+    will-change: transform;
+  }
+  .progress-knob {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    transform: translate(0, -50%);
+    will-change: transform;
+    pointer-events: none;
+  }
+  .container-for-play-component {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+    gap: 5px;
+  }
 </style>
 
 <script>
+  let player;
+  let duration = 0;
+  let position = 0;
+  let lastUpdate = 0;
+  let isPlaying = false;
+
+  const bar = document.getElementById("progress-bar");
+  const knob = document.getElementById("progress-knob");
+  const timeCurrent = document.getElementById("time-current");
+  const timeTotal = document.getElementById("time-total");
+  const container = document.getElementById("progress-container");
+
+  function msToTime(ms) {
+    const m = Math.floor(ms / 60000);
+    const s = Math.floor((ms % 60000) / 1000);
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  }
+
+  function updateUI() {
+    const percent = position / duration;
+    bar.style.transform = `scaleX(${percent})`;
+    knob.style.transform = `translate(${percent * container.clientWidth}px, -50%)`;
+    timeCurrent.textContent = msToTime(position);
+    timeTotal.textContent = msToTime(duration);
+  }
+
+  function animate() {
+    if (isPlaying) {
+      const now = Date.now();
+      position += now - lastUpdate;
+      if (position > duration) position = duration;
+      updateUI();
+      lastUpdate = now;
+    } else {
+      lastUpdate = Date.now();
+    }
+    requestAnimationFrame(animate);
+  }
   import { spotifyPlayerAction } from "@/scripts/spotifyPlayerAction";
   import { localStorageGet } from "src/utils/localStorage";
   import PauseIcon from "src/assets/icons/iconPause.svg?url";
   import PlayIcon from "src/assets/icons/iconPlay.svg?url";
+  import { playerEvents } from "src/utils/playerEvents";
 
   const previousElement = document.querySelector(
     ".previous-action"
@@ -98,6 +173,7 @@ import PlayIcon from "src/assets/icons/iconPlay.svg?url";
   const playElement = document.querySelector(".play-action");
 
   playElement?.addEventListener("click", async () => {
+    let played = false;
     const imgElement = document.querySelector(
       ".play-action-icon"
     ) as HTMLImageElement;
@@ -105,24 +181,35 @@ import PlayIcon from "src/assets/icons/iconPlay.svg?url";
       imgElement.src = PauseIcon;
       imgElement.dataset.action = "play";
       const lastPlayed = localStorageGet("lastPlayedHistory");
-
-      await spotifyPlayerAction("play", {
-        context_uri: `spotify:album:${lastPlayed.albumId}`,
-        deviceId: window.deviceId,
-      });
+      if (!played) {
+        await spotifyPlayerAction("play", {
+          uris: [`spotify:track:${lastPlayed.trackId}`],
+          deviceId: window.deviceId,
+        });
+      }
+      playerEvents.dispatchEvent(new Event("resume"));
     } else if (imgElement.dataset.action === "play") {
       imgElement.src = PlayIcon;
       imgElement.dataset.action = "pause";
-      await spotifyPlayerAction("pause", {
-        deviceId: window.deviceId,
-      });
+      // await spotifyPlayerAction("pause", {
+      //   deviceId: window.deviceId,
+      // });
+      playerEvents.dispatchEvent(new Event("pause"));
     }
   });
-
+  playerEvents.addEventListener("state", (e) => {
+    const state = e.detail;
+    if (!state) return;
+    duration = state.duration;
+    position = state.position;
+    isPlaying = !state.paused;
+    lastUpdate = Date.now();
+    updateUI();
+  });
+  animate();
   const nextElement = document.querySelector(".next-action");
   nextElement?.addEventListener("click", async () => {
     try {
-      debugger;
       await spotifyPlayerAction("next", { deviceId: window.deviceId });
     } catch (error) {}
   });
