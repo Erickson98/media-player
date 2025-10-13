@@ -8,7 +8,10 @@
     "astro": "astro",
     "check": "astro check",
     "custom-host": "npm run dev -- --host 127.0.0.1",
-    "build": "astro check && astro build"
+    "build:split": "tsc -p tsconfig.json",
+    "build": " astro build && astro preview",
+    "custom:bundle:split": "npx esbuild src/components/Split.ts --bundle --platform=browser --outfile=public/scripts/Split.js --loader:.svg=file",
+    "bundle:min:spli": "npx esbuild src/components/Split.ts --bundle --platform=browser --outfile=public/scripts/Split.js --loader:.svg=file --minify"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

@@ -23,6 +23,9 @@ import PlayIcon from "../assets/icons/play.svg?url";
                 alt={item?.name}
                 width="153"
                 height="153"
+                fetchpriority="high"
+                decoding="sync"
+                loading="eager"
               />
               <div class="text-style">
                 <div class="album-name">{item?.name}</div>

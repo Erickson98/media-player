@@ -5,10 +5,19 @@ export const GET: APIRoute = async () => {
   const redirectUri = import.meta.env.SPOTIFY_REDIRECT_URI;
   const scope =
     "user-library-read user-read-email streaming user-read-email user-read-private user-modify-playback-state user-top-read user-read-playback-state user-read-recently-played";
+
   const url = new URL("https://accounts.spotify.com/authorize");
   url.searchParams.append("client_id", clientId);
   url.searchParams.append("response_type", "code");
   url.searchParams.append("redirect_uri", redirectUri);
   url.searchParams.append("scope", scope);
-  return Response.redirect(url.toString(), 302);
+
+  // Clonamos el Response para que sus headers sean mutables
+  const redirectResponse = Response.redirect(url.toString(), 302);
+  const headers = new Headers(redirectResponse.headers);
+
+  return new Response(null, {
+    status: 302,
+    headers,
+  });
 };

@@ -5,12 +5,12 @@ body {
     background: black;
 }
 
-.grid-layout {
+/* .grid-layout {
     display: grid;
     height: 100vh;
     grid-template-rows: 1fr 60px;
     overflow-y: auto;
-}
+} */
 
 .grid-default {
     display: grid;

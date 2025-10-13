@@ -1,11 +1,8 @@
 ---
-import "../styles/SideBar.css";
-import "../styles/Layout.css";
-import "../styles/SearchBar.css";
-import Footer from "./Footer.astro";
+
 ---
 
-<div id="center-panel">
+<div class="central-panel-wrapper" id="center-panel">
   <!-- <Footer /> -->
 </div>
 
@@ -20,6 +17,7 @@ import Footer from "./Footer.astro";
 
   async function renderHome() {
     // root.innerHTML = `<p>Selecciona un álbum...</p>`;
+
     const html = await fetch(`/partials/centerPanel/main`).then((r) => {
       if (!r.ok) throw new Error("Album not found");
       return r.text();

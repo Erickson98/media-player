@@ -29,8 +29,8 @@ const appearsOn = await resAppearsOn.json();
 
 album.artist_line = album.artists?.map((a: any) => a.name).join(", ") ?? "";
 
-Astro.response.headers.set("Content-Type", "text/html; charset=utf-8");
+// Astro.response.headers.set("Content-Type", "text/html; charset=utf-8");
 ---
 
-<Album album={album} />
-<AlbumCarrousel album={appearsOn} title="Appers On" />
+<Album album={album ?? []} />
+<AlbumCarrousel album={appearsOn ?? []} title="Appers On" />

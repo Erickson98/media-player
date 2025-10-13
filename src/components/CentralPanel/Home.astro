@@ -7,7 +7,14 @@ const { tracks, artists } = Astro.props;
   {
     tracks.items?.map((item) => (
       <div class="card">
-        <img src={item.album.images[2].url} alt="" srcset="" width="50" />
+        <img
+          src={item.album.images[2].url}
+          loading="lazy"
+          decoding="async"
+          alt=""
+          srcset=""
+          width="50"
+        />
         <div style="display: flex;flex:1; justify-content: space-between;">
           <span>{item.album.name}</span>
           <button
@@ -32,6 +39,8 @@ const { tracks, artists } = Astro.props;
             <img
               src={PlayIcon}
               alt="play icon"
+              loading="lazy"
+              decoding="async"
               data-state="play"
               class={`btn-hidden-pause-${item.album.id}`}
             />
@@ -43,7 +52,14 @@ const { tracks, artists } = Astro.props;
   {
     artists.items?.map((item) => (
       <div class="card">
-        <img src={item.images[2].url} alt="" srcset="" width="50" />
+        <img
+          src={item.images[2].url}
+          alt=""
+          srcset=""
+          loading="lazy"
+          decoding="async"
+          width="50"
+        />
 
         <div style="display: flex;flex:1; justify-content: space-between;">
           <span>{item.name}</span>
@@ -61,6 +77,8 @@ const { tracks, artists } = Astro.props;
               alt="play icon"
               data-state="play"
               class={`btn-hidden-pause-${item.id}`}
+              loading="lazy"
+              decoding="async"
             />
           </button>
         </div>

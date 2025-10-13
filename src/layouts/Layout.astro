@@ -1,8 +1,6 @@
 ---
-import Split from "../components/Split.astro";
 import SearchBar from "src/components/Header/SearchBar.astro";
 import SocialMedia from "src/components/Header/SocialMedia.astro";
-import "../styles/Layout.css";
 import Footer from "src/components/Footer.astro";
 import Index from "src/components/Player/index.astro";
 const { title } = Astro.props;
@@ -14,6 +12,44 @@ const { title } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="stylesheet"
+      href="/Layout.css"
+      media="print"
+      onload="this.media='all'"
+    />
+    <link
+      rel="stylesheet"
+      href="/SplitPanel.css"
+      media="print"
+      onload="this.media='all'"
+    />
+
+    <link
+      rel="stylesheet"
+      href="/CenterPanel.css"
+      media="print"
+      onload="this.media='all'"
+    />
+    <link
+      rel="stylesheet"
+      href="/SideBar.css"
+      media="print"
+      onload="this.media='all'"
+    />
+    <link
+      rel="stylesheet"
+      href="/RightPanel.css"
+      media="print"
+      onload="this.media='all'"
+    />
+    <link
+      rel="stylesheet"
+      href="/SearchBar.css"
+      media="print"
+      onload="this.media='all'"
+    />
+
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
@@ -23,7 +59,7 @@ const { title } = Astro.props;
         <div class="header-side">
           <a href="/" rel="noopener noreferrer"
             ><img
-              src="/public/icon.png"
+              src="/public/icon.webp"
               width="50"
               alt=""
               srcset=""
@@ -48,7 +84,7 @@ const { title } = Astro.props;
         <div class="gutter-col gutter-3 gutter-right"></div>
 
         <aside class="panel right-panel" id="right-panel">
-          <slot name="right" />
+          <!-- <slot name="right" /> -->
         </aside>
       </div>
       <div class="player">
@@ -61,52 +97,59 @@ const { title } = Astro.props;
     <script>
       import { playerEvents } from "src/utils/playerEvents";
       import { getSpotifyToken } from "../utils/get-spotify-token";
-      window.onSpotifyWebPlaybackSDKReady = () => {
-        const player = new Spotify.Player({
-          name: "Media Player",
-          getOAuthToken: async (cb) => {
-            let token = await getSpotifyToken();
-            cb(token);
-          },
-          volume: 0.5,
-        });
+      try {
+        window.onSpotifyWebPlaybackSDKReady = () => {
+          const player = new Spotify.Player({
+            name: "Media Player",
+            getOAuthToken: async (cb) => {
+              let token = await getSpotifyToken();
+              cb(token);
+            },
+            volume: 0.5,
+          });
 
-        window.deviceId = null;
-        player.addListener("player_state_changed", (state) => {
-          playerEvents.dispatchEvent(
-            new CustomEvent("state", { detail: state })
+          window.deviceId = null;
+          player.addListener("player_state_changed", (state) => {
+            playerEvents.dispatchEvent(
+              new CustomEvent("state", { detail: state })
+            );
+          });
+          player.addListener("ready", ({ device_id }) => {
+            window.deviceId = device_id;
+            console.log("Player ready with device ID", device_id);
+          });
+
+          player.addListener("initialization_error", ({ message }) => {
+            console.error(message);
+          });
+          player.addListener("authentication_error", ({ message }) => {
+            console.error(message);
+          });
+          player.addListener("account_error", ({ message }) => {
+            console.error(message);
+          });
+          player.addListener("playback_error", ({ message }) => {
+            console.error(message);
+          });
+
+          player.connect();
+          playerEvents.addEventListener("pause", () => player.pause());
+          playerEvents.addEventListener("resume", () => player.resume());
+          playerEvents.addEventListener("toggle", () => player.togglePlay());
+          playerEvents.addEventListener("next", () => player.nextTrack());
+          playerEvents.addEventListener("prev", () => player.previousTrack());
+          playerEvents.addEventListener("seek", (e) =>
+            player.seek(e.detail.position)
           );
-        });
-        player.addListener("ready", ({ device_id }) => {
-          window.deviceId = device_id;
-          console.log("Player ready with device ID", device_id);
-        });
-
-        player.addListener("initialization_error", ({ message }) => {
-          console.error(message);
-        });
-        player.addListener("authentication_error", ({ message }) => {
-          console.error(message);
-        });
-        player.addListener("account_error", ({ message }) => {
-          console.error(message);
-        });
-        player.addListener("playback_error", ({ message }) => {
-          console.error(message);
-        });
-
-        player.connect();
-        playerEvents.addEventListener("pause", () => player.pause());
-        playerEvents.addEventListener("resume", () => player.resume());
-        playerEvents.addEventListener("toggle", () => player.togglePlay());
-        playerEvents.addEventListener("next", () => player.nextTrack());
-        playerEvents.addEventListener("prev", () => player.previousTrack());
-        playerEvents.addEventListener("seek", (e) =>
-          player.seek(e.detail.position)
-        );
-      };
+        };
+      } catch (error) {
+        console.log(error);
+      }
     </script>
   </body>
 </html>
-
-<Split />
+<script type="module">
+  window.addEventListener("DOMContentLoaded", async () => {
+    await import("/scripts/Split.js");
+  });
+</script>

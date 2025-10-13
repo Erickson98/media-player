@@ -21,6 +21,9 @@ import PlayIcon from "../../assets/icons/play.svg?url";
                   alt=""
                   srcset=""
                   width="153"
+                  fetchpriority="high"
+                  decoding="sync"
+                  loading="eager"
                 />
                 <div class="text-style">
                   <div class="album-name">{album?.name}</div>
@@ -46,6 +49,8 @@ import PlayIcon from "../../assets/icons/play.svg?url";
                 alt="play icon"
                 data-state="play"
                 class={`btn-hidden-pause-${album.id}`}
+                loading="lazy"
+                decoding="async"
               />
             </button>
           </div>

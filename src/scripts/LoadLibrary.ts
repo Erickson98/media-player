@@ -45,6 +45,22 @@ function renderLibrary(items: SpotifySavedAlbumItem[]) {
     : "<p>No items found</p>";
 }
 
+function renderSkeleton(count: number = 5) {
+  libraryContainer.innerHTML = Array.from({ length: count })
+    .map(
+      () => `
+      <div class="library-item">
+        <div class="skeleton skeleton-img"></div>
+        <div class="container-title-meta">
+          <div class="skeleton skeleton-text skeleton-title"></div>
+          <div class="skeleton skeleton-text skeleton-meta"></div>
+        </div>
+      </div>
+    `
+    )
+    .join("");
+}
+
 function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
   let timeout: ReturnType<typeof setTimeout>;
   return (...args: Parameters<T>): void => {
@@ -103,11 +119,15 @@ function SPANavigation() {
 
 export async function loadLibrary() {
   try {
+    renderSkeleton(8);
+
     contentLibrary = await fetch(
       import.meta.env.DEV
         ? "../../api/albums.json"
-        : "/api/spotify/me/albums?limit=5"
-    ).then((r) => r.json());
+        : "/api/spotify/me/albums?limit=10"
+    )
+      .then((r) => r.json())
+      .catch((error) => console.error(error));
     renderLibrary(contentLibrary.items);
     SPANavigation();
   } catch (err) {

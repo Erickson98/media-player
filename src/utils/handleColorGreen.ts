@@ -94,7 +94,11 @@ async function addCurrentSong(trackData: Object) {
       console.error("Error al reproducir:", e);
     }
   } else {
-    await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    try {
+      await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
@@ -148,7 +152,11 @@ async function handleMainTopSong(trackData: Object) {
       console.error("Error al reproducir:", e);
     }
   } else {
-    await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    try {
+      await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
@@ -210,7 +218,11 @@ async function handleArtistCarrousel(trackData: object) {
       console.error("Error al reproducir:", e);
     }
   } else {
-    await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    try {
+      await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
@@ -252,6 +264,7 @@ async function handleAlbumCarrousel(trackData: object) {
           trackData.artists[0].name
         )}`
       );
+
       const { bio, image } = await res.json();
       localStorageSet("lastPlayedHistory", {
         albumId: trackData.id,
@@ -269,7 +282,11 @@ async function handleAlbumCarrousel(trackData: object) {
       console.error("Error al reproducir:", e);
     }
   } else {
-    await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    try {
+      await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    } catch (error) {
+      console.error;
+    }
   }
 }
 

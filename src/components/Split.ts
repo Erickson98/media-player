@@ -1,8 +1,8 @@
-<script>
-  import Split from "split-grid";
-  import OpenLibrary from "../assets/icons/OpenLibrary.svg";
-  import ClosedLibrary from "../assets/icons/ClosedLibrary.svg";
+import Split from "split-grid";
+import OpenLibrary from "../assets/icons/openLibrary.svg";
+import ClosedLibrary from "../assets/icons/closedLibrary.svg";
 
+function SplitComponent() {
   const gutterLeft = document.querySelector(".gutter-1");
   const gutterRight = document.querySelector(".gutter-right");
   const rightPanel = document.querySelector(".right-panel");
@@ -63,7 +63,9 @@
             ".container-title-meta"
           ) as NodeListOf<HTMLElement>;
           if (track === 1 && parts[0] < MIN_SIZE_FIRST_GUTTER) {
-            forcedStyle = `${MIN_SIZE_LEFT_PANEL}px ${GUTTER}px ${1.73604}fr ${GUTTER}px ${parts[4]}px`;
+            forcedStyle = `${MIN_SIZE_LEFT_PANEL}px ${GUTTER}px ${1.73604}fr ${GUTTER}px ${
+              parts[4]
+            }px`;
             gridTemplateGrid.style.gridTemplateColumns = forcedStyle;
             containerSearchInput.style.display = "none";
             textYourLibrary.style.display = "none";
@@ -136,9 +138,13 @@
       gridTemplateGrid.style.gridTemplateColumns = "401px 5px 1fr 5px 0px";
     } else {
       if (rightVisible) {
-        gridTemplateGrid.style.gridTemplateColumns = `${parts[0]}px 5px ${1}fr 5px ${290}px`;
+        gridTemplateGrid.style.gridTemplateColumns = `${
+          parts[0]
+        }px 5px ${1}fr 5px ${290}px`;
       } else {
-        gridTemplateGrid.style.gridTemplateColumns = `${parts[0]}px 5px ${1}fr 5px ${0}px`;
+        gridTemplateGrid.style.gridTemplateColumns = `${
+          parts[0]
+        }px 5px ${1}fr 5px ${0}px`;
       }
     }
     // setupSplit();
@@ -200,4 +206,6 @@
       });
     }
   });
-</script>
+}
+
+SplitComponent();

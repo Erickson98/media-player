@@ -11,6 +11,12 @@ function formatDuration(ms: number) {
 }
 ---
 
+<link
+  rel="stylesheet"
+  href="/TopTracks.css"
+  media="print"
+  onload="this.media='all'"
+/>
 <div style="display: flex; gap:5px;">
   <div class="container-for-play" style="flex:0.8;position:relative;">
     <h2>Top Results</h2>
@@ -122,72 +128,3 @@ function formatDuration(ms: number) {
     </ul>
   </div>
 </div>
-
-<style>
-  .btn-hidden {
-    position: absolute;
-    right: 0;
-    transform: translate(-20px, -60px);
-    background: #0077ff;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition:
-      bottom 0.4s ease,
-      opacity 0.4s ease;
-    opacity: 0;
-    border: none;
-    border-radius: 50%;
-    width: 10px;
-    height: 30px;
-    font-size: 20px;
-    cursor: pointer;
-    margin-right: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .container-for-play:hover .btn-hidden {
-    opacity: 1;
-  }
-  .image-container {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    overflow: hidden;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-
-  .image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
-
-  .overlay i {
-    font-size: 10px;
-    color: white;
-  }
-
-  .image-container:hover .overlay {
-    opacity: 1;
-  }
-</style>

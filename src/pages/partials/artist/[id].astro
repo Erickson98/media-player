@@ -31,8 +31,8 @@ if (!res.ok) {
 const Popular = await resPopularTracks.json();
 // album.artist_line = album.artists?.map((a: any) => a.name).join(", ") ?? "";
 
-Astro.response.headers.set("Content-Type", "text/html; charset=utf-8");
+// Astro.response.headers.set("Content-Type", "text/html; charset=utf-8");
 ---
 
-<Hero artist={artist} />
-<PopularTracks Popular={Popular} />
+<Hero artist={artist ?? []} />
+<PopularTracks Popular={Popular ?? []} />

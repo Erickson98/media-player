@@ -119,12 +119,12 @@
   </div>
 </footer>
 
-<script client:load>
+<script>
   // año auto
   document.getElementById("y").textContent = new Date().getFullYear();
 </script>
 
-<style>
+<style media="print" onload="this.media='all'">
   :root {
     --bg: #0f0f0f;
     --fg: #eaeaea;

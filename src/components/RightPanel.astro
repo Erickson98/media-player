@@ -11,6 +11,9 @@ export const prerender = false;
     height: auto;
     display: block;
   }
+  .album-cover-wrapper {
+    height: 100vh;
+  }
 </style>
 <!-- Plantilla HTML -->
 <template id="right-panel-tpl">
@@ -18,13 +21,21 @@ export const prerender = false;
     <div data-field="album-name-top"></div>
   </div>
   <div>
-    <img data-field="album-cover" width="500" class="img-album-cover" alt="" />
+    <img
+      data-field="album-cover"
+      width="500"
+      class="img-album-cover"
+      alt=""
+      fetchpriority="high"
+      decoding="sync"
+      loading="eager"
+    />
   </div>
   <div>
     <h2 data-field="album-name"></h2>
     <div data-list="artists"></div>
   </div>
-  <div>
+  <div class="album-cover-wrapper">
     <div class="album-cover-rigth-panel" data-field="hero-bg">
       <p>about the artist</p>
     </div>
@@ -102,28 +113,28 @@ export const prerender = false;
   // window.addEventListener("route:album", clearRight);
 
   // Escucha evento con álbum
-  window.addEventListener("ui:track", (e) => {
-    const {
-      albumId,
-      trackId,
-      trackName,
-      imgAlbum,
-      artistImg,
-      trackArtists,
-      bioArtist,
-      artistName,
-      albumName,
-    } = e.detail;
-    renderRight({
-      albumId,
-      trackId,
-      trackName,
-      imgAlbum,
-      artistImg,
-      trackArtists,
-      bioArtist,
-      artistName,
-      albumName,
-    });
-  });
+  // window.addEventListener("ui:track", (e) => {
+  //   const {
+  //     albumId,
+  //     trackId,
+  //     trackName,
+  //     imgAlbum,
+  //     artistImg,
+  //     trackArtists,
+  //     bioArtist,
+  //     artistName,
+  //     albumName,
+  //   } = e.detail;
+  //   renderRight({
+  //     albumId,
+  //     trackId,
+  //     trackName,
+  //     imgAlbum,
+  //     artistImg,
+  //     trackArtists,
+  //     bioArtist,
+  //     artistName,
+  //     albumName,
+  //   });
+  // });
 </script>
