@@ -1,6 +1,4 @@
 import Split from "split-grid";
-import OpenLibrary from "../assets/icons/openLibrary.svg";
-import ClosedLibrary from "../assets/icons/closedLibrary.svg";
 
 function SplitComponent() {
   const gutterLeft = document.querySelector(".gutter-1");
@@ -38,7 +36,7 @@ function SplitComponent() {
   const containerSearchInput = document.querySelector(
     ".container-search-bar"
   ) as HTMLElement;
-  const icon = document.querySelector(".library-icon") as HTMLImageElement;
+  const icon = document.querySelector(".library-icon") as any;
   const textYourLibrary = document.querySelector(
     ".label-your-library"
   ) as HTMLElement;
@@ -48,7 +46,8 @@ function SplitComponent() {
   const containerActionLibraryButton = document.querySelector(
     ".container-action-library-button"
   ) as HTMLElement;
-
+  const ClosedLibrary = "/closedLibrary.svg";
+  const OpenLibrary = "/openLibrary.svg";
   const setupSplit = () => {
     let forcedStyle = null;
 
@@ -62,6 +61,9 @@ function SplitComponent() {
           const containerContentMedia = document.querySelectorAll(
             ".container-title-meta"
           ) as NodeListOf<HTMLElement>;
+          const eachItemOnLibrary = document.querySelectorAll(
+            ".library-item"
+          ) as NodeListOf<HTMLElement>;
           if (track === 1 && parts[0] < MIN_SIZE_FIRST_GUTTER) {
             forcedStyle = `${MIN_SIZE_LEFT_PANEL}px ${GUTTER}px ${1.73604}fr ${GUTTER}px ${
               parts[4]
@@ -71,22 +73,33 @@ function SplitComponent() {
             textYourLibrary.style.display = "none";
 
             icon.id = "CLOSE";
-            icon.src = ClosedLibrary.src;
+            icon.src = ClosedLibrary;
+
+            eachItemOnLibrary.forEach((element) => {
+              element.style.justifyContent = "center";
+            });
 
             containerContentMedia.forEach((element) => {
               element.style.display = "none";
             });
+
             libraryContainer?.classList.remove("library-container");
             libraryContainer?.classList.add("container-library-center-style");
             library.style.alignItems = "center";
             containerActionLibraryButton.style.margin = "5px auto";
           } else if (track === 1 && parts[0] > MIN_SIZE_FIRST_GUTTER) {
+            if (eachItemOnLibrary !== null) {
+              eachItemOnLibrary.forEach((element) => {
+                element.style.justifyContent = "flex-start";
+              });
+            }
+            console.log("IS OPEN");
             icon.id = "OPEN";
-            icon.src = OpenLibrary.src;
+            icon.src = OpenLibrary;
             textYourLibrary.style.display = "block";
             containerSearchInput.style.display = "flex";
             library.style.alignItems = "start";
-            containerActionLibraryButton.style.margin = "5px";
+            containerActionLibraryButton.style.margin = "13px 8px";
 
             containerContentMedia.forEach((element) => {
               element.style.display = "inline-grid";
@@ -155,12 +168,15 @@ function SplitComponent() {
     ".container-search-bar"
   ) as HTMLElement;
   button?.addEventListener("click", () => {
+    const eachItemOnLibrary = document.querySelectorAll(
+      ".library-item"
+    ) as NodeListOf<HTMLElement>;
     const containerContentMedia = document.querySelectorAll(
       ".container-title-meta"
     ) as NodeListOf<HTMLElement>;
 
     const isOpen = icon.id;
-    icon.src = isOpen === "CLOSE" ? OpenLibrary.src : ClosedLibrary.src;
+    icon.src = isOpen === "CLOSE" ? OpenLibrary : ClosedLibrary;
     icon.id = isOpen === "CLOSE" ? "OPEN" : "CLOSE";
 
     const gridTemplateGrid = document.getElementById("split-wrapper")!;
@@ -180,16 +196,29 @@ function SplitComponent() {
       isOpen === "CLOSE" ? OPEN_PANEL : CLOSE_PANEL;
 
     textYourLibrary.style.display = isOpen === "CLOSE" ? "block" : "none";
-
     if (isOpen === "CLOSE") {
+      console.log("INNEr");
+      if (eachItemOnLibrary !== null) {
+        console.log(isOpen);
+        eachItemOnLibrary.forEach((element) => {
+          element.style.justifyContent = "flex-start";
+        });
+      }
       containerContentMedia.forEach((element) => {
         element.style.display = "inline-grid";
       });
       textYourLibrary.style.display = "block";
       containerSearchInput.style.display = "flex";
       library.style.alignItems = "start";
-      containerActionLibraryButton.style.margin = "5px";
+      containerActionLibraryButton.style.margin = "13px 8px";
     } else if (isOpen === "OPEN") {
+      console.log("SECOND INNER");
+      if (eachItemOnLibrary !== null) {
+        console.log(isOpen);
+        eachItemOnLibrary.forEach((element) => {
+          element.style.justifyContent = "center";
+        });
+      }
       containerContentMedia.forEach((element) => {
         element.style.display = "none";
         containerSearchInput.style.display = "none";

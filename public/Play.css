@@ -1,0 +1,90 @@
+.container-play {
+    width: 42%;
+    display: flex;
+    flex-direction: column;
+    /* acciones arriba y barra abajo */
+    /* gap: 12px; */
+    color: #fff;
+    font-family: system-ui, sans-serif;
+}
+
+.top-play-component-actions { 
+    gap: 10px;
+    display: flex;
+    justify-content: center;
+
+}
+
+.bottom-play-component-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+}
+
+.bottom-play-component-actions .time {
+    font-size: 12px;
+    width: 40px;
+    /* ancho fijo para alinear */
+    text-align: center;
+}
+
+.progress-container {
+    height: 4px;
+    width: 100%;
+    background: #333;
+    /* Barra gris */
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    /* empieza vacía */
+    background: #fff;
+    /* Progreso blanco */
+    border-radius: 8px 0 0 8px;
+    transition: width 0.2s linear;
+}
+
+.progress-container {
+    height: 6px;
+    /* width: 300px; */
+    background: #333;
+    border-radius: 6px;
+    position: relative;
+    cursor: pointer;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 100%;
+    background: #1db954;
+    transform: scaleX(0);
+    transform-origin: left center;
+    will-change: transform;
+}
+
+.progress-knob {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    transform: translate(0, -50%);
+    will-change: transform;
+    pointer-events: none;
+}
+
+.container-for-play-component {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+    gap: 5px;
+}

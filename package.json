@@ -12,7 +12,9 @@
     "build:dev": " astro build && astro preview",
     "build:pod": " astro build",
     "custom:bundle:split": "npx esbuild src/components/Split.ts --bundle --platform=browser --outfile=public/scripts/Split.js --loader:.svg=file",
-    "bundle:min:spli": "npx esbuild src/components/Split.ts --bundle --platform=browser --outfile=public/scripts/Split.js --loader:.svg=file --minify"
+    "bundle:min:spli": "npx esbuild src/components/Split.ts --bundle --platform=browser --outfile=public/scripts/Split.js --minify",
+    "bundle:min:over": "npx esbuild src/components/overScrollbarCustom.ts --bundle --platform=browser --outfile=public/scripts/overScrollbarCustom.js --minify",
+    "test:command": "npx esbuild src/components/Split.ts --bundle --platform=browser --outdir=public/scripts --loader:.svg=file --minify --asset-names=assets/[name]-[hash]"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -22,6 +24,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "astro": "^5.12.0",
+    "overlayscrollbars": "^2.12.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "split-grid": "^1.0.11",

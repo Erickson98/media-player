@@ -49,10 +49,12 @@ const [tracks, artists, newRelease, throwBack, yourFavoriteArtists] =
 ---
 
 <Home tracks={tracks ?? { items: [] }} artists={artists ?? { items: [] }} />
-<AlbumCarrousel
+<!-- <AlbumCarrousel
   album={newRelease?.albums ?? { items: [] }}
   title="New Release"
-/>
+/> -->
+<!-- <AlbumCarrousel album={newRelease.albums} title="New Release" /> -->
+<div class="new-release-album"></div>
 <MightLike album={throwBack ?? { items: [] }} title="Throwback" />
 <ArtistCarrousel artists={yourFavoriteArtists ?? { items: [] }} />
 <!-- <Footer /> -->

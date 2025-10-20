@@ -1,9 +1,13 @@
 import type { MiddlewareHandler } from "astro";
+import crypto from "crypto";
 
 const PUBLIC_ENDPOINT = import.meta.env.PUBLIC_ENDPOINT.split(" ");
 
 export const onRequest: MiddlewareHandler = async (context, next) => {
   const { cookies, url } = context;
+  const nonce = crypto.randomBytes(16).toString("base64");
+  context.locals.nonce = nonce; // para usarlo en la vista
+
   if (url.origin !== context.url.origin) {
     return next();
   }

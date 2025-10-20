@@ -1,8 +1,6 @@
 ---
 export const prerender = false;
 
-import PlayIcon from "../assets/icons/play.svg?url";
-
 const { artists, title } = Astro.props;
 ---
 
@@ -113,7 +111,8 @@ const { artists, title } = Astro.props;
               <img
                 class="img-favorite-artists"
                 src={item?.images[1]?.url}
-                alt={item?.name}
+                alt=""
+                aria-hidden="true"
                 width="153"
                 height="153"
               />
@@ -130,7 +129,7 @@ const { artists, title } = Astro.props;
             })}
           >
             <img
-              src={PlayIcon}
+              src="/play.svg"
               alt="play icon"
               data-state="play"
               class={`btn-hidden-pause-${item.id}`}

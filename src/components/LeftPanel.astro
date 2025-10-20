@@ -44,10 +44,15 @@ import OpenedLibrary from "../assets/icons/openLibrary.svg";
       <List width={20} />
     </div>
   </div>
-  <div id="album-list" class="library album-btn2"></div>
+  <div
+    id="album-list"
+    class="library album-btn2"
+    data-overlayscrollbars-initialize
+  >
+  </div>
 </div>
 
-<script>
-  import { loadLibrary } from "@/scripts/LoadLibrary";
+<script nonce={Astro.locals.nonce} type="module">
+  import { loadLibrary } from "/scripts/LoadLibrary.js";
   loadLibrary();
 </script>

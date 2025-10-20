@@ -1,6 +1,5 @@
 ---
 const { tracks } = Astro.props;
-import PlayIcon from "src/assets/icons/play.svg?url";
 
 function formatDuration(ms: number) {
   const m = Math.floor(ms / 60000);
@@ -11,12 +10,7 @@ function formatDuration(ms: number) {
 }
 ---
 
-<link
-  rel="stylesheet"
-  href="/TopTracks.css"
-  media="print"
-  onload="this.media='all'"
-/>
+<link rel="stylesheet" href="/TopTracks.css" />
 <div style="display: flex; gap:5px;">
   <div class="container-for-play" style="flex:0.8;position:relative;">
     <h2>Top Results</h2>
@@ -62,7 +56,7 @@ function formatDuration(ms: number) {
       })}
     >
       <img
-        src={PlayIcon}
+        src="/play.svg"
         alt=""
         srcset=""
         data-state="play"
@@ -108,7 +102,7 @@ function formatDuration(ms: number) {
                   <img
                     data-state="play"
                     class={`btn-hidden-pause-${track.id}`}
-                    src={PlayIcon}
+                    src="/play.svg"
                     alt=""
                     srcset=""
                   />

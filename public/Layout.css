@@ -9,7 +9,9 @@ button {
   all: unset;
   cursor: pointer;
 }
-
+a{
+  color: white;
+}
 .header-container{
   display: flex;
   align-items: center;
@@ -52,8 +54,8 @@ button {
 
 .default-grid-template-columns {
   display: grid;
-  /* grid-template-columns: 409px 5px 1fr 5px 290px; */
-  grid-template-columns: 104px 5px 1fr 5px 0px;
+  grid-template-columns: 409px 5px 1fr 5px 290px;
+  /* grid-template-columns: 104px 5px 1fr 5px 0px; */
   grid-template-rows: 100%;
   overflow-y: auto;
   overflow-x: hidden;
@@ -65,6 +67,12 @@ button {
   cursor: col-resize;
 } */
 
+ 
+#center-panel{
+  background: rgb(18, 18, 18);
+  height: 100%;
+  border-radius: 5px;
+}
 .gutter-1 {
   grid-column: 2;
 }
@@ -101,24 +109,23 @@ button {
   color: white;
   overflow-y: auto;
   
-  scrollbar-color: #555 transparent;
+  /* scrollbar-color: #555 transparent; */
 }
 .right-panel{
-  height: auto;
+  height:100%;
+
 }
 .central-panel-wrapper{
   height: 100%;
 }
-#center-panel{
-  height: 100%;
-}
+ 
 .without-song-container{
   height: 100%;
 }
 .aside-bar{
   overflow: hidden;
 }
-.panel::-webkit-scrollbar {
+/* .panel::-webkit-scrollbar {
   width: 5px;
 }
 
@@ -135,7 +142,7 @@ button {
 
 .panel:hover::-webkit-scrollbar-thumb {
   background-color: #888;
-}
+} */
 
 .gutter-col {
   cursor: col-resize;
@@ -227,4 +234,14 @@ button {
 .skeleton-meta {
   width: 80px;
   height: 12px;
+}
+.os-scrollbar-vertical {
+  width: 12px;
+  /* ancho del track vertical */
+}
+
+
+/* Opcional: el "handle" (la parte que arrastras) */
+.os-scrollbar-handle {
+  border-radius: 6px;
 }

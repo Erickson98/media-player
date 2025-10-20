@@ -1,11 +1,14 @@
 ---
 const { album, title } = Astro.props;
-import PlayIcon from "../assets/icons/play.svg?url";
 ---
 
 <div class="albums-carousel">
-  <a href="/" target="_blank" rel="noopener noreferrer" class="carousel-title"
-    >{title}</a
+  <a
+    href="/"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={`section of ${title}`}
+    class="carousel-title">{title}</a
   >
 
   <button class="arrow left" aria-label="Anterior">‹</button>
@@ -48,7 +51,7 @@ import PlayIcon from "../assets/icons/play.svg?url";
             })}
           >
             <img
-              src={PlayIcon}
+              src="/play.svg"
               alt="play icon"
               data-state="play"
               class={`btn-hidden-pause-${item.id}`}

@@ -24,7 +24,7 @@ export const prerender = false;
   </div>
 </template>
 
-<script>
+<script nonce={Astro.locals.nonce} type="module">
   const container = document.getElementById("playing-container");
   const tpl = document.getElementById("playing-tpl");
   const KEY_FOR_LAST_PLAYED = "lastPlayedHistory";
@@ -51,46 +51,46 @@ export const prerender = false;
 
   async function main() {
     try {
-      // let lastPlayed = JSON.parse(localStorage.getItem(KEY_FOR_LAST_PLAYED));
-      // if (lastPlayed) {
-      //   renderPlaying(lastPlayed);
-      // } else {
-      //   // 2) Si no hay, usar lo que vino del SSR (props de Astro)
-      //   async function getLastPlayed() {
-      //     const lastPlayed = await fetch(
-      //       "/api/spotify/me/player/recently-played?limit=2"
-      //     );
-      //     return await lastPlayed.json();
-      //   }
-      //   lastPlayed = await getLastPlayed();
-      //   if (lastPlayed?.items?.length) {
-      //     renderPlaying(lastPlayed);
-      //     localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
-      //   }
-      //   // else {
-      //   //   container.innerHTML = `<p>Sin canción en reproducción</p>`;
-      //   // }
-      // }
-      // window.dispatchEvent(
-      //   new CustomEvent("ui:track", {
-      //     detail: {
-      //       albumId: lastPlayed.albumId,
-      //       trackId: lastPlayed.id,
-      //       trackName: lastPlayed.name,
-      //       imgAlbum: lastPlayed.imgAlbum,
-      //       artistImg: lastPlayed.artistImg,
-      //       trackArtists: lastPlayed.trackArtists,
-      //       bioArtist: lastPlayed.bioArtist,
-      //       artistName: lastPlayed.artistName,
-      //       albumName: lastPlayed.albumName,
-      //     },
-      //   })
-      // );
+      let lastPlayed = JSON.parse(localStorage.getItem(KEY_FOR_LAST_PLAYED));
+      if (lastPlayed) {
+        renderPlaying(lastPlayed);
+      } else {
+        // // 2) Si no hay, usar lo que vino del SSR (props de Astro)
+        // async function getLastPlayed() {
+        //   const lastPlayed = await fetch(
+        //     "/api/spotify/me/player/recently-played?limit=2"
+        //   );
+        //   return await lastPlayed.json();
+        // }
+        // lastPlayed = await getLastPlayed();
+        // if (lastPlayed?.items?.length) {
+        //   renderPlaying(lastPlayed);
+        //   localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
+        // }
+        // // else {
+        // //   container.innerHTML = `<p>Sin canción en reproducción</p>`;
+        // // }
+      }
+      window.dispatchEvent(
+        new CustomEvent("ui:track", {
+          detail: {
+            albumId: lastPlayed.albumId,
+            trackId: lastPlayed.id,
+            trackName: lastPlayed.name,
+            imgAlbum: lastPlayed.imgAlbum,
+            artistImg: lastPlayed.artistImg,
+            trackArtists: lastPlayed.trackArtists,
+            bioArtist: lastPlayed.bioArtist,
+            artistName: lastPlayed.artistName,
+            albumName: lastPlayed.albumName,
+          },
+        })
+      );
     } catch (e) {
       console.warn("Error parsing lastPlayed from localStorage", e);
     }
   }
-  await main();
+  main();
   window.addEventListener("route:playing", (e) => {
     main();
   });

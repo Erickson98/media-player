@@ -2,7 +2,7 @@
 
 ---
 
-<script client:load>
+<script nonce={Astro.locals.nonce} type="module">
   function parsePath(pathname) {
     const album = pathname.match(/^\/album\/(\w+)$/);
     const artist = pathname.match(/^\/artist\/(\w+)$/);

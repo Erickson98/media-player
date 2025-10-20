@@ -2,6 +2,7 @@
 const { tracks, artists } = Astro.props;
 ---
 
+<link rel="stylesheet" href="/Home.css" />
 <div class="grid8">
   {
     tracks.items?.map((item) => (
@@ -52,7 +53,7 @@ const { tracks, artists } = Astro.props;
     artists.items?.map((item) => (
       <div class="card">
         <img
-          src={item.images[2].url}
+          src={item.images[2].url + "w=112"}
           alt=""
           srcset=""
           loading="lazy"

@@ -1,13 +1,17 @@
 ---
 const { album } = Astro.props;
-import PlayIcon from "../../assets/icons/play.svg?url";
 ---
 
 <div class="might-like">
   <button class="arrow left mightLikeLeft" aria-label="Anterior">‹</button>
   <button class="arrow right mightLikeRight" aria-label="Siguiente">›</button>
 
-  <a href="/" target="_blank" rel="noopener noreferrer">You Might Like</a>
+  <a
+    href="/"
+    target="_blank"
+    aria-label="Albums you might like"
+    rel="noopener noreferrer">You Might Like</a
+  >
   <div class="container-for-albums-carrusel-might-like">
     {
       album.items.map(({ album }) => (
@@ -45,7 +49,7 @@ import PlayIcon from "../../assets/icons/play.svg?url";
               })}
             >
               <img
-                src={PlayIcon}
+                src="/play.svg"
                 alt="play icon"
                 data-state="play"
                 class={`btn-hidden-pause-${album.id}`}

@@ -11,55 +11,54 @@ const { title } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link
-      rel="stylesheet"
-      href="/Layout.css"
-      media="print"
-      onload="this.media='all'"
+    <meta
+      name="description"
+      content="Explora tus artistas favoritos, nuevos lanzamientos y recomendaciones personalizadas con nuestra aplicación musical."
     />
     <link
       rel="stylesheet"
-      href="/SplitPanel.css"
-      media="print"
-      onload="this.media='all'"
+      href="https://cdn.jsdelivr.net/npm/overlayscrollbars/styles/overlayscrollbars.css"
     />
 
     <link
-      rel="stylesheet"
-      href="/CenterPanel.css"
-      media="print"
-      onload="this.media='all'"
+      rel="preload"
+      as="script"
+      href="https://sdk.scdn.co/spotify-player.js"
+      crossorigin
     />
+
     <link
-      rel="stylesheet"
-      href="/SideBar.css"
-      media="print"
-      onload="this.media='all'"
+      rel="dns-prefetch preconnect"
+      href="https://api.spotify.com"
+      crossorigin
     />
+    <link rel="dns-prefetch preconnect" href="https://i.scdn.co" crossorigin />
     <link
-      rel="stylesheet"
-      href="/RightPanel.css"
-      media="print"
-      onload="this.media='all'"
+      rel="dns-prefetch preconnect"
+      href="https://sdk.scdn.co"
+      crossorigin
     />
-    <link
-      rel="stylesheet"
-      href="/SearchBar.css"
-      media="print"
-      onload="this.media='all'"
-    />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/Layout.css" />
+    <link rel="stylesheet" href="/SplitPanel.css" />
+
+    <link rel="stylesheet" href="/CenterPanel.css" />
+    <link rel="stylesheet" href="/SideBar.css" />
+    <link rel="stylesheet" href="/RightPanel.css" />
+    <link rel="stylesheet" href="/SearchBar.css" />
+    <link rel="stylesheet" href="/Home.css" />
 
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body>
+  <body data-overlayscrollbars-initialize>
     <div class="grid-layout">
       <header class="header-container">
         <div class="header-side">
-          <a href="/" rel="noopener noreferrer"
+          <a href="/" aria-label="app icon" rel="noopener' noreferrer"
             ><img
-              src="/public/icon.webp"
+              src="/icon.webp"
               width="50"
               alt=""
               srcset=""
@@ -72,19 +71,25 @@ const { title } = Astro.props;
       </header>
 
       <div class="default-grid-template-columns" id="split-wrapper">
-        <aside class="panel aside-bar" id="left-panel">
+        <aside
+          class="panel aside-bar"
+          id="left-panel"
+          data-overlayscrollbars-initialize
+        >
           <slot name="left" />
         </aside>
 
         <div class="gutter-col gutter-1"></div>
-        <div class="panel">
+
+        <div class="panel" id="here">
           <main id="center-panel"><slot /></main>
           <Footer />
         </div>
+
         <div class="gutter-col gutter-3 gutter-right"></div>
 
         <aside class="panel right-panel" id="right-panel">
-          <!-- <slot name="right" /> -->
+          <slot name="right" />
         </aside>
       </div>
       <div class="player">
@@ -92,11 +97,12 @@ const { title } = Astro.props;
         <!-- <button class="toggle">Toggle Right Panel</button> -->
       </div>
     </div>
-    <script src="https://sdk.scdn.co/spotify-player.js"></script>
 
-    <script>
-      import { playerEvents } from "src/utils/playerEvents";
-      import { getSpotifyToken } from "../utils/get-spotify-token";
+    <!-- <script src="https://sdk.scdn.co/spotify-player.js"></script> -->
+
+    <script nonce={Astro.locals.nonce} type="module">
+      import { playerEvents } from "/scripts/playerEvents.js";
+      import { getSpotifyToken } from "/scripts/getSpotifyToken.js";
       try {
         window.onSpotifyWebPlaybackSDKReady = () => {
           const player = new Spotify.Player({
@@ -146,10 +152,22 @@ const { title } = Astro.props;
         console.log(error);
       }
     </script>
+    <script type="module" lang="ts"></script>
   </body>
 </html>
 <script type="module">
+  // import { OverlayScrollbars } from "https://cdn.jsdelivr.net/npm/overlayscrollbars/+esm";
+
+  // const target = document.getElementById("rtrt");
+
+  // OverlayScrollbars(target, {
+  //   scrollbars: { autoHide: "leave" },
+  //   overflow: { x: "hidden" },
+  // });
+</script>
+<script type="module" nonce={Astro.locals.nonce}>
   window.addEventListener("DOMContentLoaded", async () => {
     await import("/scripts/Split.js");
+    // await import("/scripts/overScrollbarCustom.js");
   });
 </script>

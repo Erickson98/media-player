@@ -1,9 +1,9 @@
 import { spotifyPlayerAction } from "/scripts/spotifyPlayerActions.js";
 import { localStorageGet, localStorageSet } from "/scripts/localStorage.js";
-import PauseIcon from "src/assets/icons/pause.svg?url";
-import PlayIcon from "src/assets/icons/play.svg?url";
 
 const CLASSNAME = "text-playing";
+const PlayIcon = "/play.svg";
+const PauseIcon = "/pause.svg";
 
 function setColorGreen(element) {
   element.classList.add(CLASSNAME);
@@ -264,7 +264,7 @@ async function handleAlbumCarrousel(trackData) {
         trackId: lastPlayedData.items[0].id,
         trackName: lastPlayedData.items[0].name,
         imgAlbum: trackData.imgAlbum[0].url,
-        artistImg: "",
+        artistImg: image,
         trackArtists: trackData.artists,
         bioArtist: bio,
         artistName: trackData.artists[0].name,

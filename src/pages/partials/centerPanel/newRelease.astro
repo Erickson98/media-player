@@ -1,0 +1,32 @@
+---
+import AlbumCarrousel from "src/components/AlbumCarrousel.astro";
+
+const headers = new Headers({ Accept: "application/json" });
+const cookie = Astro.request.headers.get("cookie");
+if (cookie) headers.set("cookie", cookie);
+
+// URLs centralizadas
+const endpoints = {
+  newRelease: "/api/spotify/browse/new-releases?limit=10",
+};
+
+// Ejecutar todas las peticiones en paralelo
+const [resNewRelease] = await Promise.all([
+  fetch(new URL(endpoints.newRelease, Astro.url), { headers }),
+]);
+
+// Validar errores pero sin romper toda la página
+function safeJson(response, label) {
+  if (!response.ok) {
+    console.error(`❌ Error al cargar ${label}: status ${response.status}`);
+    return null;
+  }
+  return response.json();
+}
+
+const [newRelease] = await Promise.all([
+  safeJson(resNewRelease, "new releases"),
+]);
+---
+
+<AlbumCarrousel album={newRelease.albums} title="New Release" />

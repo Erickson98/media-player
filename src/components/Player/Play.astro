@@ -1,18 +1,13 @@
----
-import NextIcon from "src/assets/icons/next.svg?url";
-import PreviousIcon from "src/assets/icons/previous.svg?url";
-import PlayIcon from "src/assets/icons/iconPlay.svg?url";
----
-
+<link rel="stylesheet" href="/Play.css" />
 <div class="container-play">
   <div class="top-play-component-actions">
-    <button class="previous-action">
-      <img src={PreviousIcon} width="15" alt="" srcset="" />
+    <button class="previous-action" aria-label="previous play">
+      <img src="/previous.svg" width="15" alt="" srcset="" />
     </button>
 
-    <button class="play-action">
+    <button class="play-action" aria-label="play action">
       <img
-        src={PlayIcon}
+        src="/iconPlay.svg"
         class="play-action-icon"
         data-action="pause"
         width="15"
@@ -21,8 +16,8 @@ import PlayIcon from "src/assets/icons/iconPlay.svg?url";
       />
     </button>
 
-    <button class="next-action">
-      <img src={NextIcon} width="15" alt="" srcset="" />
+    <button class="next-action" aria-label="next play">
+      <img src="/next.svg" width="15" alt="" srcset="" />
     </button>
   </div>
   <div class="container-for-play-component">
@@ -35,88 +30,7 @@ import PlayIcon from "src/assets/icons/iconPlay.svg?url";
   </div>
 </div>
 
-<style>
-  .container-play {
-    width: 42%;
-    display: flex;
-    flex-direction: column; /* acciones arriba y barra abajo */
-    /* gap: 12px; */
-    color: #fff;
-    font-family: system-ui, sans-serif;
-  }
-
-  .top-play-component-actions {
-    /* estilos para los botones de arriba */
-  }
-
-  .bottom-play-component-actions {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    width: 100%;
-  }
-
-  .bottom-play-component-actions .time {
-    font-size: 12px;
-    width: 40px; /* ancho fijo para alinear */
-    text-align: center;
-  }
-
-  .progress-container {
-    height: 4px;
-    width: 100%;
-    background: #333; /* Barra gris */
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .progress-bar {
-    height: 100%;
-    width: 0%; /* empieza vacía */
-    background: #fff; /* Progreso blanco */
-    border-radius: 8px 0 0 8px;
-    transition: width 0.2s linear;
-  }
-  .progress-container {
-    height: 6px;
-    /* width: 300px; */
-    background: #333;
-    border-radius: 6px;
-    position: relative;
-    cursor: pointer;
-  }
-  .progress-bar {
-    height: 100%;
-    width: 100%;
-    background: #1db954;
-    transform: scaleX(0);
-    transform-origin: left center;
-    will-change: transform;
-  }
-  .progress-knob {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #fff;
-    transform: translate(0, -50%);
-    will-change: transform;
-    pointer-events: none;
-  }
-  .container-for-play-component {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width: 100%;
-    align-items: center;
-    gap: 5px;
-  }
-</style>
-
-<script>
+<script nonce={Astro.locals.nonce} type="module">
   let player;
   let duration = 0;
   let position = 0;
@@ -155,15 +69,13 @@ import PlayIcon from "src/assets/icons/iconPlay.svg?url";
     }
     requestAnimationFrame(animate);
   }
-  import { spotifyPlayerAction } from "@/scripts/spotifyPlayerAction";
-  import { localStorageGet } from "src/utils/localStorage";
-  import PauseIcon from "src/assets/icons/iconPause.svg?url";
-  import PlayIcon from "src/assets/icons/iconPlay.svg?url";
-  import { playerEvents } from "src/utils/playerEvents";
+  import { spotifyPlayerAction } from "/scripts/spotifyPlayerActions.js";
+  import { localStorageGet } from "/scripts/localStorage.js";
 
-  const previousElement = document.querySelector(
-    ".previous-action"
-  ) as HTMLElement;
+  import { playerEvents } from "/scripts/playerEvents.js";
+
+  const PlayIcon = "/iconPlay.svg";
+  const previousElement = document.querySelector(".previous-action");
   previousElement?.addEventListener("click", async () => {
     try {
       await spotifyPlayerAction("previous", { deviceId: window.deviceId });
@@ -174,11 +86,9 @@ import PlayIcon from "src/assets/icons/iconPlay.svg?url";
 
   playElement?.addEventListener("click", async () => {
     let played = false;
-    const imgElement = document.querySelector(
-      ".play-action-icon"
-    ) as HTMLImageElement;
+    const imgElement = document.querySelector(".play-action-icon");
     if (imgElement.dataset.action === "pause") {
-      imgElement.src = PauseIcon;
+      imgElement.src = "/iconPause.svg";
       imgElement.dataset.action = "play";
       const lastPlayed = localStorageGet("lastPlayedHistory");
       if (!played) {

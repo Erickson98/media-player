@@ -1,14 +1,11 @@
-import type {
-  SpotifySavedAlbumsResponse,
-  SpotifySavedAlbumItem,
-} from "@models/me.ts";
-const libraryContainer = document.querySelector(".library")!;
-const searchBar = document.getElementById("inputSearch") as HTMLInputElement;
+import { debounce } from "/scripts/debounce.js";
+const libraryContainer = document.querySelector(".library");
+const searchBar = document.getElementById("inputSearch");
 const clearButton = document.querySelector(".clear-button");
 
-let contentLibrary: SpotifySavedAlbumsResponse;
+let contentLibrary;
 
-function renderLibrary(items: SpotifySavedAlbumItem[]) {
+function renderLibrary(items) {
   libraryContainer.innerHTML = items
     ? items
         .map((item) => {
@@ -25,6 +22,7 @@ function renderLibrary(items: SpotifySavedAlbumItem[]) {
             loading="lazy" 
             decoding="async"
             alt="${item.album.name}" 
+            class="img-library-item"
           />
             </button>
             <div class="container-title-meta">
@@ -45,7 +43,7 @@ function renderLibrary(items: SpotifySavedAlbumItem[]) {
     : "<p>No items found</p>";
 }
 
-function renderSkeleton(count: number = 5) {
+function renderSkeleton(count) {
   libraryContainer.innerHTML = Array.from({ length: count })
     .map(
       () => `
@@ -61,15 +59,7 @@ function renderSkeleton(count: number = 5) {
     .join("");
 }
 
-function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
-  let timeout: ReturnType<typeof setTimeout>;
-  return (...args: Parameters<T>): void => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => fn(...args), delay);
-  };
-}
-
-const handleSearch = debounce((query: string) => {
+const handleSearch = debounce((query) => {
   query = query.trim().toLowerCase();
 
   renderLibrary(
@@ -77,19 +67,22 @@ const handleSearch = debounce((query: string) => {
       x.album.name.toLowerCase().includes(query)
     )
   );
+  // onInstance.update();
   SPANavigation();
+  initScroll();
 }, 200);
 
-searchBar!.addEventListener("input", (e: Event) => {
-  if (!contentLibrary.items) return;
-  const target = e.target as HTMLInputElement;
+searchBar.addEventListener("input", (e) => {
+  // if (contentLibrary.items) return;
+  const target = e.target;
   handleSearch(target.value);
 });
 
-clearButton!.addEventListener("click", () => {
-  searchBar!.value = "";
+clearButton.addEventListener("click", () => {
+  searchBar.value = "";
   handleSearch("");
-  searchBar!.focus();
+  searchBar.focus();
+  // onInstance.update();
 });
 
 function SPANavigation() {
@@ -117,21 +110,41 @@ function SPANavigation() {
   });
 }
 
+import { OverlayScrollbars } from "https://cdn.jsdelivr.net/npm/overlayscrollbars/+esm";
 export async function loadLibrary() {
   try {
-    renderSkeleton(8);
+    renderSkeleton(20);
 
-    contentLibrary = await fetch(
-      import.meta.env.DEV
-        ? "../../api/albums.json"
-        : "/api/spotify/me/albums?limit=10"
-    )
+    contentLibrary = await fetch("/api/spotify/me/albums?limit=20")
       .then((r) => r.json())
       .catch((error) => console.error(error));
     renderLibrary(contentLibrary.items);
     SPANavigation();
+
+    // const target = document.getElementById("album-list");
+
+    // onInstance = OverlayScrollbars(target, {
+    //   scrollbars: { autoHide: "leave", theme: "os-theme-light" },
+    //   overflow: { x: "hidden" },
+    // });
+    initScroll();
   } catch (err) {
     console.error("Failed to fetch library:", err);
     libraryContainer.innerHTML = "<p>Error loading items</p>";
   }
+}
+let osInstance = null;
+
+function initScroll() {
+  const target = document.getElementById("album-list");
+
+  if (osInstance) {
+    osInstance.destroy();
+    osInstance = null;
+  }
+
+  osInstance = OverlayScrollbars(target, {
+    scrollbars: { autoHide: "leave", theme: "os-theme-light" },
+    overflow: { x: "hidden" },
+  });
 }

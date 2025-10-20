@@ -38,7 +38,7 @@
   }
 </style>
 
-<script>
+<script nonce={Astro.locals.nonce} type="module">
   const container = document.getElementById("volume-container");
   const bar = document.getElementById("volume-bar");
   const knob = document.getElementById("volume-knob");
