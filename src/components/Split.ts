@@ -9,7 +9,7 @@ function SplitComponent() {
 
   const MAX_SIZE_THIRD_COLUM = 409;
   const MIN_SIZE_THIRD_COLUMN = 290;
-  const GUTTER = 5;
+  const GUTTER = 10;
   const SNAPOFFSET = 230;
   const MIN_SIZE_FIRST_GUTTER = 260;
   const MIN_SIZE_LEFT_PANEL = 104;
@@ -62,8 +62,18 @@ function SplitComponent() {
             ".container-title-meta"
           ) as NodeListOf<HTMLElement>;
           const eachItemOnLibrary = document.querySelectorAll(
+            ".album-btn"
+          ) as NodeListOf<HTMLElement>;
+          const containerLibraryCenterStyle = document.querySelector(
+            ".container-library-center-style"
+          ) as HTMLElement;
+          const libraryContainerInner = document.querySelector(
+            ".library-container"
+          ) as HTMLElement;
+          const libraryItemNodeList = document.querySelectorAll(
             ".library-item"
           ) as NodeListOf<HTMLElement>;
+
           if (track === 1 && parts[0] < MIN_SIZE_FIRST_GUTTER) {
             forcedStyle = `${MIN_SIZE_LEFT_PANEL}px ${GUTTER}px ${1.73604}fr ${GUTTER}px ${
               parts[4]
@@ -78,7 +88,11 @@ function SplitComponent() {
             eachItemOnLibrary.forEach((element) => {
               element.style.justifyContent = "center";
             });
-
+            libraryContainerInner.style.padding = "0px";
+            libraryContainerInner.style.margin = "0px";
+            libraryItemNodeList.forEach((element) => {
+              element.style.marginRight = "0px";
+            });
             containerContentMedia.forEach((element) => {
               element.style.display = "none";
             });
@@ -93,6 +107,11 @@ function SplitComponent() {
                 element.style.justifyContent = "flex-start";
               });
             }
+            // containerLibraryCenterStyle.style.padding = "0px 0px 0px 10px";
+            // containerLibraryCenterStyle.style.margin = "0px 0px 0px 8px";
+            libraryItemNodeList.forEach((element) => {
+              element.style.marginRight = "10px";
+            });
             console.log("IS OPEN");
             icon.id = "OPEN";
             icon.src = OpenLibrary;
@@ -134,6 +153,24 @@ function SplitComponent() {
           }
         }
       },
+      onDragStart(direction, track) {
+        if (track === 1) {
+          const gutter = document.querySelector(".gutter-left-row");
+          gutter?.classList.add("active");
+        } else if (track === 3) {
+          const gutter = document.querySelector(".gutter-right");
+          gutter?.classList.add("active");
+        }
+      },
+      onDragEnd(direction, track) {
+        if (track === 1) {
+          const gutter = document.querySelector(".gutter-left-row");
+          gutter?.classList.remove("active");
+        } else if (track === 3) {
+          const gutter = document.querySelector(".gutter-right");
+          gutter?.classList.remove("active");
+        }
+      },
     });
   };
 
@@ -169,10 +206,16 @@ function SplitComponent() {
   ) as HTMLElement;
   button?.addEventListener("click", () => {
     const eachItemOnLibrary = document.querySelectorAll(
-      ".library-item"
+      ".album-btn"
     ) as NodeListOf<HTMLElement>;
     const containerContentMedia = document.querySelectorAll(
       ".container-title-meta"
+    ) as NodeListOf<HTMLElement>;
+    const containerLibraryCenterStyle = document.querySelector(
+      ".library-container"
+    ) as HTMLElement;
+    const libraryItemNodeList = document.querySelectorAll(
+      ".library-item"
     ) as NodeListOf<HTMLElement>;
 
     const isOpen = icon.id;
@@ -187,8 +230,8 @@ function SplitComponent() {
       .split(" ")
       .map((val) => parseFloat(val.replace("fr", "")));
 
-    const OPEN_PANEL = `${MAX_SIZE_THIRD_COLUM}px 5px ${parts[2]}fr 5px ${parts[4]}px`;
-    const CLOSE_PANEL = `${MIN_SIZE_LEFT_PANEL}px 5px ${parts[2]}fr 5px ${parts[4]}px`;
+    const OPEN_PANEL = `${MAX_SIZE_THIRD_COLUM}px ${GUTTER}px ${parts[2]}fr ${GUTTER}px ${parts[4]}px`;
+    const CLOSE_PANEL = `${MIN_SIZE_LEFT_PANEL}px ${GUTTER}px ${parts[2]}fr ${GUTTER}px ${parts[4]}px`;
 
     searchBar.style.display = isOpen === "CLOSE" ? "flex" : "none";
 
@@ -204,6 +247,11 @@ function SplitComponent() {
           element.style.justifyContent = "flex-start";
         });
       }
+      // containerLibraryCenterStyle.style.padding = "0px 0px 0px 10px";
+      // containerLibraryCenterStyle.style.margin = "0px 0px 0px 8px";
+      libraryItemNodeList.forEach((element) => {
+        element.style.marginRight = "10px";
+      });
       containerContentMedia.forEach((element) => {
         element.style.display = "inline-grid";
       });
@@ -219,6 +267,11 @@ function SplitComponent() {
           element.style.justifyContent = "center";
         });
       }
+      containerLibraryCenterStyle.style.padding = "0px";
+      containerLibraryCenterStyle.style.margin = "0px";
+      libraryItemNodeList.forEach((element) => {
+        element.style.marginRight = "0px";
+      });
       containerContentMedia.forEach((element) => {
         element.style.display = "none";
         containerSearchInput.style.display = "none";

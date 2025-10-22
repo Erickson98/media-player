@@ -12,7 +12,7 @@ function renderLibrary(items) {
           const src = item.album.images[2]?.url;
           return `
             <div class="library-item">
-              <button class="album-btn" data-id=${item.album.id}>
+              <button class="album-btn album-btn-library-section" data-id=${item.album.id}>
                 <img 
             src="${src}" 
             srcset="${src}?w=56 56w, ${src}?w=112 112w" 
@@ -24,18 +24,14 @@ function renderLibrary(items) {
             alt="${item.album.name}" 
             class="img-library-item"
           />
-            </button>
             <div class="container-title-meta">
               <div class="title">${item.album.name}</div>
-              <div class="meta">
+                <div class="meta">
                 
-                ${
-                  item.album.artists[0].name
-                    ? ` ${item.album.artists[0].name}`
-                    : ""
-                }
+                ${item.album.artists[0].name ? ` ${item.album.artists[0].name}` : ""}
+                </div>
               </div>
-            </div>
+          </button>
           </div>
         `;
         })

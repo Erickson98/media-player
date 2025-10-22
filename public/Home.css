@@ -24,7 +24,6 @@
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-    margin-bottom: 8px;
     overflow: hidden;
     overflow-wrap: anywhere;
     text-overflow: ellipsis;
@@ -49,6 +48,6 @@
 
 .btn-hidden {
     margin: 0px;
-    position: initial;
-    transform: translate(0px, 0px);
+    position: absolute;
+    /* transform: translate(0px, 0px); */
 }

@@ -40,7 +40,7 @@ const { album, title } = Astro.props;
           </button>
 
           <button
-            class="btn-hidden playSong-Album-Carrousel"
+            class="btn-hidden playSong-Artists-Carrousel"
             data-track-album={item.uri}
             data-track={JSON.stringify({
               id: item.id,
@@ -89,7 +89,7 @@ const { album, title } = Astro.props;
     -webkit-overflow-scrolling: touch;
     padding: 0 16px;
     scrollbar-width: none;
-    gap: var(--gap);
+    /* gap: var(--gap); */
   }
   .container-for-albums-carrusel::-webkit-scrollbar {
     display: none;
@@ -97,11 +97,20 @@ const { album, title } = Astro.props;
 
   /* Card/álbum */
   .container-for-play {
-    position: relative; /* para el botón superpuesto */
     /* flex: 0 0 auto; */
-    width: clamp(140px, 22vw, 182px);
+    width: clamp(140px, 22vw, 162px);
     scroll-snap-align: start;
-    text-align: left;
+    /* text-align: center; */
+    position: relative;
+    font-size: smaller;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0);
+    transition: opacity 0.3s ease;
+    border-radius: 10px;
+  }
+
+  .container-for-play:hover {
+    background: #1f1f1f;
   }
 
   .album-name {

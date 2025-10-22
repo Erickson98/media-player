@@ -32,8 +32,11 @@
 }
   
 .right-panel{
-  border-radius: 5px;
+  border-radius: 15px;
   background: rgb(18, 18, 18);
+  margin-right: 8px;
+  height: 100%;
+  margin-right: 8px;
 }
 
 .hero-image{

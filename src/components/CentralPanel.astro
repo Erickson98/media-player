@@ -400,17 +400,28 @@
     const cloneStructureHomeViewElement =
       structureHomeViewTemplate.content.cloneNode(true);
     const newReleaseElement = newReleaseTemplate.content.cloneNode(true);
+    const mightLikeElement = newReleaseTemplate.content.cloneNode(true);
+    const artistLikeElement = newReleaseTemplate.content.cloneNode(true);
     cloneTopElementView.innerHTML = ""; // limpiar antes de renderizar
     cloneStructureHomeViewElement.innerHTML = ""; // limpiar antes de renderizar
     newReleaseElement.innerHTML = ""; // limpiar antes de renderizar
+    mightLikeElement.innerHTML = ""; // limpiar antes de renderizar
+    artistLikeElement.innerHTML = ""; // limpiar antes de renderizar
     const topElementSection =
       cloneStructureHomeViewElement.querySelector(".top-view-elements");
 
     const newRelease =
       cloneStructureHomeViewElement.querySelector(".newRelease");
+    const mightLike =
+      cloneStructureHomeViewElement.querySelector(".might-like");
+    const artistLike =
+      cloneStructureHomeViewElement.querySelector(".artist-you-like");
     topElementSection.appendChild(cloneTopElementView);
     newRelease.appendChild(newReleaseElement);
 
+    mightLike.style.marginTop = "20px";
+    mightLike.appendChild(mightLikeElement);
+    artistLike.appendChild(artistLikeElement);
     root.innerHTML = ``;
     root.appendChild(cloneStructureHomeViewElement);
 
@@ -611,8 +622,16 @@
     });
   }
   async function renderAlbumById(albumId) {
-    root.innerHTML = `<p>Cargando álbum ${albumId}...</p>`;
+    root.innerHTML = ``;
     try {
+      // const albumDetailSkeletonTemplate = document.getElementById(
+      //   "album-detail-skeleton-album"
+      // );
+      // console.log(albumDetailSkeletonTemplate);
+      // if (albumDetailSkeletonTemplate) {
+      //   const skeleton = albumDetailSkeletonTemplate.content.cloneNode(true);
+      //   root.appendChild(skeleton);
+      // }
       const html = await fetch(`/partials/album/${albumId}`).then((r) => {
         if (!r.ok) throw new Error("Album not found");
         return r.text();
@@ -663,6 +682,7 @@
         .addEventListener("click", async () => {
           await spotifyPlayerAction("pause");
         });
+
       /////////
     } catch (e) {
       root.innerHTML = `<p>Error cargando álbum.</p>`;
@@ -723,6 +743,7 @@
   window.addEventListener("route:album", (e) => {
     const { albumId } = e.detail;
     renderAlbumById(albumId);
+    // renderAlbumById(albumId);
   });
   window.addEventListener("route:artist", (e) => {
     const { artistId } = e.detail;

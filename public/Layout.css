@@ -54,7 +54,7 @@ a{
 
 .default-grid-template-columns {
   display: grid;
-  grid-template-columns: 409px 5px 1fr 5px 290px;
+  grid-template-columns: 409px 10px 1fr 10px 290px;
   /* grid-template-columns: 104px 5px 1fr 5px 0px; */
   grid-template-rows: 100%;
   overflow-y: auto;
@@ -70,7 +70,7 @@ a{
  
 #center-panel{
   background: rgb(18, 18, 18);
-  height: 100%;
+  /* height: 100vh; */
   border-radius: 5px;
 }
 .gutter-1 {
@@ -96,7 +96,7 @@ a{
 
 .grid-default {
   display: grid;
-  grid-template-columns: 1fr 5px 1fr 5px 1fr;
+  grid-template-columns: 1fr 8px 1fr 8px 1fr;
   grid-template-rows: 100%;
 }
 
@@ -111,10 +111,7 @@ a{
   
   /* scrollbar-color: #555 transparent; */
 }
-.right-panel{
-  height:100%;
 
-}
 .central-panel-wrapper{
   height: 100%;
 }
@@ -124,6 +121,9 @@ a{
 }
 .aside-bar{
   overflow: hidden;
+  background: rgb(18, 18, 18);
+  border-radius: 15px;
+  margin-left: 9px;
 }
 /* .panel::-webkit-scrollbar {
   width: 5px;
@@ -147,18 +147,28 @@ a{
 .gutter-col {
   cursor: col-resize;
   width: 5px;
+  margin: 0 auto;
 }
 
 .gutter-col::after {
   content: "";
-  margin: 0 auto;
-  background: aqua;
-  height: 100%;
-  width: 1px;
-  display: block;
+  position: absolute;
+  top: 49%;
+  transform: translate(50%, -50%);
+  height: calc(100% - 180px);
+  border-radius: 2px;
+  width: 2px;
+  background-color: #7c7c7c;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
 }
 
-
+.gutter-col:hover::after {
+  opacity: 1;
+}
+.gutter-col.active::after {
+  opacity: 1;
+}
 
 .player {
   background: #111;

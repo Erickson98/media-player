@@ -20,7 +20,7 @@ const { artists, title } = Astro.props;
 
   .carousel-track {
     display: flex;
-    gap: var(--gap);
+    /* gap: var(--gap); */
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-padding-left: 16px;
@@ -34,13 +34,19 @@ const { artists, title } = Astro.props;
 
   .container-for-play {
     flex: 0 0 auto;
-    width: clamp(140px, 22vw, 162px);
+    /* width: clamp(140px, 22vw, 162px); */
     scroll-snap-align: start;
     /* text-align: center; */
     position: relative;
     font-size: smaller;
+    padding: 10px;
+    background-color: transparent;
+    transition: background 0.3 ease-in;
+    border-radius: 10px;
   }
-
+  .container-for-play:hover {
+    background-color: #1f1f1f;
+  }
   .img-favorite-artists {
     border-radius: 50%;
     object-fit: cover;

@@ -53,6 +53,251 @@ const { title } = Astro.props;
     <title>{title}</title>
   </head>
   <body data-overlayscrollbars-initialize>
+    <template id="album-detail-skeleton-album">
+      <style>
+        .skeleton-album {
+          background: linear-gradient(
+            90deg,
+            #2a2a2a 25%,
+            #3a3a3a 37%,
+            #2a2a2a 63%
+          );
+          background-size: 400% 100%;
+          animation: shimmer 1.4s ease infinite;
+        }
+
+        @keyframes shimmer {
+          0% {
+            background-position: -400px 0;
+          }
+          100% {
+            background-position: 400px 0;
+          }
+        }
+
+        .skeleton-album-line {
+          height: 14px;
+          border-radius: 4px;
+          margin: 4px 0;
+        }
+
+        .skeleton-album-img {
+          width: 60px;
+          height: 60px;
+          border-radius: 4px;
+        }
+
+        .skeleton-album-btn {
+          width: 80px;
+          height: 30px;
+          border-radius: 20px;
+        }
+
+        .album-header-skeleton-album {
+          display: flex;
+          gap: 12px;
+          margin: 16px 0;
+          align-items: center;
+        }
+
+        .album-info-skeleton-album {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .track-list-skeleton-album {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 12px;
+        }
+
+        .track-skeleton-album-row {
+          display: grid;
+          grid-template-columns: 40px 1fr 40px;
+          align-items: center;
+          gap: 10px;
+          padding: 8px 0;
+        }
+
+        .copyrights-skeleton-album {
+          margin-top: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+      </style>
+
+      <div class="album-header-skeleton-album">
+        <div class="skeleton-album skeleton-album-img"></div>
+        <div class="album-info-skeleton-album">
+          <div
+            class="skeleton-album skeleton-album-line"
+            style="width: 160px; height:18px;"
+          >
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width: 100px;">
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width: 140px;">
+          </div>
+          <div style="display:flex; gap:10px; margin-top:6px;">
+            <div class="skeleton-album skeleton-album-btn"></div>
+            <div class="skeleton-album skeleton-album-btn" style="width:100px;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="track-list-skeleton-album">
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:180px;"
+            >
+            </div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:120px;"
+            >
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:140px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:90px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:25px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:160px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:80px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:160px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:80px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:160px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:80px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:160px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:80px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:160px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:80px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:160px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:80px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:160px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:80px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+      </div>
+
+      <div class="copyrights-skeleton-album">
+        <div class="skeleton-album skeleton-album-line" style="width:200px;">
+        </div>
+        <div class="skeleton-album skeleton-album-line" style="width:150px;">
+        </div>
+      </div>
+    </template>
+
     <div class="grid-layout">
       <header class="header-container">
         <div class="header-side">
@@ -79,9 +324,9 @@ const { title } = Astro.props;
           <slot name="left" />
         </aside>
 
-        <div class="gutter-col gutter-1"></div>
+        <div class="gutter-col gutter-1 gutter-left-row"></div>
 
-        <div class="panel" id="here">
+        <div class="panel" id="here" style="border-radius: 15px;">
           <main id="center-panel"><slot /></main>
           <Footer />
         </div>

@@ -14,7 +14,7 @@ body {
 
 .grid-default {
     display: grid;
-    grid-template-columns: 1fr 5px 1fr 5px 1fr;
+    grid-template-columns: 1fr 10px 1fr 10px 1fr;
     grid-template-rows: 100%;
 }
 
@@ -26,16 +26,17 @@ grid-template-columns: 1fr 5px 2fr;
 .gutter-col {
     cursor: col-resize;
     width: 5px;
+    margin: 0 auto;
 }
 
-.gutter-col::after {
+/* .gutter-col::after {
     content: "";
     margin: 0 auto;
     background: aqua;
     height: 100%;
     width: 1px;
     display: block;
-}
+} */
 
 
 
