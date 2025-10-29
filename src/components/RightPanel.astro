@@ -18,9 +18,11 @@ export const prerender = false;
 </style>
 <!-- Plantilla HTML -->
 <template id="right-panel-tpl">
-  <div style="margin: 20px;">
+  <div class="container-right-panel" style="margin: 20px;">
     <div>
-      <div data-field="album-name-top"></div>
+      <div class="container-meta-description-song-right-panel">
+        <span data-field="album-name-top"></span>
+      </div>
     </div>
     <div>
       <img
@@ -35,7 +37,9 @@ export const prerender = false;
     </div>
     <div>
       <h2 data-field="album-name"></h2>
-      <div data-list="artists"></div>
+      <div class="container-meta-description-song-right-panel">
+        <span data-list="artists"></span>
+      </div>
     </div>
     <div class="album-cover-wrapper">
       <div class="album-cover-rigth-panel" data-field="hero-bg">
@@ -95,7 +99,8 @@ export const prerender = false;
     albumName,
   }) {
     root5.replaceChildren();
-
+    console.log(trackName);
+    console.log(artistName);
     const node = tpl.content.cloneNode(true);
     const q = (sel) => node.querySelector(sel);
     const imgUrl = imgAlbum ?? "";
@@ -110,11 +115,9 @@ export const prerender = false;
 
     const artistsContainer = q('[data-list="artists"]');
     artistsContainer.replaceChildren(
-      ...(trackArtists ?? []).map((a) => {
-        const p = document.createElement("p");
-        p.textContent = a.name;
-        return p;
-      })
+      document.createTextNode(
+        (trackArtists ?? []).map((a) => a.name).join(", ")
+      )
     );
     const heroBg = q('[data-field="hero-bg"]');
     heroBg.style.backgroundPosition = "50% 50%";

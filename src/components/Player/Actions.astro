@@ -4,14 +4,16 @@ import ProgresBar from "src/components/ProgresBar.astro";
 import VolumeMax from "src/assets/icons/volumeMax.svg?url";
 ---
 
-<div class="container-actions">
-  <button class="toggle" aria-label="icon for open right side panel"
-    ><img src={PlayingViewIcon} alt="" srcset="" width="20" /></button
-  >
-  <button aria-label="volumen icon">
-    <img src={VolumeMax} alt="" width="15" />
-  </button>
-  <ProgresBar />
+<div style="width: 30%; min-width: 210px;">
+  <div class="container-actions">
+    <button class="toggle" aria-label="icon for open right side panel"
+      ><img src={PlayingViewIcon} alt="" srcset="" width="20" /></button
+    >
+    <button aria-label="volumen icon">
+      <img src={VolumeMax} alt="" width="15" />
+    </button>
+    <ProgresBar />
+  </div>
 </div>
 
 <style>
@@ -19,6 +21,9 @@ import VolumeMax from "src/assets/icons/volumeMax.svg?url";
     display: flex;
     align-items: center;
     gap: 10px;
+    width: 100%;
+    justify-content: flex-end;
+    min-width: 110px;
   }
   .progress-container {
     margin-bottom: 4px;

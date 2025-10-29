@@ -20,12 +20,12 @@ const { title } = Astro.props;
       href="https://cdn.jsdelivr.net/npm/overlayscrollbars/styles/overlayscrollbars.css"
     />
 
-    <link
+    <!-- <link
       rel="preload"
       as="script"
       href="https://sdk.scdn.co/spotify-player.js"
       crossorigin
-    />
+    /> -->
 
     <link
       rel="dns-prefetch preconnect"
@@ -33,11 +33,11 @@ const { title } = Astro.props;
       crossorigin
     />
     <link rel="dns-prefetch preconnect" href="https://i.scdn.co" crossorigin />
-    <link
+    <!-- <link
       rel="dns-prefetch preconnect"
       href="https://sdk.scdn.co"
       crossorigin
-    />
+    /> -->
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/Layout.css" />
@@ -343,18 +343,22 @@ const { title } = Astro.props;
       </div>
     </div>
 
-    <!-- <script src="https://sdk.scdn.co/spotify-player.js"></script> -->
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
 
     <script nonce={Astro.locals.nonce} type="module">
       import { playerEvents } from "/scripts/playerEvents.js";
       import { getSpotifyToken } from "/scripts/getSpotifyToken.js";
       try {
-        window.onSpotifyWebPlaybackSDKReady = () => {
+        window.onSpotifyWebPlaybackSDKReady = async () => {
           const player = new Spotify.Player({
             name: "Media Player",
             getOAuthToken: async (cb) => {
-              let token = await getSpotifyToken();
-              cb(token);
+              try {
+                const token = await getSpotifyToken();
+                cb(token);
+              } catch (err) {
+                console.error("Error fetching token", err);
+              }
             },
             volume: 0.5,
           });
@@ -397,22 +401,13 @@ const { title } = Astro.props;
         console.log(error);
       }
     </script>
+
     <script type="module" lang="ts"></script>
   </body>
 </html>
-<script type="module">
-  // import { OverlayScrollbars } from "https://cdn.jsdelivr.net/npm/overlayscrollbars/+esm";
 
-  // const target = document.getElementById("rtrt");
-
-  // OverlayScrollbars(target, {
-  //   scrollbars: { autoHide: "leave" },
-  //   overflow: { x: "hidden" },
-  // });
-</script>
 <script type="module" nonce={Astro.locals.nonce}>
   window.addEventListener("DOMContentLoaded", async () => {
     await import("/scripts/Split.js");
-    // await import("/scripts/overScrollbarCustom.js");
   });
 </script>

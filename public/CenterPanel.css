@@ -14,7 +14,7 @@ body {
 .album-header {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    padding: 20px;
 }
 
 .album-cover {
@@ -36,9 +36,11 @@ body {
     text-wrap-style: balance;
 }
 
-.album-artist {
-    color: #b3b3b3;
-    margin-top: 5px;
+ 
+
+.album-artist:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 .album-controls {
@@ -70,8 +72,9 @@ body {
 }
 
 .track-list {
-    width: 100%;
+width: calc(100% - 43px);
     border-collapse: collapse;
+    margin: auto;
 }
 
 .track-list th,
@@ -113,10 +116,13 @@ body {
 .copyrights-container {
     color: gray;
     font-size: small;
-    margin: 50px 0;
+    margin: 50px 20px;
 }
 
-
+.tr-row:hover{
+    background-color: #1f1f1f;
+}
+ 
 .text-style{
     font-size: smaller;
     display: -webkit-box;
@@ -162,4 +168,3 @@ align-items: center;
 .td-track-number{
     width: 50px;
 }
- 

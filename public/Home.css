@@ -1,24 +1,3 @@
-.grid8 {
-    display: grid;
-    gap: 16px;
-        padding: 20px 20px 0 20px;
-    /* Desktop: 4 columnas => con 8 items quedan 2 filas */
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-/* Tablet: opcional (3 columnas) */
-@media (max-width: 900px) {
-    .grid8 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-/* Móvil: 2 columnas => con 8 items quedan 4 filas */
-@media (max-width: 600px) {
-    .grid8 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
 
 .title {
     display: -webkit-box;

@@ -17,13 +17,18 @@ export const prerender = false;
         loading="eager"
       />
     </div>
-    <div class="container-meta-description-song">
-      <span data-field="track-name"></span>
-      <span data-field="artist-name"></span>
+    <div style="width: 100%;">
+      <div class="container-meta-description-song">
+        <span data-field="track-name"></span>
+      </div>
+      <div class="container-meta-description-song">
+        <span data-field="artist-name"></span>
+      </div>
     </div>
   </div>
 </template>
 
+<script nonce={Astro.props.nonce}></script>
 <script nonce={Astro.locals.nonce} type="module">
   const container = document.getElementById("playing-container");
   const tpl = document.getElementById("playing-tpl");
@@ -56,21 +61,22 @@ export const prerender = false;
         renderPlaying(lastPlayed);
       } else {
         // // 2) Si no hay, usar lo que vino del SSR (props de Astro)
-        // async function getLastPlayed() {
-        //   const lastPlayed = await fetch(
-        //     "/api/spotify/me/player/recently-played?limit=2"
-        //   );
-        //   return await lastPlayed.json();
-        // }
-        // lastPlayed = await getLastPlayed();
-        // if (lastPlayed?.items?.length) {
-        //   renderPlaying(lastPlayed);
-        //   localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
-        // }
+        async function getLastPlayed() {
+          const lastPlayed = await fetch(
+            "/api/spotify/me/player/recently-played?limit=2"
+          );
+          return await lastPlayed.json();
+        }
+        lastPlayed = await getLastPlayed();
+        if (lastPlayed?.items?.length) {
+          renderPlaying(lastPlayed);
+          localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
+        }
         // // else {
         // //   container.innerHTML = `<p>Sin canción en reproducción</p>`;
         // // }
       }
+
       window.dispatchEvent(
         new CustomEvent("ui:track", {
           detail: {
@@ -86,6 +92,114 @@ export const prerender = false;
           },
         })
       );
+      window.addEventListener("DOMContentLoaded", () => {
+        const marqueeStates = new WeakMap();
+
+        function startMarquee(container, opts = {}) {
+          const span = container.querySelector("span");
+          if (!span) return;
+
+          container.style.position = "relative";
+          container.style.overflow = "hidden";
+          span.style.position = "relative";
+          span.style.whiteSpace = "nowrap";
+          span.style.left = span.style.left || "0px";
+
+          const state = {
+            pos: 0,
+            dir: -1,
+            paused: false,
+            rafId: null,
+            pauseTime: opts.pauseTime ?? 1000,
+            speed: opts.speed ?? 0.5,
+          };
+          marqueeStates.set(container, state);
+
+          const step = () => {
+            const containerWidth = container.clientWidth;
+            const textWidth = span.scrollWidth;
+
+            // Si cabe, detener y resetear
+            if (textWidth <= containerWidth) {
+              span.style.left = "0px";
+              if (state.rafId) cancelAnimationFrame(state.rafId);
+              state.rafId = null;
+              return;
+            }
+
+            if (!state.paused) {
+              state.pos += state.dir * state.speed;
+              span.style.left = state.pos + "px";
+
+              // Extremo derecho (primer carácter)
+              if (state.pos >= 0) {
+                state.paused = true;
+                setTimeout(() => {
+                  state.dir = -1;
+                  state.paused = false;
+                }, state.pauseTime);
+              }
+
+              // Extremo izquierdo (último carácter visible)
+              if (state.pos <= containerWidth - textWidth) {
+                state.paused = true;
+                setTimeout(() => {
+                  state.dir = 1;
+                  state.paused = false;
+                }, state.pauseTime);
+              }
+            }
+
+            state.rafId = requestAnimationFrame(step);
+          };
+
+          if (!container.dataset.marqueeHoverBound) {
+            container.addEventListener("mouseenter", () => {
+              const s = marqueeStates.get(container);
+              if (s) s.paused = true;
+            });
+            container.addEventListener("mouseleave", () => {
+              const s = marqueeStates.get(container);
+              if (s) s.paused = false;
+            });
+            container.dataset.marqueeHoverBound = "1";
+          }
+
+          state.rafId = requestAnimationFrame(step);
+        }
+
+        function stopMarquee(container) {
+          const state = marqueeStates.get(container);
+          if (state?.rafId) {
+            cancelAnimationFrame(state.rafId);
+            state.rafId = null;
+          }
+        }
+
+        function updateWidth() {
+          const screenWidth = window.innerWidth;
+          const newWidth = screenWidth * 0.3 - 100;
+
+          document
+            .querySelectorAll(".container-meta-description-song")
+            .forEach((el) => {
+              const span = el.querySelector("span");
+              if (!span) return;
+
+              stopMarquee(el);
+              span.style.left = "0px";
+
+              el.style.width = newWidth + "px";
+
+              if (span.scrollWidth > el.clientWidth) {
+                startMarquee(el, { speed: 0.3, pauseTime: 2000 });
+              }
+            });
+        }
+
+        updateWidth();
+        window.addEventListener("resize", updateWidth);
+      });
     } catch (e) {
       console.warn("Error parsing lastPlayed from localStorage", e);
     }
@@ -104,9 +218,10 @@ export const prerender = false;
     gap: 20px;
   }
   .container-meta-description-song {
-    display: flex;
+    /* display: flex;
     flex-direction: column;
-    text-align: left;
+    text-align: left; */
+    /* display: inline-grid; */
   }
   .img-playing-view {
     border-radius: 5px;

@@ -92,6 +92,7 @@ a{
   height: 100vh;
   grid-template-rows: 60px 1fr 87px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .grid-default {
@@ -118,6 +119,7 @@ a{
  
 .without-song-container{
   height: 100%;
+  width: 30%;
 }
 .aside-bar{
   overflow: hidden;

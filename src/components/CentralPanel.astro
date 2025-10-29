@@ -453,27 +453,27 @@
     // console.log(html);
 
     // root.innerHTML = html;
-    // addEventNavArtist(".artist-favorite");
-    // addEventNavAlbum(".btn-album-go-to");
-    // addEventHomeView();
-    // handleCarousel(
-    //   ".albums-carousel",
-    //   ".container-for-albums-carrusel",
-    //   ".arrow.left",
-    //   ".arrow.right"
-    // );
-    // handleCarousel(
-    //   ".might-like",
-    //   ".container-for-albums-carrusel-might-like",
-    //   ".arrow.left.mightLikeLeft",
-    //   ".arrow.right.mightLikeRight"
-    // );
-    // handleCarousel(
-    //   ".carousel",
-    //   ".carousel-track",
-    //   ".arrow.left",
-    //   ".arrow.right"
-    // );
+    addEventNavArtist(".artist-favorite");
+    addEventNavAlbum(".btn-album-go-to");
+    addEventHomeView();
+    handleCarousel(
+      ".albums-carousel",
+      ".container-for-albums-carrusel",
+      ".arrow.left",
+      ".arrow.right"
+    );
+    handleCarousel(
+      ".might-like",
+      ".container-for-albums-carrusel-might-like",
+      ".arrow.left.mightLikeLeft",
+      ".arrow.right.mightLikeRight"
+    );
+    handleCarousel(
+      ".carousel",
+      ".carousel-track",
+      ".arrow.left",
+      ".arrow.right"
+    );
     // initScroll();
   }
   function addEventNavArtist(btnClass) {
@@ -682,7 +682,24 @@
         .addEventListener("click", async () => {
           await spotifyPlayerAction("pause");
         });
-
+      const trCollectionListener = document.querySelectorAll(".tr-row");
+      trCollectionListener.forEach((element) => {
+        element.addEventListener("click", () => {
+          const artists = JSON.parse(element.dataset.trackArtists);
+          localStorageSet("lastPlayedHistory", {
+            albumId: element.dataset.albumId,
+            trackId: element.dataset.trackId,
+            trackName: element.dataset.trackName,
+            imgAlbum: JSON.parse(element.dataset.imgAlbum)[0].url,
+            artistImg: image,
+            trackArtists: artists,
+            bioArtist: bio,
+            artistName: artistName,
+            albumName: albumName,
+          });
+          window.dispatchEvent(new CustomEvent("route:playing"));
+        });
+      });
       /////////
     } catch (e) {
       root.innerHTML = `<p>Error cargando álbum.</p>`;

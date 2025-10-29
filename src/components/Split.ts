@@ -48,6 +48,7 @@ function SplitComponent() {
   ) as HTMLElement;
   const ClosedLibrary = "/closedLibrary.svg";
   const OpenLibrary = "/openLibrary.svg";
+  const marqueeStates = new WeakMap();
   const setupSplit = () => {
     let forcedStyle = null;
 
@@ -107,8 +108,7 @@ function SplitComponent() {
                 element.style.justifyContent = "flex-start";
               });
             }
-            // containerLibraryCenterStyle.style.padding = "0px 0px 0px 10px";
-            // containerLibraryCenterStyle.style.margin = "0px 0px 0px 8px";
+
             libraryItemNodeList.forEach((element) => {
               element.style.marginRight = "10px";
             });
@@ -119,6 +119,16 @@ function SplitComponent() {
             containerSearchInput.style.display = "flex";
             library.style.alignItems = "start";
             containerActionLibraryButton.style.margin = "13px 8px";
+
+            libraryContainer?.classList.remove(
+              "container-library-center-style"
+            );
+            libraryContainer?.classList.add("library-container");
+            const libraryContainerInner = document.querySelector(
+              ".library-container"
+            ) as HTMLElement;
+            libraryContainerInner.style.padding = "0px 0px 0px 10px";
+            libraryContainerInner.style.margin = "0px 0px 0px 8px";
 
             containerContentMedia.forEach((element) => {
               element.style.display = "inline-grid";
@@ -169,6 +179,120 @@ function SplitComponent() {
         } else if (track === 3) {
           const gutter = document.querySelector(".gutter-right");
           gutter?.classList.remove("active");
+          // const marqueeStates = new WeakMap();
+
+          function startMarquee(container, opts = {}) {
+            const span = container.querySelector("span");
+            if (!span) return;
+
+            // Aseguramos estilos base
+            container.style.position = "relative";
+            container.style.overflow = "hidden";
+            span.style.position = "relative";
+            span.style.whiteSpace = "nowrap";
+            span.style.left = span.style.left || "0px";
+
+            // Crear un nuevo estado reseteado siempre
+            const state = {
+              pos: 0,
+              dir: -1, // -1 = izquierda, 1 = derecha
+              paused: false,
+              rafId: null,
+              pauseTime: opts.pauseTime ?? 1000,
+              speed: opts.speed ?? 0.5,
+            };
+            marqueeStates.set(container, state);
+
+            const step = () => {
+              const containerWidth = container.clientWidth;
+              const textWidth = span.scrollWidth;
+
+              // Si cabe, detener y resetear
+              if (textWidth <= containerWidth) {
+                span.style.left = "0px";
+                if (state.rafId) cancelAnimationFrame(state.rafId);
+                state.rafId = null;
+                return;
+              }
+
+              if (!state.paused) {
+                state.pos += state.dir * state.speed;
+                span.style.left = state.pos + "px";
+
+                // Extremo derecho (primer carácter)
+                if (state.pos >= 0) {
+                  state.paused = true;
+                  setTimeout(() => {
+                    state.dir = -1;
+                    state.paused = false;
+                  }, state.pauseTime);
+                }
+
+                // Extremo izquierdo (último carácter visible)
+                if (state.pos <= containerWidth - textWidth) {
+                  state.paused = true;
+                  setTimeout(() => {
+                    state.dir = 1;
+                    state.paused = false;
+                  }, state.pauseTime);
+                }
+              }
+
+              state.rafId = requestAnimationFrame(step);
+            };
+
+            // Hover (solo se añade una vez)
+            if (!container.dataset.marqueeHoverBound) {
+              container.addEventListener("mouseenter", () => {
+                const s = marqueeStates.get(container);
+                if (s) s.paused = true;
+              });
+              container.addEventListener("mouseleave", () => {
+                const s = marqueeStates.get(container);
+                if (s) s.paused = false;
+              });
+              container.dataset.marqueeHoverBound = "1";
+            }
+
+            state.rafId = requestAnimationFrame(step);
+          }
+
+          function stopMarquee(container) {
+            const state = marqueeStates.get(container);
+            if (state?.rafId) {
+              cancelAnimationFrame(state.rafId);
+              state.rafId = null;
+            }
+          }
+
+          function updateWidth() {
+            const screenWidth = (
+              document.querySelector(".container-right-panel") as HTMLElement
+            ).offsetWidth;
+            const newWidth = screenWidth;
+
+            document
+              .querySelectorAll(".container-meta-description-song-right-panel")
+              .forEach((el) => {
+                const span = el.querySelector("span");
+                if (!span) return;
+
+                // 1. Detenemos animación y reseteamos
+                stopMarquee(el);
+                span.style.left = "0px";
+
+                // 2. Actualizamos ancho del contenedor
+                el.style.width = newWidth + "px";
+
+                // 3. Reiniciamos si el texto no cabe
+                if (span.scrollWidth > el.clientWidth) {
+                  startMarquee(el, { speed: 0.3, pauseTime: 2000 });
+                }
+              });
+          }
+
+          // Ejecutar al cargar y en resize (con reset)
+          updateWidth();
         }
       },
     });
@@ -185,16 +309,16 @@ function SplitComponent() {
       .split(" ")
       .map((val) => parseFloat(val.replace("fr", "")));
     if (Number.isNaN(parts[0])) {
-      gridTemplateGrid.style.gridTemplateColumns = "401px 5px 1fr 5px 0px";
+      gridTemplateGrid.style.gridTemplateColumns = `401px ${GUTTER}px 1fr ${GUTTER}px 0px`;
     } else {
       if (rightVisible) {
         gridTemplateGrid.style.gridTemplateColumns = `${
           parts[0]
-        }px 5px ${1}fr 5px ${290}px`;
+        }px ${GUTTER}px ${1}fr ${GUTTER}px ${290}px`;
       } else {
         gridTemplateGrid.style.gridTemplateColumns = `${
           parts[0]
-        }px 5px ${1}fr 5px ${0}px`;
+        }px ${GUTTER}px ${1}fr ${GUTTER}px ${0}px`;
       }
     }
     // setupSplit();
@@ -211,9 +335,7 @@ function SplitComponent() {
     const containerContentMedia = document.querySelectorAll(
       ".container-title-meta"
     ) as NodeListOf<HTMLElement>;
-    const containerLibraryCenterStyle = document.querySelector(
-      ".library-container"
-    ) as HTMLElement;
+
     const libraryItemNodeList = document.querySelectorAll(
       ".library-item"
     ) as NodeListOf<HTMLElement>;
@@ -247,8 +369,6 @@ function SplitComponent() {
           element.style.justifyContent = "flex-start";
         });
       }
-      // containerLibraryCenterStyle.style.padding = "0px 0px 0px 10px";
-      // containerLibraryCenterStyle.style.margin = "0px 0px 0px 8px";
       libraryItemNodeList.forEach((element) => {
         element.style.marginRight = "10px";
       });
@@ -259,6 +379,13 @@ function SplitComponent() {
       containerSearchInput.style.display = "flex";
       library.style.alignItems = "start";
       containerActionLibraryButton.style.margin = "13px 8px";
+      libraryContainer?.classList.remove("container-library-center-style");
+      libraryContainer?.classList.add("library-container");
+      const containerLibraryCenterStyle = document.querySelector(
+        ".library-container"
+      ) as HTMLElement;
+      containerLibraryCenterStyle.style.padding = "0px 0px 0px 10px";
+      containerLibraryCenterStyle.style.margin = "0px 0px 0px 8px";
     } else if (isOpen === "OPEN") {
       console.log("SECOND INNER");
       if (eachItemOnLibrary !== null) {
@@ -267,6 +394,9 @@ function SplitComponent() {
           element.style.justifyContent = "center";
         });
       }
+      const containerLibraryCenterStyle = document.querySelector(
+        ".library-container"
+      ) as HTMLElement;
       containerLibraryCenterStyle.style.padding = "0px";
       containerLibraryCenterStyle.style.margin = "0px";
       libraryItemNodeList.forEach((element) => {
@@ -277,9 +407,9 @@ function SplitComponent() {
         containerSearchInput.style.display = "none";
         textYourLibrary.style.display = "none";
 
-        containerContentMedia.forEach((element) => {
-          element.style.display = "none";
-        });
+        // containerContentMedia.forEach((element) => {
+        //   element.style.display = "none";
+        // });
         containerActionLibraryButton.style.margin = "5px auto";
 
         libraryContainer?.classList.remove("library-container");

@@ -1,5 +1,5 @@
 .container-play {
-    width: 42%;
+    width: 40%;
     display: flex;
     flex-direction: column;
     /* acciones arriba y barra abajo */
@@ -32,11 +32,15 @@
 .progress-container {
     height: 4px;
     width: 100%;
+    /* max-width: 140px; */
     background: #333;
     /* Barra gris */
     border-radius: 8px;
     overflow: hidden;
     position: relative;
+}
+.progress-bar-volume{
+    max-width: 120px !important;
 }
 
 .progress-bar {
@@ -56,6 +60,10 @@
     border-radius: 6px;
     position: relative;
     cursor: pointer;
+}
+
+.progress-bar-track{
+    max-width: 400px;
 }
 
 .progress-bar {
@@ -87,4 +95,34 @@
     width: 100%;
     align-items: center;
     gap: 5px;
+}
+
+.container-meta-description-song-right-panel {
+    width: calc(90% - 0px);
+        overflow: hidden;
+        white-space: nowrap;
+        position: relative;
+        display: flex;
+}
+
+ 
+.container-meta-description-song-right-panel span {
+    display: flex;
+    position: relative;
+    left: 0;
+    transition: left 0.5s linear;
+}
+.container-meta-description-song {
+    width: calc(90% - 0px);
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    display: flex;
+}
+
+.container-meta-description-song span {
+    display: inline-block;
+    position: relative;
+    left: 0;
+    transition: left 0.5s linear;
 }

@@ -2,66 +2,76 @@
 const { album, title } = Astro.props;
 ---
 
-<div class="albums-carousel">
-  <a
-    href="/"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label={`section of ${title}`}
-    class="carousel-title">{title}</a
-  >
+{
+  album.items.length > 0 ? (
+    <div class="albums-carousel">
+      <a
+        href="/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`section of ${title}`}
+        class="carousel-title"
+      >
+        {title}
+      </a>
 
-  <button class="arrow left" aria-label="Anterior">‹</button>
-  <button class="arrow right" aria-label="Siguiente">›</button>
+      <button class="arrow left" aria-label="Anterior">
+        ‹
+      </button>
+      <button class="arrow right" aria-label="Siguiente">
+        ›
+      </button>
 
-  <div class="container-for-albums-carrusel" id="albums-track">
-    {
-      album.items.map((item) => (
-        <div class="container-for-play">
-          <button class="btn-album-go-to" data-album-id={item.id}>
-            <div>
-              <img
-                class="img-album"
-                src={item?.images?.[0]?.url ?? item?.images?.[2]?.url}
-                alt={item?.name}
-                width="153"
-                height="153"
-                fetchpriority="high"
-                decoding="sync"
-                loading="eager"
-              />
-              <div class="text-style">
-                <div class="album-name">{item?.name}</div>
-                <span class="album-artists">
-                  {item?.artists?.map((a) => a.name).join(", ")}
-                </span>
+      <div class="container-for-albums-carrusel" id="albums-track">
+        {album.items.map((item) => (
+          <div class="container-for-play">
+            <button class="btn-album-go-to" data-album-id={item.id}>
+              <div>
+                <img
+                  class="img-album"
+                  src={item?.images?.[0]?.url ?? item?.images?.[2]?.url}
+                  alt={item?.name}
+                  width="153"
+                  height="153"
+                  fetchpriority="high"
+                  decoding="sync"
+                  loading="eager"
+                />
+                <div class="text-style">
+                  <div class="album-name">{item?.name}</div>
+                  <span class="album-artists">
+                    {item?.artists?.map((a) => a.name).join(", ")}
+                  </span>
+                </div>
               </div>
-            </div>
-          </button>
+            </button>
 
-          <button
-            class="btn-hidden playSong-Artists-Carrousel"
-            data-track-album={item.uri}
-            data-track={JSON.stringify({
-              id: item.id,
-              uri: item.uri,
-              name: item.name,
-              imgAlbum: item.images,
-              artists: item.artists,
-            })}
-          >
-            <img
-              src="/play.svg"
-              alt="play icon"
-              data-state="play"
-              class={`btn-hidden-pause-${item.id}`}
-            />
-          </button>
-        </div>
-      ))
-    }
-  </div>
-</div>
+            <button
+              class="btn-hidden playSong-Artists-Carrousel"
+              data-track-album={item.uri}
+              data-track={JSON.stringify({
+                id: item.id,
+                uri: item.uri,
+                name: item.name,
+                imgAlbum: item.images,
+                artists: item.artists,
+              })}
+            >
+              <img
+                src="/play.svg"
+                alt="play icon"
+                data-state="play"
+                class={`btn-hidden-pause-${item.id}`}
+              />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  ) : (
+    ""
+  )
+}
 
 <style>
   :root {
