@@ -1,23 +1,19 @@
-import { spotifyPlayerAction } from "@/scripts/spotifyPlayerAction";
-import { localStorageGet, localStorageSet } from "./localStorage";
+import { spotifyPlayerAction } from "/scripts/spotifyPlayerActions.js";
+import { localStorageGet, localStorageSet } from "/scripts/localStorage.js";
 import PauseIcon from "src/assets/icons/pause.svg?url";
 import PlayIcon from "src/assets/icons/play.svg?url";
+
 const CLASSNAME = "text-playing";
-type actions = {
-  allowed:
-    | "playSong-main-top-song"
-    | "playSong-top-songs"
-    | "playSong-Artists-Carrousel"
-    | "playSong-Album-Carrousel";
-  trackData: object;
-};
-function setColorGreen(element: HTMLElement | Element) {
+
+function setColorGreen(element) {
   element.classList.add(CLASSNAME);
 }
-function removeColorGreen(element: HTMLElement | Element) {
+
+function removeColorGreen(element) {
   element.classList.remove(CLASSNAME);
 }
-function toggleBtnIcon(imgButton: HTMLImageElement | Element) {
+
+function toggleBtnIcon(imgButton) {
   if (imgButton.dataset.state === "play") {
     imgButton.src = PauseIcon;
     imgButton.dataset.state = "stopped";
@@ -27,14 +23,12 @@ function toggleBtnIcon(imgButton: HTMLImageElement | Element) {
   }
 }
 
-function removeLastPlayed(lastPlayed: string) {
+function removeLastPlayed(lastPlayed) {
   if (lastPlayed) {
-    //search for the last song
     const textSong = document.querySelector(`.track-song-${lastPlayed.id}`);
     if (textSong !== null) {
       removeColorGreen(textSong);
     }
-    // toggle icon
     const imgButton = document.querySelectorAll(
       `.btn-hidden-pause-${lastPlayed.id}`
     );
@@ -51,7 +45,8 @@ function removeLastPlayed(lastPlayed: string) {
     }
   }
 }
-async function addCurrentSong(trackData: Object) {
+
+async function addCurrentSong(trackData) {
   const textSong = document.querySelector(`.track-song-${trackData.id}`);
   if (textSong !== null) {
     setColorGreen(textSong);
@@ -94,20 +89,23 @@ async function addCurrentSong(trackData: Object) {
       console.error("Error al reproducir:", e);
     }
   } else {
-    await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    try {
+      await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
-function handleTopSongs(trackData: Object) {
+function handleTopSongs(trackData) {
   const lastPlayed = localStorageGet("lastPlayedTrack");
   if (lastPlayed.id !== trackData.id) {
     removeLastPlayed(lastPlayed);
   }
-
   addCurrentSong(trackData);
 }
 
-async function handleMainTopSong(trackData: Object) {
+async function handleMainTopSong(trackData) {
   const lastPlayed = localStorageGet("lastPlayedTrack");
   if (lastPlayed.id !== trackData.id) {
     removeLastPlayed(lastPlayed);
@@ -148,11 +146,15 @@ async function handleMainTopSong(trackData: Object) {
       console.error("Error al reproducir:", e);
     }
   } else {
-    await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    try {
+      await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
-async function handleArtistCarrousel(trackData: object) {
+async function handleArtistCarrousel(trackData) {
   const lastPlayed = localStorageGet("lastPlayedTrack");
   if (lastPlayed.id !== trackData.id) {
     removeLastPlayed(lastPlayed);
@@ -184,25 +186,25 @@ async function handleArtistCarrousel(trackData: object) {
         }
         return null;
       }
-      let lastPlayed = await getTopArtistTrack();
-      if (lastPlayed) {
-        localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
+      let lastPlayedData = await getTopArtistTrack();
+      if (lastPlayedData) {
+        localStorage.setItem("lastPlayed", JSON.stringify(lastPlayedData));
         const res = await fetch(
           `/api/genius/artist-bio?q=${encodeURIComponent(
-            lastPlayed.tracks[0].artists[0].name
+            lastPlayedData.tracks[0].artists[0].name
           )}`
         );
         const { bio, image } = await res.json();
         localStorageSet("lastPlayedHistory", {
-          albumId: lastPlayed.tracks[0].album.id,
-          trackId: lastPlayed.tracks[0].id,
-          trackName: lastPlayed.tracks[0].name,
-          imgAlbum: lastPlayed.tracks[0].album.images[0].url,
+          albumId: lastPlayedData.tracks[0].album.id,
+          trackId: lastPlayedData.tracks[0].id,
+          trackName: lastPlayedData.tracks[0].name,
+          imgAlbum: lastPlayedData.tracks[0].album.images[0].url,
           artistImg: image,
-          trackArtists: lastPlayed.tracks[0].artists,
+          trackArtists: lastPlayedData.tracks[0].artists,
           bioArtist: bio,
-          artistName: lastPlayed.tracks[0].artists[0].name,
-          albumName: lastPlayed.tracks[0].album.name,
+          artistName: lastPlayedData.tracks[0].artists[0].name,
+          albumName: lastPlayedData.tracks[0].album.name,
         });
         window.dispatchEvent(new CustomEvent("route:playing"));
       }
@@ -210,11 +212,15 @@ async function handleArtistCarrousel(trackData: object) {
       console.error("Error al reproducir:", e);
     }
   } else {
-    await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    try {
+      await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
-async function handleAlbumCarrousel(trackData: object) {
+async function handleAlbumCarrousel(trackData) {
   const lastPlayed = localStorageGet("lastPlayedTrack");
   if (lastPlayed.id !== trackData.id) {
     removeLastPlayed(lastPlayed);
@@ -234,7 +240,6 @@ async function handleAlbumCarrousel(trackData: object) {
         context_uri: trackData.uri,
         deviceId: window.deviceId,
       });
-      // localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
       async function getAlbumInfo(retries = 5, delay = 500) {
         for (let i = 0; i < retries; i++) {
           const res = await fetch(`/api/spotify/albums/${trackData.id}/tracks`);
@@ -246,19 +251,20 @@ async function handleAlbumCarrousel(trackData: object) {
         }
         return null;
       }
-      let lastPlayed = await getAlbumInfo();
+      let lastPlayedData = await getAlbumInfo();
       const res = await fetch(
         `/api/genius/artist-bio?q=${encodeURIComponent(
           trackData.artists[0].name
         )}`
       );
+
       const { bio, image } = await res.json();
       localStorageSet("lastPlayedHistory", {
         albumId: trackData.id,
-        trackId: lastPlayed.items[0].id,
-        trackName: lastPlayed.items[0].name,
+        trackId: lastPlayedData.items[0].id,
+        trackName: lastPlayedData.items[0].name,
         imgAlbum: trackData.imgAlbum[0].url,
-        artistImg: image,
+        artistImg: "",
         trackArtists: trackData.artists,
         bioArtist: bio,
         artistName: trackData.artists[0].name,
@@ -269,11 +275,15 @@ async function handleAlbumCarrousel(trackData: object) {
       console.error("Error al reproducir:", e);
     }
   } else {
-    await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    try {
+      await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
 
-export function handleColorGreen(actions: actions) {
+export function handleColorGreen(actions) {
   switch (actions.allowed) {
     case "playSong-main-top-song":
       handleMainTopSong(actions.trackData);

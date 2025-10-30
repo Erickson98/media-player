@@ -7,9 +7,9 @@ import RightPanel from "../components/RightPanel.astro";
 ---
 
 <ThreePanelLayout title="Media-Player">
-  <div style="height: 100%;" slot="left"><LeftPanel client:load /></div>
-  <CenterPanel client:load />
-  <div slot="right"><RightPanel client:load /></div>
+  <div style="height: 100%;" slot="left"><LeftPanel /></div>
+  <CenterPanel />
+  <div slot="right"><RightPanel /></div>
 </ThreePanelLayout>
 
-<RouterController client:load />
+<RouterController />

@@ -39,10 +39,14 @@ function formatDuration(ms: number) {
   {img && <img src={img} alt="Album Cover" class="album-cover" width="60" />}
   <div class="album-info">
     <h2 class="album-title" data-album-name={album.name}>{album.name}</h2>
-    <p class="album-artist" data-artist-name={album.artists[0].name}>
-      {album.artist_line || ""}
-    </p>
-    <p>{album.artist_line ? " • " : ""}{year} • {total} canciones</p>
+    <div style="display: flex; gap:5px">
+      <p class="album-artist" data-artist-name={album.artists[0].name}>
+        {album.artist_line || ""}
+      </p>
+      <p style="color: gray;">
+        {album.artist_line ? " • " : ""}{year} • {total} canciones
+      </p>
+    </div>
     <div class="album-controls">
       <button
         id="playSong"
@@ -67,7 +71,16 @@ function formatDuration(ms: number) {
   <tbody>
     {
       album.tracks.items.map((track) => (
-        <tr>
+        <tr
+          class="tr-row"
+          style="cursor: default;"
+          data-track-artists={JSON.stringify(track.artists)}
+          data-img-album={JSON.stringify(album.images)}
+          data-img-artist={JSON.stringify(album.images)}
+          data-album-id={album.id}
+          data-track-id={track.id}
+          data-track-name={track.name}
+        >
           <td class="td-track-number">{track.track_number}</td>
           <td>
             <div class="track-title">

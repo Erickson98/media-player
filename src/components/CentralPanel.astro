@@ -1,31 +1,458 @@
 ---
-import "../styles/SideBar.css";
-import "../styles/Layout.css";
-import "../styles/SearchBar.css";
-import Footer from "./Footer.astro";
+
 ---
 
 <div id="center-panel">
   <!-- <Footer /> -->
 </div>
+<template id="structure-home-view">
+  <section id="sections-home">
+    <div class="top-view-elements">
+      <!-- posición 1 -->
+    </div>
 
-<script>
-  import { getColor } from "@/scripts/getColor";
-  import { loadSpotifyPlayer } from "@/scripts/player";
-  import { spotifyPlayerAction } from "@/scripts/spotifyPlayerAction";
-  import { localStorageGet, localStorageSet } from "src/utils/localStorage";
-  import { handleColorGreen } from "src/utils/handleColorGreen";
-  import { handleCarousel } from "@/scripts/handleCarousel";
+    <div class="newRelease">
+      <!-- posición 2 -->
+
+      <!-- aquí irá el AlbumCarrousel -->
+    </div>
+
+    <div class="might-like">
+      <!-- posición 3 -->
+      <!-- contenido -->
+    </div>
+    <div class="artist-you-like">
+      <!-- posición 3 -->
+      <!-- contenido -->
+    </div>
+  </section>
+</template>
+<template id="topElementView">
+  <div class="grid8">
+    <style>
+      .grid8 {
+        display: grid;
+        padding: 20px 20px 0 20px;
+        gap: 16px;
+        /* Desktop: 4 columnas => con 8 items quedan 2 filas */
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      /* Tablet: opcional (3 columnas) */
+      @media (max-width: 900px) {
+        .grid8 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      /* Móvil: 2 columnas => con 8 items quedan 4 filas */
+      @media (max-width: 600px) {
+        .grid8 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      /* Skeleton shimmer effect */
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          #2a2a2a 25%,
+          #3a3a3a 37%,
+          #2a2a2a 63%
+        );
+        background-size: 400% 100%;
+        animation: shimmer 1.4s ease infinite;
+      }
+
+      .skeleton-text {
+        display: inline-block;
+        height: 14px;
+      }
+
+      .skeleton-img {
+        flex-shrink: 0;
+        height: 50px;
+      }
+
+      .skeleton-icon {
+        flex-shrink: 0;
+      }
+
+      /* mantener tu card pero con skeleton */
+      .skeleton-card {
+        background: #1f1f1f;
+        color: #fff;
+        border-radius: 8px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font:
+          589 14px/1.2 system-ui,
+          sans-serif;
+        padding: 4px 8px;
+      }
+
+      /* animación shimmer */
+      @keyframes shimmer {
+        0% {
+          background-position: -400px 0;
+        }
+        100% {
+          background-position: 400px 0;
+        }
+      }
+    </style>
+
+    <!-- Ejemplo de 4 skeletons -->
+    <div class="card skeleton-card">
+      <div class="skeleton skeleton-img" style="width:50px; height:50px;"></div>
+      <div
+        style="display:flex; flex:1; justify-content:space-between; align-items:center;"
+      >
+        <span class="skeleton skeleton-text" style="width:120px; height:16px;"
+        ></span>
+        <div class="skeleton skeleton-icon" style="width:20px; height:20px;">
+        </div>
+      </div>
+    </div>
+
+    <div class="card skeleton-card">
+      <div class="skeleton skeleton-img" style="width:50px; height:50px;"></div>
+      <div
+        style="display:flex; flex:1; justify-content:space-between; align-items:center;"
+      >
+        <span class="skeleton skeleton-text" style="width:100px; height:16px;"
+        ></span>
+        <div class="skeleton skeleton-icon" style="width:20px; height:20px;">
+        </div>
+      </div>
+    </div>
+
+    <div class="card skeleton-card">
+      <div class="skeleton skeleton-img" style="width:50px; height:50px;"></div>
+      <div
+        style="display:flex; flex:1; justify-content:space-between; align-items:center;"
+      >
+        <span class="skeleton skeleton-text" style="width:80px; height:16px;"
+        ></span>
+        <div class="skeleton skeleton-icon" style="width:20px; height:20px;">
+        </div>
+      </div>
+    </div>
+
+    <div class="card skeleton-card">
+      <div class="skeleton skeleton-img" style="width:50px; height:50px;"></div>
+      <div
+        style="display:flex; flex:1; justify-content:space-between; align-items:center;"
+      >
+        <span class="skeleton skeleton-text" style="width:140px; height:16px;"
+        ></span>
+        <div class="skeleton skeleton-icon" style="width:20px; height:20px;">
+        </div>
+      </div>
+    </div>
+    <div class="card skeleton-card">
+      <div class="skeleton skeleton-img" style="width:50px; height:50px;"></div>
+      <div
+        style="display:flex; flex:1; justify-content:space-between; align-items:center;"
+      >
+        <span class="skeleton skeleton-text" style="width:120px; height:16px;"
+        ></span>
+        <div class="skeleton skeleton-icon" style="width:20px; height:20px;">
+        </div>
+      </div>
+    </div>
+
+    <div class="card skeleton-card">
+      <div class="skeleton skeleton-img" style="width:50px; height:50px;"></div>
+      <div
+        style="display:flex; flex:1; justify-content:space-between; align-items:center;"
+      >
+        <span class="skeleton skeleton-text" style="width:100px; height:16px;"
+        ></span>
+        <div class="skeleton skeleton-icon" style="width:20px; height:20px;">
+        </div>
+      </div>
+    </div>
+
+    <div class="card skeleton-card">
+      <div class="skeleton skeleton-img" style="width:50px; height:50px;"></div>
+      <div
+        style="display:flex; flex:1; justify-content:space-between; align-items:center;"
+      >
+        <span class="skeleton skeleton-text" style="width:80px; height:16px;"
+        ></span>
+        <div class="skeleton skeleton-icon" style="width:20px; height:20px;">
+        </div>
+      </div>
+    </div>
+
+    <div class="card skeleton-card">
+      <div class="skeleton skeleton-img" style="width:50px; height:50px;"></div>
+      <div
+        style="display:flex; flex:1; justify-content:space-between; align-items:center;"
+      >
+        <span class="skeleton skeleton-text" style="width:140px; height:16px;"
+        ></span>
+        <div class="skeleton skeleton-icon" style="width:20px; height:20px;">
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- template para new release -->
+<template id="new-release-template">
+  <style>
+    /* Efecto shimmer */
+    /* === Skeleton placeholders === */
+    .albums-carousel {
+      margin: 20px;
+    }
+
+    .skeleton-new-realease {
+      background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 37%, #2a2a2a 63%);
+      background-size: 400% 100%;
+      animation: shimmer 1.4s ease infinite;
+      border-radius: 4px;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -400px 0;
+      }
+      100% {
+        background-position: 400px 0;
+      }
+    }
+
+    /* Imagen del álbum (skeleton) */
+    .skeleton-new-realease-img {
+      width: 153px;
+      height: 153px;
+      border-radius: 5px; /* igual que .img-album */
+      display: block;
+    }
+
+    /* Texto (nombre + artistas) */
+    .skeleton-text-new-realease {
+      display: block;
+      height: 14px;
+      margin-top: 6px;
+      border-radius: 3px;
+    }
+
+    /* Botón play circular */
+    .skeleton-icon-new-realease {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 15px;
+      right: 8px;
+    }
+
+    /* Carrusel en modo skeleton */
+    .skeleton-carousel-new-realease .carousel-title {
+      color: #666; /* en vez de blanco para indicar placeholder */
+      pointer-events: none;
+    }
+
+    .container-for-albums-carrusel-template {
+      display: flex;
+      gap: 10px;
+    }
+  </style>
+  <div class="albums-carousel skeleton-carousel">
+    <div class="text-style">
+      <div class="skeleton-new-realease skeleton-text" style="width:120px;">
+      </div>
+    </div>
+    <div class="container-for-albums-carrusel-template">
+      <div class="container-for-play">
+        <div>
+          <div class="skeleton-new-realease skeleton-new-realease-img"></div>
+          <div class="text-style">
+            <div
+              class="skeleton-new-realease skeleton-text"
+              style="width:120px;"
+            >
+            </div>
+            <div
+              class="skeleton skeleton-text-new-realease"
+              style="width:80px;"
+            >
+            </div>
+          </div>
+        </div>
+        <div class="skeleton-new-realease skeleton-icon-new-realease"></div>
+      </div>
+      <div class="container-for-play">
+        <div>
+          <div class="skeleton-new-realease skeleton-new-realease-img"></div>
+          <div class="text-style">
+            <div
+              class="skeleton-new-realease skeleton-text"
+              style="width:120px;"
+            >
+            </div>
+            <div
+              class="skeleton skeleton-text-new-realease"
+              style="width:80px;"
+            >
+            </div>
+          </div>
+        </div>
+        <div class="skeleton-new-realease skeleton-icon-new-realease"></div>
+      </div>
+      <div class="container-for-play">
+        <div>
+          <div class="skeleton-new-realease skeleton-new-realease-img"></div>
+          <div class="text-style">
+            <div
+              class="skeleton-new-realease skeleton-text"
+              style="width:120px;"
+            >
+            </div>
+            <div
+              class="skeleton skeleton-text-new-realease"
+              style="width:80px;"
+            >
+            </div>
+          </div>
+        </div>
+        <div class="skeleton-new-realease skeleton-icon-new-realease"></div>
+      </div>
+      <div class="container-for-play">
+        <div>
+          <div class="skeleton-new-realease skeleton-new-realease-img"></div>
+          <div class="text-style">
+            <div
+              class="skeleton-new-realease skeleton-text"
+              style="width:120px;"
+            >
+            </div>
+            <div
+              class="skeleton skeleton-text-new-realease"
+              style="width:80px;"
+            >
+            </div>
+          </div>
+        </div>
+        <div class="skeleton-new-realease skeleton-icon-new-realease"></div>
+      </div>
+      <div class="container-for-play">
+        <div>
+          <div class="skeleton-new-realease skeleton-new-realease-img"></div>
+          <div class="text-style">
+            <div
+              class="skeleton-new-realease skeleton-text"
+              style="width:120px;"
+            >
+            </div>
+            <div
+              class="skeleton skeleton-text-new-realease"
+              style="width:80px;"
+            >
+            </div>
+          </div>
+        </div>
+        <div class="skeleton-new-realease skeleton-icon-new-realease"></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script nonce={Astro.locals.nonce} type="module">
+  import { getColor } from "/scripts/getColor.js";
+  import { spotifyPlayerAction } from "/scripts/spotifyPlayerActions.js";
+  import { localStorageGet, localStorageSet } from "/scripts/localStorage.js";
+  import { handleColorGreen } from "/scripts/handleColorGreen.js";
+  import { handleCarousel } from "/scripts/handleCarousel.js";
   const root = document.getElementById("center-panel");
+  import { OverlayScrollbars } from "https://cdn.jsdelivr.net/npm/overlayscrollbars/+esm";
+  let osInstance = null;
 
+  function initScroll() {
+    const target = document.getElementById("here");
+
+    if (osInstance) {
+      osInstance.destroy();
+      osInstance = null;
+    }
+
+    osInstance = OverlayScrollbars(target, {
+      scrollbars: { autoHide: "leave", theme: "os-theme-light" },
+      overflow: { x: "hidden" },
+    });
+  }
+  initScroll();
   async function renderHome() {
     // root.innerHTML = `<p>Selecciona un álbum...</p>`;
+    // //render skeleton for
+
+    const topElementViewTemplate = document.getElementById("topElementView");
+    const structureHomeViewTemplate = document.getElementById(
+      "structure-home-view"
+    );
+    const newReleaseTemplate = document.getElementById("new-release-template");
+
+    const cloneTopElementView = topElementViewTemplate.content.cloneNode(true);
+    const cloneStructureHomeViewElement =
+      structureHomeViewTemplate.content.cloneNode(true);
+    const newReleaseElement = newReleaseTemplate.content.cloneNode(true);
+    const mightLikeElement = newReleaseTemplate.content.cloneNode(true);
+    const artistLikeElement = newReleaseTemplate.content.cloneNode(true);
+    cloneTopElementView.innerHTML = ""; // limpiar antes de renderizar
+    cloneStructureHomeViewElement.innerHTML = ""; // limpiar antes de renderizar
+    newReleaseElement.innerHTML = ""; // limpiar antes de renderizar
+    mightLikeElement.innerHTML = ""; // limpiar antes de renderizar
+    artistLikeElement.innerHTML = ""; // limpiar antes de renderizar
+    const topElementSection =
+      cloneStructureHomeViewElement.querySelector(".top-view-elements");
+
+    const newRelease =
+      cloneStructureHomeViewElement.querySelector(".newRelease");
+    const mightLike =
+      cloneStructureHomeViewElement.querySelector(".might-like");
+    const artistLike =
+      cloneStructureHomeViewElement.querySelector(".artist-you-like");
+    topElementSection.appendChild(cloneTopElementView);
+    newRelease.appendChild(newReleaseElement);
+
+    mightLike.style.marginTop = "20px";
+    mightLike.appendChild(mightLikeElement);
+    artistLike.appendChild(artistLikeElement);
+    root.innerHTML = ``;
+    root.appendChild(cloneStructureHomeViewElement);
+
+    const nre = root?.querySelector(".newRelease");
+    const html2 = await fetch(`/partials/centerPanel/newRelease`).then((r) => {
+      if (!r.ok) throw new Error("Album not found");
+      return r.text();
+    });
+    // nre?.innerHTML = html2;
+    nre.innerHTML = html2;
+
     const html = await fetch(`/partials/centerPanel/main`).then((r) => {
       if (!r.ok) throw new Error("Album not found");
       return r.text();
     });
+    const sectionElement = root.querySelector(".sections-home");
+    const create = document.createElement("div");
+    create.innerHTML = html;
+    const newReleaseSection = create.querySelector(".new-release-album");
+    newReleaseSection?.appendChild(nre);
+    root.innerHTML = ``;
 
-    root.innerHTML = html;
+    root?.appendChild(create);
+
+    // const nrer = root?.querySelector(".top-view-elements");
+    // const newReleaseTmp = JSON.parse(html).querySelector(".new-release-album");
+
+    // nrer.innerHTML = html;
+    // console.log(html);
+
+    // root.innerHTML = html;
     addEventNavArtist(".artist-favorite");
     addEventNavAlbum(".btn-album-go-to");
     addEventHomeView();
@@ -41,15 +468,15 @@ import Footer from "./Footer.astro";
       ".arrow.left.mightLikeLeft",
       ".arrow.right.mightLikeRight"
     );
-
     handleCarousel(
       ".carousel",
       ".carousel-track",
       ".arrow.left",
       ".arrow.right"
     );
+    // initScroll();
   }
-  function addEventNavArtist(btnClass: string) {
+  function addEventNavArtist(btnClass) {
     const buttons = document.querySelectorAll(btnClass);
     buttons.forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -75,15 +502,17 @@ import Footer from "./Footer.astro";
     const btnElementTopResult = document.querySelector(".top-result");
     const btnTopResultUriSong = btnElementTopResult.dataset.topResultSong;
     const mainTop = document.querySelector(".playSong");
-    mainTop.onclick = async function () {
+    mainTop.addEventListener("click", async () => {
       handleColorGreen({
         allowed: "playSong-main-top-song",
         trackData: JSON.parse(mainTop.dataset.track),
       });
+
       const parsedMainTop = JSON.parse(mainTop.dataset.track);
       parsedMainTop.class = "playSong-top-songs";
+
       localStorageSet("lastPlayedTrack", parsedMainTop);
-    };
+    });
 
     const isSameTrack = (a, b) => {
       if (!a || !b) return false;
@@ -116,30 +545,30 @@ import Footer from "./Footer.astro";
     buttons.forEach((btn) => {
       const trackData = JSON.parse(btn.dataset.track);
 
-      btn.onclick = async () => {
+      btn.addEventListener("click", async () => {
         trackData.class = "playSong-top-songs";
         handleColorGreen({ allowed: "playSong-top-songs", trackData });
 
         localStorageSet("lastPlayedTrack", trackData);
-      };
+      });
     });
 
     document.querySelectorAll(".playSong-Artists-Carrousel").forEach((btn) => {
-      btn.onclick = async () => {
+      btn.addEventListener("click", async () => {
         const trackData = JSON.parse(btn.dataset.track);
         trackData.class = "playSong-top-songs";
         handleColorGreen({ allowed: "playSong-Artists-Carrousel", trackData });
         localStorageSet("lastPlayedTrack", trackData);
-      };
+      });
     });
     document.querySelectorAll(".playSong-Album-Carrousel").forEach((btn) => {
-      btn.onclick = async () => {
+      btn.addEventListener("click", async () => {
         const trackData = JSON.parse(btn.dataset.track);
         trackData.class = "playSong-top-songs";
         handleColorGreen({ allowed: "playSong-Album-Carrousel", trackData });
         localStorageSet("lastPlayedTrack", trackData);
         localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
-      };
+      });
     });
   }
   // here is top element
@@ -174,27 +603,35 @@ import Footer from "./Footer.astro";
     buttons.forEach((btn) => {
       const trackData = JSON.parse(btn.dataset.track);
 
-      btn.onclick = async () => {
+      btn.addEventListener("click", async () => {
         trackData.class = "playSong-home-top-album";
         handleColorGreen({ allowed: "playSong-Album-Carrousel", trackData });
 
         localStorageSet("lastPlayedTrack", trackData);
-      };
+      });
     });
 
     document.querySelectorAll(".playSong-Artists-Carrousel").forEach((btn) => {
-      btn.onclick = async () => {
+      btn.addEventListener("click", async () => {
         const trackData = JSON.parse(btn.dataset.track);
         trackData.class = "playSong-top-songs";
         handleColorGreen({ allowed: "playSong-Artists-Carrousel", trackData });
 
         localStorageSet("lastPlayedTrack", trackData);
-      };
+      });
     });
   }
   async function renderAlbumById(albumId) {
-    root.innerHTML = `<p>Cargando álbum ${albumId}...</p>`;
+    root.innerHTML = ``;
     try {
+      // const albumDetailSkeletonTemplate = document.getElementById(
+      //   "album-detail-skeleton-album"
+      // );
+      // console.log(albumDetailSkeletonTemplate);
+      // if (albumDetailSkeletonTemplate) {
+      //   const skeleton = albumDetailSkeletonTemplate.content.cloneNode(true);
+      //   root.appendChild(skeleton);
+      // }
       const html = await fetch(`/partials/album/${albumId}`).then((r) => {
         if (!r.ok) throw new Error("Album not found");
         return r.text();
@@ -228,19 +665,41 @@ import Footer from "./Footer.astro";
         });
       });
 
-      document.getElementById("playSong").onclick = async function () {
-        const track_uri = JSON.parse(
-          document.querySelector(".btn-play")?.dataset.tracksAlbum
-        );
-        await spotifyPlayerAction("play", {
-          uris: track_uri,
-          deviceId: window.deviceId,
+      document
+        .getElementById("playSong")
+        .addEventListener("click", async () => {
+          const track_uri = JSON.parse(
+            document.querySelector(".btn-play")?.dataset.tracksAlbum
+          );
+          await spotifyPlayerAction("play", {
+            uris: track_uri,
+            deviceId: window.deviceId,
+          });
         });
-      };
 
-      document.getElementById("pauseSong").onclick = async function () {
-        await spotifyPlayerAction("pause");
-      };
+      document
+        .getElementById("pauseSong")
+        .addEventListener("click", async () => {
+          await spotifyPlayerAction("pause");
+        });
+      const trCollectionListener = document.querySelectorAll(".tr-row");
+      trCollectionListener.forEach((element) => {
+        element.addEventListener("click", () => {
+          const artists = JSON.parse(element.dataset.trackArtists);
+          localStorageSet("lastPlayedHistory", {
+            albumId: element.dataset.albumId,
+            trackId: element.dataset.trackId,
+            trackName: element.dataset.trackName,
+            imgAlbum: JSON.parse(element.dataset.imgAlbum)[0].url,
+            artistImg: image,
+            trackArtists: artists,
+            bioArtist: bio,
+            artistName: artistName,
+            albumName: albumName,
+          });
+          window.dispatchEvent(new CustomEvent("route:playing"));
+        });
+      });
       /////////
     } catch (e) {
       root.innerHTML = `<p>Error cargando álbum.</p>`;
@@ -301,6 +760,7 @@ import Footer from "./Footer.astro";
   window.addEventListener("route:album", (e) => {
     const { albumId } = e.detail;
     renderAlbumById(albumId);
+    // renderAlbumById(albumId);
   });
   window.addEventListener("route:artist", (e) => {
     const { artistId } = e.detail;

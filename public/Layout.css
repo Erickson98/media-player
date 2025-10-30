@@ -9,7 +9,9 @@ button {
   all: unset;
   cursor: pointer;
 }
-
+a{
+  color: white;
+}
 .header-container{
   display: flex;
   align-items: center;
@@ -52,18 +54,25 @@ button {
 
 .default-grid-template-columns {
   display: grid;
-  grid-template-columns: 409px 5px 1fr 5px 290px;
+  grid-template-columns: 409px 10px 1fr 10px 290px;
+  /* grid-template-columns: 104px 5px 1fr 5px 0px; */
   grid-template-rows: 100%;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-.gutter {
+/* .gutter {
   grid-row: 1 / -1;
   background: #666;
   cursor: col-resize;
-}
+} */
 
+ 
+#center-panel{
+  background: rgb(18, 18, 18);
+  /* height: 100vh; */
+  border-radius: 5px;
+}
 .gutter-1 {
   grid-column: 2;
 }
@@ -83,11 +92,12 @@ button {
   height: 100vh;
   grid-template-rows: 60px 1fr 87px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .grid-default {
   display: grid;
-  grid-template-columns: 1fr 5px 1fr 5px 1fr;
+  grid-template-columns: 1fr 8px 1fr 8px 1fr;
   grid-template-rows: 100%;
 }
 
@@ -100,12 +110,24 @@ button {
   color: white;
   overflow-y: auto;
   
-  scrollbar-color: #555 transparent;
+  /* scrollbar-color: #555 transparent; */
+}
+
+.central-panel-wrapper{
+  height: 100%;
+}
+ 
+.without-song-container{
+  height: 100%;
+  width: 30%;
 }
 .aside-bar{
   overflow: hidden;
+  background: rgb(18, 18, 18);
+  border-radius: 15px;
+  margin-left: 9px;
 }
-.panel::-webkit-scrollbar {
+/* .panel::-webkit-scrollbar {
   width: 5px;
 }
 
@@ -122,23 +144,33 @@ button {
 
 .panel:hover::-webkit-scrollbar-thumb {
   background-color: #888;
-}
+} */
 
 .gutter-col {
   cursor: col-resize;
   width: 5px;
+  margin: 0 auto;
 }
 
 .gutter-col::after {
   content: "";
-  margin: 0 auto;
-  background: aqua;
-  height: 100%;
-  width: 1px;
-  display: block;
+  position: absolute;
+  top: 49%;
+  transform: translate(50%, -50%);
+  height: calc(100% - 180px);
+  border-radius: 2px;
+  width: 2px;
+  background-color: #7c7c7c;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
 }
 
-
+.gutter-col:hover::after {
+  opacity: 1;
+}
+.gutter-col.active::after {
+  opacity: 1;
+}
 
 .player {
   background: #111;
@@ -170,3 +202,58 @@ button {
 }
 
  
+
+
+
+/* Skeleton base con shimmer */
+.skeleton {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f4f4f4 37%, #e0e0e0 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+
+  100% {
+    background-position: 400px 0;
+  }
+}
+
+/* Skeleton de la imagen */
+.skeleton-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+/* Skeleton de los textos */
+.skeleton-text {
+  height: 12px;
+  margin: 6px 0;
+  border-radius: 3px;
+}
+
+.skeleton-title {
+  width: 120px;
+  height: 14px;
+}
+
+.skeleton-meta {
+  width: 80px;
+  height: 12px;
+}
+.os-scrollbar-vertical {
+  width: 12px;
+  /* ancho del track vertical */
+}
+
+
+/* Opcional: el "handle" (la parte que arrastras) */
+.os-scrollbar-handle {
+  border-radius: 6px;
+}

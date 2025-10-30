@@ -1,0 +1,116 @@
+ .dock {
+     display: flex;
+     align-items: center;
+     gap: 12px;
+     padding: 16px;
+     max-width: 546px;
+     width: 100%;
+     min-width: auto;
+ }
+
+ /* Botones circulares */
+ .icon-btn {
+     width: 48px;
+     height: 48px;
+     border-radius: 50%;
+     background: #171717;
+     border: 1px solid var(--pill-border);
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     color: var(--muted);
+     transition:
+         transform 0.08s ease,
+         background 0.15s ease,
+         color 0.15s ease;
+ }
+
+ .icon-btn:hover {
+     background: #1f1f1f;
+     color: #ffffff;
+ }
+
+ .icon-btn:active {
+     transform: scale(0.98);
+ }
+
+ .icon-btn:focus-visible {
+     outline: 2px solid var(--focus);
+     outline-offset: 2px;
+ }
+
+ /* Barra de búsqueda */
+ .searchbar {
+     flex: 1;
+     display: flex;
+     align-items: center;
+     background: var(--pill);
+     border: 1px solid var(--pill-border);
+     border-radius: 999px;
+     height: 56px;
+     padding: 0 8px 0 12px;
+     color: var(--text);
+     gap: 10px;
+ }
+
+ .searchbar:focus-within {
+     border-color: #3a3a3a;
+     box-shadow: 0 0 0 3px rgba(61, 133, 255, 0.18);
+ }
+
+ .searchbar__icon {
+     display: inline-flex;
+     color: var(--muted);
+ }
+
+ .searchbar__input {
+     flex: 1;
+     background: transparent;
+     border: 0;
+     outline: 0;
+     color: var(--text);
+     font-size: 16px;
+     line-height: 1;
+     min-width: 100px;
+ }
+
+ .searchbar__input::placeholder {
+     color: var(--muted);
+ }
+
+ .searchbar__divider {
+     width: 1px;
+     height: 28px;
+     background: var(--pill-border);
+     margin: 0 4px 0 2px;
+ }
+
+ /* Botón derecho “inset” pegado al borde de la pill */
+ .icon-btn--inset {
+     width: 48px;
+     height: 48px;
+     background: #212121;
+     border-color: transparent;
+     /* se ve integrado */
+ }
+
+ .icon-btn--inset:hover {
+     background: #262626;
+ }
+
+ /* Responsivo */
+ @media (max-width: 600px) {
+     .searchbar {
+         height: 50px;
+     }
+
+     .icon-btn,
+     .icon-btn--inset {
+         width: 44px;
+         height: 44px;
+     }
+
+     .searchbar__input {
+         font-size: 15px;
+     }
+ }

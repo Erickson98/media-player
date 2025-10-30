@@ -1,0 +1,32 @@
+
+.title {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    text-overflow: ellipsis;
+}
+
+.card {
+    background: #1f1f1f;
+    color: #fff;
+    border-radius: 8px;
+
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font:
+        589 14px/1.2 system-ui,
+        sans-serif;
+}
+
+.card:hover .btn-hidden {
+    opacity: 1;
+}
+
+.btn-hidden {
+    margin: 0px;
+    position: absolute;
+    /* transform: translate(0px, 0px); */
+}

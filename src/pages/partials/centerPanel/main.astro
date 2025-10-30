@@ -1,77 +1,60 @@
 ---
-import Footer from "src/components/Footer.astro";
 import Home from "src/components/CentralPanel/Home.astro";
 import AlbumCarrousel from "src/components/AlbumCarrousel.astro";
 import ArtistCarrousel from "src/components/ArtistCarrousel.astro";
 import MightLike from "src/components/CentralPanel/MightLike.astro";
-const trackUrl = new URL(
-  "/api/spotify/me/top/tracks?time_range=short_term&limit=4",
-  Astro.url
-);
-
-const artistUrl = new URL(
-  "/api/spotify/me/top/artists?time_range=short_term&limit=4",
-  Astro.url
-);
-
-const newReleaseUrl = new URL(
-  "/api/spotify/browse/new-releases?limit=10",
-  Astro.url
-);
-
-const throwBackUrl = new URL(
-  "/api/spotify/me/albums?limit=10&offset=6",
-  Astro.url
-);
-
-const newYourFavoriteArtistsUrl = new URL(
-  "/api/spotify/me/top/artists?limit=10",
-  Astro.url
-);
 
 const headers = new Headers({ Accept: "application/json" });
 const cookie = Astro.request.headers.get("cookie");
 if (cookie) headers.set("cookie", cookie);
 
-const resTracks = await fetch(trackUrl, { headers });
-if (!resTracks.ok) {
-  throw new Error(`No se pudo cargar el álbum  (status ${resTracks.status})`);
-}
-const tracks = await resTracks.json();
-const resArtists = await fetch(artistUrl, { headers });
-if (!resArtists.ok) {
-  throw new Error(`No se pudo cargar el álbum  (status ${resArtists.status})`);
-}
-const artists = await resArtists.json();
+// URLs centralizadas
+const endpoints = {
+  tracks: "/api/spotify/me/top/tracks?time_range=short_term&limit=4",
+  artists: "/api/spotify/me/top/artists?time_range=short_term&limit=4",
+  newRelease: "/api/spotify/browse/new-releases?limit=10",
+  throwBack: "/api/spotify/me/albums?limit=10&offset=6",
+  yourFavoriteArtists: "/api/spotify/me/top/artists?limit=10",
+};
 
-const resNewRelease = await fetch(newReleaseUrl, { headers });
-if (!resNewRelease.ok) {
-  throw new Error(
-    `No se pudo cargar el new release  (status ${resNewRelease.status})`
-  );
-}
-const newRelease = await resNewRelease.json();
+// Ejecutar todas las peticiones en paralelo
+const [resTracks, resArtists, resNewRelease, resThrowBack, resYourFav] =
+  await Promise.all([
+    fetch(new URL(endpoints.tracks, Astro.url), { headers }),
+    fetch(new URL(endpoints.artists, Astro.url), { headers }),
+    fetch(new URL(endpoints.newRelease, Astro.url), { headers }),
+    fetch(new URL(endpoints.throwBack, Astro.url), { headers }),
+    fetch(new URL(endpoints.yourFavoriteArtists, Astro.url), { headers }),
+  ]);
 
-const reqThrowBack = await fetch(throwBackUrl, {
-  headers,
-});
-
-const respThrowBack = await reqThrowBack.json();
-const resYourFavoriteArtists = await fetch(newYourFavoriteArtistsUrl, {
-  headers,
-});
-if (!resYourFavoriteArtists.ok) {
-  throw new Error(
-    `No se pudo cargar el might like  (status ${resYourFavoriteArtists.status})`
-  );
+// Validar errores pero sin romper toda la página
+function safeJson(response, label) {
+  if (!response.ok) {
+    console.error(`❌ Error al cargar ${label}: status ${response.status}`);
+    return null;
+  }
+  return response.json();
 }
-const yourFavoriteArtists = await resYourFavoriteArtists.json();
-Astro.response.headers.set("Content-Type", "text/html; charset=utf-8");
+
+const [tracks, artists, newRelease, throwBack, yourFavoriteArtists] =
+  await Promise.all([
+    safeJson(resTracks, "tracks"),
+    safeJson(resArtists, "artists"),
+    safeJson(resNewRelease, "new releases"),
+    safeJson(resThrowBack, "throwback"),
+    safeJson(resYourFav, "your favorite artists"),
+  ]);
+
+// Astro.response.headers.set("Content-Type", "text/html; charset=utf-8");
 ---
 
-<!-- <p>Selecciona un album...</p> -->
-<Home tracks={tracks} artists={artists} />
-<AlbumCarrousel album={newRelease.albums} title="New Release" />
-<MightLike album={respThrowBack} title="Throwback" />
-<ArtistCarrousel artists={yourFavoriteArtists} />
+<Home tracks={tracks ?? { items: [] }} artists={artists ?? { items: [] }} />
+<!-- <AlbumCarrousel
+  album={newRelease?.albums ?? { items: [] }}
+  title="New Release"
+/> -->
+<!-- <AlbumCarrousel album={newRelease.albums} title="New Release" /> -->
+<div class="new-release-album"></div>
+<MightLike album={throwBack ?? { items: [] }} title="Throwback" />
+<ArtistCarrousel artists={yourFavoriteArtists ?? { items: [] }} />
 <!-- <Footer /> -->

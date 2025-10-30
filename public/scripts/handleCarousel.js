@@ -1,9 +1,4 @@
-export function handleCarousel(
-  selector: string,
-  carouselTrack: string,
-  arrowLeft: string,
-  arrowRight: string
-) {
+export function handleCarousel(selector, carouselTrack, arrowLeft, arrowRight) {
   const root = document.querySelector(selector);
   if (!root) return;
 

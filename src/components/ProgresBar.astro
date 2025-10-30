@@ -1,4 +1,4 @@
-<div class="progress-container" id="volume-container">
+<div class="progress-container progress-bar-volume" id="volume-container">
   <div class="progress-bar" id="volume-bar"></div>
   <div class="progress-knob" id="volume-knob"></div>
 </div>
@@ -6,11 +6,12 @@
 <style>
   .progress-container {
     height: 6px;
-    width: 200px;
+    /* width: 200px; */
     background: #333;
     border-radius: 6px;
     position: relative;
     cursor: pointer;
+    max-width: 140px;
   }
 
   .progress-bar {
@@ -21,6 +22,7 @@
     transform-origin: left center;
     will-change: transform;
     transition: transform 0.15s ease-out;
+    /* max-width: 140px; */
   }
 
   .progress-knob {
@@ -38,7 +40,7 @@
   }
 </style>
 
-<script>
+<script nonce={Astro.locals.nonce} type="module">
   const container = document.getElementById("volume-container");
   const bar = document.getElementById("volume-bar");
   const knob = document.getElementById("volume-knob");

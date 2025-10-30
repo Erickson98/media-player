@@ -1,8 +1,6 @@
 ---
-import Split from "../components/Split.astro";
 import SearchBar from "src/components/Header/SearchBar.astro";
 import SocialMedia from "src/components/Header/SocialMedia.astro";
-import "../styles/Layout.css";
 import Footer from "src/components/Footer.astro";
 import Index from "src/components/Player/index.astro";
 const { title } = Astro.props;
@@ -13,17 +11,299 @@ const { title } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+    <meta
+      name="description"
+      content="Explora tus artistas favoritos, nuevos lanzamientos y recomendaciones personalizadas con nuestra aplicación musical."
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/overlayscrollbars/styles/overlayscrollbars.css"
+    />
+
+    <!-- <link
+      rel="preload"
+      as="script"
+      href="https://sdk.scdn.co/spotify-player.js"
+      crossorigin
+    /> -->
+
+    <link
+      rel="dns-prefetch preconnect"
+      href="https://api.spotify.com"
+      crossorigin
+    />
+    <link rel="dns-prefetch preconnect" href="https://i.scdn.co" crossorigin />
+    <!-- <link
+      rel="dns-prefetch preconnect"
+      href="https://sdk.scdn.co"
+      crossorigin
+    /> -->
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/Layout.css" />
+    <link rel="stylesheet" href="/SplitPanel.css" />
+
+    <link rel="stylesheet" href="/CenterPanel.css" />
+    <link rel="stylesheet" href="/SideBar.css" />
+    <link rel="stylesheet" href="/RightPanel.css" />
+    <link rel="stylesheet" href="/SearchBar.css" />
+    <link rel="stylesheet" href="/Home.css" />
+
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body>
+  <body data-overlayscrollbars-initialize>
+    <template id="album-detail-skeleton-album">
+      <style>
+        .skeleton-album {
+          background: linear-gradient(
+            90deg,
+            #2a2a2a 25%,
+            #3a3a3a 37%,
+            #2a2a2a 63%
+          );
+          background-size: 400% 100%;
+          animation: shimmer 1.4s ease infinite;
+        }
+
+        @keyframes shimmer {
+          0% {
+            background-position: -400px 0;
+          }
+          100% {
+            background-position: 400px 0;
+          }
+        }
+
+        .skeleton-album-line {
+          height: 14px;
+          border-radius: 4px;
+          margin: 4px 0;
+        }
+
+        .skeleton-album-img {
+          width: 60px;
+          height: 60px;
+          border-radius: 4px;
+        }
+
+        .skeleton-album-btn {
+          width: 80px;
+          height: 30px;
+          border-radius: 20px;
+        }
+
+        .album-header-skeleton-album {
+          display: flex;
+          gap: 12px;
+          margin: 16px 0;
+          align-items: center;
+        }
+
+        .album-info-skeleton-album {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .track-list-skeleton-album {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 12px;
+        }
+
+        .track-skeleton-album-row {
+          display: grid;
+          grid-template-columns: 40px 1fr 40px;
+          align-items: center;
+          gap: 10px;
+          padding: 8px 0;
+        }
+
+        .copyrights-skeleton-album {
+          margin-top: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+      </style>
+
+      <div class="album-header-skeleton-album">
+        <div class="skeleton-album skeleton-album-img"></div>
+        <div class="album-info-skeleton-album">
+          <div
+            class="skeleton-album skeleton-album-line"
+            style="width: 160px; height:18px;"
+          >
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width: 100px;">
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width: 140px;">
+          </div>
+          <div style="display:flex; gap:10px; margin-top:6px;">
+            <div class="skeleton-album skeleton-album-btn"></div>
+            <div class="skeleton-album skeleton-album-btn" style="width:100px;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="track-list-skeleton-album">
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:180px;"
+            >
+            </div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:120px;"
+            >
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:140px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:90px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:25px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:160px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:80px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:160px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:80px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:160px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:80px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:160px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:80px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:160px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:80px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:160px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:80px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+        <div class="track-skeleton-album-row">
+          <div class="skeleton-album skeleton-album-line" style="width:20px;">
+          </div>
+          <div>
+            <div
+              class="skeleton-album skeleton-album-line"
+              style="width:160px;"
+            >
+            </div>
+            <div class="skeleton-album skeleton-album-line" style="width:80px;">
+            </div>
+          </div>
+          <div class="skeleton-album skeleton-album-line" style="width:30px;">
+          </div>
+        </div>
+      </div>
+
+      <div class="copyrights-skeleton-album">
+        <div class="skeleton-album skeleton-album-line" style="width:200px;">
+        </div>
+        <div class="skeleton-album skeleton-album-line" style="width:150px;">
+        </div>
+      </div>
+    </template>
+
     <div class="grid-layout">
       <header class="header-container">
         <div class="header-side">
-          <a href="/" rel="noopener noreferrer"
+          <a href="/" aria-label="app icon" rel="noopener' noreferrer"
             ><img
-              src="/public/icon.png"
+              src="/icon.webp"
               width="50"
               alt=""
               srcset=""
@@ -36,15 +316,21 @@ const { title } = Astro.props;
       </header>
 
       <div class="default-grid-template-columns" id="split-wrapper">
-        <aside class="panel aside-bar" id="left-panel">
+        <aside
+          class="panel aside-bar"
+          id="left-panel"
+          data-overlayscrollbars-initialize
+        >
           <slot name="left" />
         </aside>
 
-        <div class="gutter-col gutter-1"></div>
-        <div class="panel">
+        <div class="gutter-col gutter-1 gutter-left-row"></div>
+
+        <div class="panel" id="here" style="border-radius: 15px;">
           <main id="center-panel"><slot /></main>
           <Footer />
         </div>
+
         <div class="gutter-col gutter-3 gutter-right"></div>
 
         <aside class="panel right-panel" id="right-panel">
@@ -56,57 +342,72 @@ const { title } = Astro.props;
         <!-- <button class="toggle">Toggle Right Panel</button> -->
       </div>
     </div>
+
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
 
-    <script>
-      import { playerEvents } from "src/utils/playerEvents";
-      import { getSpotifyToken } from "../utils/get-spotify-token";
-      window.onSpotifyWebPlaybackSDKReady = () => {
-        const player = new Spotify.Player({
-          name: "Media Player",
-          getOAuthToken: async (cb) => {
-            let token = await getSpotifyToken();
-            cb(token);
-          },
-          volume: 0.5,
-        });
+    <script nonce={Astro.locals.nonce} type="module">
+      import { playerEvents } from "/scripts/playerEvents.js";
+      import { getSpotifyToken } from "/scripts/getSpotifyToken.js";
+      try {
+        window.onSpotifyWebPlaybackSDKReady = async () => {
+          const player = new Spotify.Player({
+            name: "Media Player",
+            getOAuthToken: async (cb) => {
+              try {
+                const token = await getSpotifyToken();
+                cb(token);
+              } catch (err) {
+                console.error("Error fetching token", err);
+              }
+            },
+            volume: 0.5,
+          });
 
-        window.deviceId = null;
-        player.addListener("player_state_changed", (state) => {
-          playerEvents.dispatchEvent(
-            new CustomEvent("state", { detail: state })
+          window.deviceId = null;
+          player.addListener("player_state_changed", (state) => {
+            playerEvents.dispatchEvent(
+              new CustomEvent("state", { detail: state })
+            );
+          });
+          player.addListener("ready", ({ device_id }) => {
+            window.deviceId = device_id;
+            console.log("Player ready with device ID", device_id);
+          });
+
+          player.addListener("initialization_error", ({ message }) => {
+            console.error(message);
+          });
+          player.addListener("authentication_error", ({ message }) => {
+            console.error(message);
+          });
+          player.addListener("account_error", ({ message }) => {
+            console.error(message);
+          });
+          player.addListener("playback_error", ({ message }) => {
+            console.error(message);
+          });
+
+          player.connect();
+          playerEvents.addEventListener("pause", () => player.pause());
+          playerEvents.addEventListener("resume", () => player.resume());
+          playerEvents.addEventListener("toggle", () => player.togglePlay());
+          playerEvents.addEventListener("next", () => player.nextTrack());
+          playerEvents.addEventListener("prev", () => player.previousTrack());
+          playerEvents.addEventListener("seek", (e) =>
+            player.seek(e.detail.position)
           );
-        });
-        player.addListener("ready", ({ device_id }) => {
-          window.deviceId = device_id;
-          console.log("Player ready with device ID", device_id);
-        });
-
-        player.addListener("initialization_error", ({ message }) => {
-          console.error(message);
-        });
-        player.addListener("authentication_error", ({ message }) => {
-          console.error(message);
-        });
-        player.addListener("account_error", ({ message }) => {
-          console.error(message);
-        });
-        player.addListener("playback_error", ({ message }) => {
-          console.error(message);
-        });
-
-        player.connect();
-        playerEvents.addEventListener("pause", () => player.pause());
-        playerEvents.addEventListener("resume", () => player.resume());
-        playerEvents.addEventListener("toggle", () => player.togglePlay());
-        playerEvents.addEventListener("next", () => player.nextTrack());
-        playerEvents.addEventListener("prev", () => player.previousTrack());
-        playerEvents.addEventListener("seek", (e) =>
-          player.seek(e.detail.position)
-        );
-      };
+        };
+      } catch (error) {
+        console.log(error);
+      }
     </script>
+
+    <script type="module" lang="ts"></script>
   </body>
 </html>
 
-<Split />
+<script type="module" nonce={Astro.locals.nonce}>
+  window.addEventListener("DOMContentLoaded", async () => {
+    await import("/scripts/Split.js");
+  });
+</script>

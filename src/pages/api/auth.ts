@@ -2,7 +2,26 @@ import type { APIRoute } from "astro";
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   const { access_token } = await request.json();
-
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
+  console.log("HEY");
   if (!access_token) {
     return new Response(JSON.stringify({ error: "Missing token" }), {
       status: 400,

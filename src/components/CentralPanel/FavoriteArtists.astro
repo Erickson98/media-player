@@ -18,7 +18,12 @@ const { favoretieArtists } = Astro.props;
   }
 </style>
 <div>
-  <a href="/" target="_blank" rel="noopener noreferrer">Favorite Artist</a>
+  <a
+    href="/"
+    target="_blank"
+    aria-label="Favorite Artists"
+    rel="noopener noreferrer">Favorite Artist</a
+  >
   <div class="container-for-albums-carrusel">
     {
       favoretieArtists.items.map((item) => (

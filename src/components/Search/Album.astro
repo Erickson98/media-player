@@ -15,6 +15,9 @@ const { album } = Astro.props;
               alt=""
               srcset=""
               width="153"
+              fetchpriority="high"
+              decoding="sync"
+              loading="eager"
             />
             <div>{item?.name}</div>
             {item?.artists?.map((a) => a.name).join(", ")}
@@ -31,6 +34,6 @@ const { album } = Astro.props;
   }
   .container-for-albums-carrusel {
     display: flex;
-    gap: 27px;
+    /* gap: 27px; */
   }
 </style>

@@ -1,8 +1,6 @@
 ---
 export const prerender = false;
 
-import PlayIcon from "../assets/icons/play.svg?url";
-
 const { artists, title } = Astro.props;
 ---
 
@@ -22,7 +20,7 @@ const { artists, title } = Astro.props;
 
   .carousel-track {
     display: flex;
-    gap: var(--gap);
+    /* gap: var(--gap); */
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-padding-left: 16px;
@@ -36,13 +34,19 @@ const { artists, title } = Astro.props;
 
   .container-for-play {
     flex: 0 0 auto;
-    width: clamp(140px, 22vw, 162px);
+    /* width: clamp(140px, 22vw, 162px); */
     scroll-snap-align: start;
     /* text-align: center; */
     position: relative;
     font-size: smaller;
+    padding: 10px;
+    background-color: transparent;
+    transition: background 0.3 ease-in;
+    border-radius: 10px;
   }
-
+  .container-for-play:hover {
+    background-color: #1f1f1f;
+  }
   .img-favorite-artists {
     border-radius: 50%;
     object-fit: cover;
@@ -113,7 +117,8 @@ const { artists, title } = Astro.props;
               <img
                 class="img-favorite-artists"
                 src={item?.images[1]?.url}
-                alt={item?.name}
+                alt=""
+                aria-hidden="true"
                 width="153"
                 height="153"
               />
@@ -130,7 +135,7 @@ const { artists, title } = Astro.props;
             })}
           >
             <img
-              src={PlayIcon}
+              src="/play.svg"
               alt="play icon"
               data-state="play"
               class={`btn-hidden-pause-${item.id}`}

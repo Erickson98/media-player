@@ -10,27 +10,46 @@ export const prerender = false;
     max-width: 100%;
     height: auto;
     display: block;
+    border-radius: 8px;
+  }
+  .album-cover-wrapper {
+    /* height: 100vh; */
   }
 </style>
 <!-- Plantilla HTML -->
 <template id="right-panel-tpl">
-  <div>
-    <div data-field="album-name-top"></div>
-  </div>
-  <div>
-    <img data-field="album-cover" width="500" class="img-album-cover" alt="" />
-  </div>
-  <div>
-    <h2 data-field="album-name"></h2>
-    <div data-list="artists"></div>
-  </div>
-  <div>
-    <div class="album-cover-rigth-panel" data-field="hero-bg">
-      <p>about the artist</p>
+  <div class="container-right-panel" style="margin: 20px;">
+    <div>
+      <div class="container-meta-description-song-right-panel">
+        <span data-field="album-name-top"></span>
+      </div>
     </div>
-    <p data-field="main-artist"></p>
-    <span
-      style="
+    <div>
+      <img
+        data-field="album-cover"
+        width="500"
+        class="img-album-cover"
+        alt=""
+        fetchpriority="high"
+        decoding="sync"
+        loading="eager"
+      />
+    </div>
+    <div>
+      <h2 data-field="album-name"></h2>
+      <div class="container-meta-description-song-right-panel">
+        <span data-list="artists"></span>
+      </div>
+    </div>
+    <div class="album-cover-wrapper">
+      <div class="album-cover-rigth-panel" data-field="hero-bg">
+        <h2 style="font-weight: 700;font-size: large;padding: 9px;">
+          About the artist
+        </h2>
+      </div>
+      <p data-field="main-artist"></p>
+      <span
+        style="
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
@@ -39,16 +58,33 @@ export const prerender = false;
         overflow-wrap: anywhere;
         text-overflow: ellipsis;
       "
-      data-field="artist-description"></span>
+        data-field="artist-description"></span>
+    </div>
   </div>
 </template>
 
-<script>
+<script nonce={Astro.locals.nonce} type="module">
   const root5 = document.getElementById("right-panel");
   const tpl = document.getElementById("right-panel-tpl");
 
   function clearRight() {
     root5.innerHTML = `<p>Sin canción en reproducción</p>`;
+  }
+  import { OverlayScrollbars } from "https://cdn.jsdelivr.net/npm/overlayscrollbars/+esm";
+  let osInstance = null;
+
+  function initScroll() {
+    const target = document.getElementById("right-panel");
+
+    if (osInstance) {
+      osInstance.destroy();
+      osInstance = null;
+    }
+
+    osInstance = OverlayScrollbars(target, {
+      scrollbars: { autoHide: "leave", theme: "os-theme-light" },
+      overflow: { x: "hidden" },
+    });
   }
 
   function renderRight({
@@ -63,10 +99,10 @@ export const prerender = false;
     albumName,
   }) {
     root5.replaceChildren();
-
+    console.log(trackName);
+    console.log(artistName);
     const node = tpl.content.cloneNode(true);
     const q = (sel) => node.querySelector(sel);
-
     const imgUrl = imgAlbum ?? "";
 
     q('[data-field="album-name-top"]').textContent = albumName ?? "";
@@ -79,11 +115,9 @@ export const prerender = false;
 
     const artistsContainer = q('[data-list="artists"]');
     artistsContainer.replaceChildren(
-      ...(trackArtists ?? []).map((a) => {
-        const p = document.createElement("p");
-        p.textContent = a.name;
-        return p;
-      })
+      document.createTextNode(
+        (trackArtists ?? []).map((a) => a.name).join(", ")
+      )
     );
     const heroBg = q('[data-field="hero-bg"]');
     heroBg.style.backgroundPosition = "50% 50%";
@@ -96,6 +130,7 @@ export const prerender = false;
       bioArtist ?? "No description available.";
 
     root5.appendChild(node);
+    initScroll();
   }
 
   // window.addEventListener("route:home", clearRight);

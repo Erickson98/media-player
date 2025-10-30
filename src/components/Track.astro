@@ -27,7 +27,7 @@
 
     <div class="rp-hero">
       <div class="album-cover-rigth-panel" data-field="hero-bg">
-        <p>about the artist</p>
+        <p>About the artist</p>
       </div>
       <p data-field="main-artist"></p>
       <span class="rp-desc" data-field="artist-bio"></span>
@@ -40,7 +40,7 @@
   </div>
 </template>
 
-<script client:load>
+<script nonce={Astro.locals.nonce} type="module">
   const root = document.getElementById("right-panel");
   const tpl = document.getElementById("right-panel-tpl");
 

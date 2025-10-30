@@ -119,7 +119,7 @@
   </div>
 </footer>
 
-<script client:load>
+<script nonce={Astro.locals.nonce} type="module">
   // año auto
   document.getElementById("y").textContent = new Date().getFullYear();
 </script>
@@ -146,9 +146,9 @@
     text-decoration: underline;
   }
   .footer__inner {
-    max-width: 1200px;
+    /* max-width: 1200px;
     margin: 0 auto;
-    padding: 48px 20px;
+    padding: 48px 20px; */
   }
   .footer__grid {
     display: grid;
