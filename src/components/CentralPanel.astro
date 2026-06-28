@@ -3,28 +3,15 @@
 ---
 
 <div id="center-panel">
-  <!-- <Footer /> -->
 </div>
 <template id="structure-home-view">
   <section id="sections-home">
-    <div class="top-view-elements">
-      <!-- posición 1 -->
-    </div>
+    <div class="top-view-elements"></div>
 
-    <div class="newRelease">
-      <!-- posición 2 -->
+    <div class="newRelease"></div>
 
-      <!-- aquí irá el AlbumCarrousel -->
-    </div>
-
-    <div class="might-like">
-      <!-- posición 3 -->
-      <!-- contenido -->
-    </div>
-    <div class="artist-you-like">
-      <!-- posición 3 -->
-      <!-- contenido -->
-    </div>
+    <div class="might-like"></div>
+    <div class="artist-you-like"></div>
   </section>
 </template>
 <template id="topElementView">
@@ -34,24 +21,20 @@
         display: grid;
         padding: 20px 20px 0 20px;
         gap: 16px;
-        /* Desktop: 4 columnas => con 8 items quedan 2 filas */
         grid-template-columns: repeat(4, minmax(0, 1fr));
       }
 
-      /* Tablet: opcional (3 columnas) */
       @media (max-width: 900px) {
         .grid8 {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
 
-      /* Móvil: 2 columnas => con 8 items quedan 4 filas */
       @media (max-width: 600px) {
         .grid8 {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
-      /* Skeleton shimmer effect */
       .skeleton {
         background: linear-gradient(
           90deg,
@@ -77,7 +60,6 @@
         flex-shrink: 0;
       }
 
-      /* mantener tu card pero con skeleton */
       .skeleton-card {
         background: #1f1f1f;
         color: #fff;
@@ -91,7 +73,6 @@
         padding: 4px 8px;
       }
 
-      /* animación shimmer */
       @keyframes shimmer {
         0% {
           background-position: -400px 0;
@@ -102,7 +83,6 @@
       }
     </style>
 
-    <!-- Ejemplo de 4 skeletons -->
     <div class="card skeleton-card">
       <div class="skeleton skeleton-img" style="width:50px; height:50px;"></div>
       <div
@@ -200,11 +180,8 @@
   </div>
 </template>
 
-<!-- template para new release -->
 <template id="new-release-template">
   <style>
-    /* Efecto shimmer */
-    /* === Skeleton placeholders === */
     .albums-carousel {
       margin: 20px;
     }
@@ -225,15 +202,13 @@
       }
     }
 
-    /* Imagen del álbum (skeleton) */
     .skeleton-new-realease-img {
       width: 153px;
       height: 153px;
-      border-radius: 5px; /* igual que .img-album */
+      border-radius: 5px;
       display: block;
     }
 
-    /* Texto (nombre + artistas) */
     .skeleton-text-new-realease {
       display: block;
       height: 14px;
@@ -241,7 +216,6 @@
       border-radius: 3px;
     }
 
-    /* Botón play circular */
     .skeleton-icon-new-realease {
       width: 32px;
       height: 32px;
@@ -251,9 +225,8 @@
       right: 8px;
     }
 
-    /* Carrusel en modo skeleton */
     .skeleton-carousel-new-realease .carousel-title {
-      color: #666; /* en vez de blanco para indicar placeholder */
+      color: #666;
       pointer-events: none;
     }
 
@@ -386,13 +359,17 @@
     });
   }
   initScroll();
+  function checkPlayingTrack() {
+    const buttonTopElement = document
+      .querySelectorAll(".top-Elements-Home-View")
+      .forEach((value, key) => {
+        console.log(value);
+      });
+  }
   async function renderHome() {
-    // root.innerHTML = `<p>Selecciona un álbum...</p>`;
-    // //render skeleton for
-
     const topElementViewTemplate = document.getElementById("topElementView");
     const structureHomeViewTemplate = document.getElementById(
-      "structure-home-view"
+      "structure-home-view",
     );
     const newReleaseTemplate = document.getElementById("new-release-template");
 
@@ -402,11 +379,11 @@
     const newReleaseElement = newReleaseTemplate.content.cloneNode(true);
     const mightLikeElement = newReleaseTemplate.content.cloneNode(true);
     const artistLikeElement = newReleaseTemplate.content.cloneNode(true);
-    cloneTopElementView.innerHTML = ""; // limpiar antes de renderizar
-    cloneStructureHomeViewElement.innerHTML = ""; // limpiar antes de renderizar
-    newReleaseElement.innerHTML = ""; // limpiar antes de renderizar
-    mightLikeElement.innerHTML = ""; // limpiar antes de renderizar
-    artistLikeElement.innerHTML = ""; // limpiar antes de renderizar
+    cloneTopElementView.innerHTML = "";
+    cloneStructureHomeViewElement.innerHTML = "";
+    newReleaseElement.innerHTML = "";
+    mightLikeElement.innerHTML = "";
+    artistLikeElement.innerHTML = "";
     const topElementSection =
       cloneStructureHomeViewElement.querySelector(".top-view-elements");
 
@@ -430,7 +407,6 @@
       if (!r.ok) throw new Error("Album not found");
       return r.text();
     });
-    // nre?.innerHTML = html2;
     nre.innerHTML = html2;
 
     const html = await fetch(`/partials/centerPanel/main`).then((r) => {
@@ -446,13 +422,6 @@
 
     root?.appendChild(create);
 
-    // const nrer = root?.querySelector(".top-view-elements");
-    // const newReleaseTmp = JSON.parse(html).querySelector(".new-release-album");
-
-    // nrer.innerHTML = html;
-    // console.log(html);
-
-    // root.innerHTML = html;
     addEventNavArtist(".artist-favorite");
     addEventNavAlbum(".btn-album-go-to");
     addEventHomeView();
@@ -460,21 +429,21 @@
       ".albums-carousel",
       ".container-for-albums-carrusel",
       ".arrow.left",
-      ".arrow.right"
+      ".arrow.right",
     );
     handleCarousel(
       ".might-like",
       ".container-for-albums-carrusel-might-like",
       ".arrow.left.mightLikeLeft",
-      ".arrow.right.mightLikeRight"
+      ".arrow.right.mightLikeRight",
     );
     handleCarousel(
       ".carousel",
       ".carousel-track",
       ".arrow.left",
-      ".arrow.right"
+      ".arrow.right",
     );
-    // initScroll();
+    checkPlayingTrack();
   }
   function addEventNavArtist(btnClass) {
     const buttons = document.querySelectorAll(btnClass);
@@ -482,7 +451,7 @@
       btn.addEventListener("click", () => {
         const artistId = btn.dataset.artistId;
         window.dispatchEvent(
-          new CustomEvent("nav:artist", { detail: { artistId } })
+          new CustomEvent("nav:artist", { detail: { artistId } }),
         );
       });
     });
@@ -493,7 +462,7 @@
       btn.addEventListener("click", () => {
         const albumId = btn.dataset.albumId;
         window.dispatchEvent(
-          new CustomEvent("nav:album", { detail: { albumId } })
+          new CustomEvent("nav:album", { detail: { albumId } }),
         );
       });
     });
@@ -503,11 +472,19 @@
     const btnTopResultUriSong = btnElementTopResult.dataset.topResultSong;
     const mainTop = document.querySelector(".playSong");
     mainTop.addEventListener("click", async () => {
+      console.log(mainTop);
       handleColorGreen({
         allowed: "playSong-main-top-song",
         trackData: JSON.parse(mainTop.dataset.track),
       });
 
+      const allElements = Array.from(btn.children).map((el) => ({
+        className: el.className,
+        src: el.getAttribute("src"),
+        state: el.dataset.state,
+      }));
+
+      localStorageSet("icon-play", allElements);
       const parsedMainTop = JSON.parse(mainTop.dataset.track);
       parsedMainTop.class = "playSong-top-songs";
 
@@ -524,7 +501,7 @@
     };
 
     const buttons = Array.from(
-      document.querySelectorAll(".playSong-top-songs")
+      document.querySelectorAll(".playSong-top-songs"),
     );
     const lastPlayed = localStorageGet("lastPlayedTrack");
 
@@ -538,7 +515,7 @@
     if (matchedBtn) {
       console.log(
         "Hay coincidencia con el último guardado:",
-        matchedBtn.dataset.track
+        matchedBtn.dataset.track,
       );
     }
 
@@ -550,6 +527,14 @@
         handleColorGreen({ allowed: "playSong-top-songs", trackData });
 
         localStorageSet("lastPlayedTrack", trackData);
+
+        const allElements = Array.from(btn.children).map((el) => ({
+          className: el.className,
+          src: el.getAttribute("src"),
+          state: el.dataset.state,
+        }));
+
+        localStorageSet("icon-play", allElements);
       });
     });
 
@@ -559,6 +544,14 @@
         trackData.class = "playSong-top-songs";
         handleColorGreen({ allowed: "playSong-Artists-Carrousel", trackData });
         localStorageSet("lastPlayedTrack", trackData);
+
+        const allElements = Array.from(btn.children).map((el) => ({
+          className: el.className,
+          src: el.getAttribute("src"),
+          state: el.dataset.state,
+        }));
+
+        localStorageSet("icon-play", allElements);
       });
     });
     document.querySelectorAll(".playSong-Album-Carrousel").forEach((btn) => {
@@ -568,10 +561,17 @@
         handleColorGreen({ allowed: "playSong-Album-Carrousel", trackData });
         localStorageSet("lastPlayedTrack", trackData);
         localStorage.setItem("lastPlayed", JSON.stringify(lastPlayed));
+
+        const allElements = Array.from(btn.children).map((el) => ({
+          className: el.className,
+          src: el.getAttribute("src"),
+          state: el.dataset.state,
+        }));
+
+        localStorageSet("icon-play", allElements);
       });
     });
   }
-  // here is top element
   function addEventHomeView() {
     const isSameTrack = (a, b) => {
       if (!a || !b) return false;
@@ -582,23 +582,8 @@
       return true;
     };
     const buttons = Array.from(
-      document.querySelectorAll(".playSong-Album-Carrousel")
+      document.querySelectorAll(".playSong-Album-Carrousel"),
     );
-    const lastPlayed = localStorageGet("lastPlayedTrack");
-
-    const matchedBtn = lastPlayed
-      ? buttons.find((btn) => {
-          const data = JSON.parse(btn.dataset.track);
-          return isSameTrack(data, lastPlayed);
-        })
-      : null;
-
-    if (matchedBtn) {
-      console.log(
-        "Hay coincidencia con el último guardado:",
-        matchedBtn.dataset.track
-      );
-    }
 
     buttons.forEach((btn) => {
       const trackData = JSON.parse(btn.dataset.track);
@@ -608,6 +593,13 @@
         handleColorGreen({ allowed: "playSong-Album-Carrousel", trackData });
 
         localStorageSet("lastPlayedTrack", trackData);
+        const allElements = Array.from(btn.children).map((el) => ({
+          className: el.className,
+          src: el.getAttribute("src"),
+          state: el.dataset.state,
+        }));
+
+        localStorageSet("icon-play", allElements);
       });
     });
 
@@ -616,7 +608,13 @@
         const trackData = JSON.parse(btn.dataset.track);
         trackData.class = "playSong-top-songs";
         handleColorGreen({ allowed: "playSong-Artists-Carrousel", trackData });
+        const allElements = Array.from(btn.children).map((el) => ({
+          className: el.className,
+          src: el.getAttribute("src"),
+          state: el.dataset.state,
+        }));
 
+        localStorageSet("icon-play", allElements);
         localStorageSet("lastPlayedTrack", trackData);
       });
     });
@@ -624,14 +622,6 @@
   async function renderAlbumById(albumId) {
     root.innerHTML = ``;
     try {
-      // const albumDetailSkeletonTemplate = document.getElementById(
-      //   "album-detail-skeleton-album"
-      // );
-      // console.log(albumDetailSkeletonTemplate);
-      // if (albumDetailSkeletonTemplate) {
-      //   const skeleton = albumDetailSkeletonTemplate.content.cloneNode(true);
-      //   root.appendChild(skeleton);
-      // }
       const html = await fetch(`/partials/album/${albumId}`).then((r) => {
         if (!r.ok) throw new Error("Album not found");
         return r.text();
@@ -644,7 +634,7 @@
       const el = document.querySelector(".album-artist");
       const artistName = el?.dataset.artistName;
       const res = await fetch(
-        `/api/genius/artist-bio?q=${encodeURIComponent(artistName)}`
+        `/api/genius/artist-bio?q=${encodeURIComponent(artistName)}`,
       );
       const { bio, image } = await res.json();
       root.querySelectorAll(".track-btn").forEach((btn) => {
@@ -669,7 +659,7 @@
         .getElementById("playSong")
         .addEventListener("click", async () => {
           const track_uri = JSON.parse(
-            document.querySelector(".btn-play")?.dataset.tracksAlbum
+            document.querySelector(".btn-play")?.dataset.tracksAlbum,
           );
           await spotifyPlayerAction("play", {
             uris: track_uri,
@@ -700,7 +690,6 @@
           window.dispatchEvent(new CustomEvent("route:playing"));
         });
       });
-      /////////
     } catch (e) {
       root.innerHTML = `<p>Error cargando álbum.</p>`;
       console.error(e);
@@ -722,8 +711,6 @@
       root.innerHTML = `<p>Error cargando álbum.</p>`;
       console.error(e);
     }
-
-    //
   }
 
   async function renderSearch(searchQuery) {
@@ -743,13 +730,13 @@
         ".albums-carousel",
         ".container-for-albums-carrusel",
         ".arrow.left",
-        ".arrow.right"
+        ".arrow.right",
       );
       handleCarousel(
         ".carousel",
         ".carousel-track",
         ".arrow.left",
-        ".arrow.right"
+        ".arrow.right",
       );
     } catch (e) {
       root.innerHTML = `<p>Error.</p>`;
@@ -760,7 +747,6 @@
   window.addEventListener("route:album", (e) => {
     const { albumId } = e.detail;
     renderAlbumById(albumId);
-    // renderAlbumById(albumId);
   });
   window.addEventListener("route:artist", (e) => {
     const { artistId } = e.detail;

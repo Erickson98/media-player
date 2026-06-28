@@ -3,5 +3,6 @@ export function localStorageGet(key) {
 }
 
 export function localStorageSet(key, element) {
+  console.log(element);
   localStorage.setItem(key, JSON.stringify(element));
 }

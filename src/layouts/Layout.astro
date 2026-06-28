@@ -20,24 +20,12 @@ const { title } = Astro.props;
       href="https://cdn.jsdelivr.net/npm/overlayscrollbars/styles/overlayscrollbars.css"
     />
 
-    <!-- <link
-      rel="preload"
-      as="script"
-      href="https://sdk.scdn.co/spotify-player.js"
-      crossorigin
-    /> -->
-
     <link
       rel="dns-prefetch preconnect"
       href="https://api.spotify.com"
       crossorigin
     />
     <link rel="dns-prefetch preconnect" href="https://i.scdn.co" crossorigin />
-    <!-- <link
-      rel="dns-prefetch preconnect"
-      href="https://sdk.scdn.co"
-      crossorigin
-    /> -->
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/Layout.css" />
@@ -339,7 +327,6 @@ const { title } = Astro.props;
       </div>
       <div class="player">
         <Index />
-        <!-- <button class="toggle">Toggle Right Panel</button> -->
       </div>
     </div>
 
@@ -351,7 +338,7 @@ const { title } = Astro.props;
       try {
         window.onSpotifyWebPlaybackSDKReady = async () => {
           const player = new Spotify.Player({
-            name: "Media Player",
+            name: "Media dsPlayer",
             getOAuthToken: async (cb) => {
               try {
                 const token = await getSpotifyToken();
@@ -360,7 +347,10 @@ const { title } = Astro.props;
                 console.error("Error fetching token", err);
               }
             },
-            volume: 0.5,
+            volume: 0.1,
+          });
+          player.setVolume(0.0).then(() => {
+            console.log("Volume updated!");
           });
 
           window.deviceId = null;
@@ -369,9 +359,30 @@ const { title } = Astro.props;
               new CustomEvent("state", { detail: state })
             );
           });
-          player.addListener("ready", ({ device_id }) => {
+          player.addListener("ready", async ({ device_id }) => {
             window.deviceId = device_id;
             console.log("Player ready with device ID", device_id);
+            try {
+              const res = await fetch("/api/spotify/me/player");
+              if (res.status !== 200) return;
+              const data = await res.json();
+              if (!data?.item) return;
+              window.__pendingResume = {
+                uri: data.item.uri,
+                position: data.progress_ms || 0,
+              };
+              playerEvents.dispatchEvent(
+                new CustomEvent("state", {
+                  detail: {
+                    duration: data.item.duration_ms,
+                    position: data.progress_ms || 0,
+                    paused: true,
+                  },
+                })
+              );
+            } catch (e) {
+              console.error("No se pudo restaurar la reproducción:", e);
+            }
           });
 
           player.addListener("initialization_error", ({ message }) => {
@@ -396,6 +407,7 @@ const { title } = Astro.props;
           playerEvents.addEventListener("seek", (e) =>
             player.seek(e.detail.position)
           );
+          window.player = player;
         };
       } catch (error) {
         console.log(error);

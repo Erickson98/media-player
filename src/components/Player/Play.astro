@@ -9,7 +9,7 @@
       <img
         src="/iconPlay.svg"
         class="play-action-icon"
-        data-action="pause"
+        data-action="stopped"
         width="15"
         alt=""
         srcset=""
@@ -42,6 +42,28 @@
   const timeCurrent = document.getElementById("time-current");
   const timeTotal = document.getElementById("time-total");
   const container = document.getElementById("progress-container");
+
+  container.addEventListener("click", async (e) => {
+    if (!window.deviceId || !duration) return;
+
+    const rect = container.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const percent = Math.min(Math.max(clickX / rect.width, 0), 1);
+    const newPosition = Math.floor(duration * percent);
+
+    position = newPosition;
+    lastUpdate = Date.now();
+    updateUI();
+
+    try {
+      await spotifyPlayerAction("seek", {
+        position_ms: newPosition,
+        deviceId: window.deviceId,
+      });
+    } catch (err) {
+      console.error("Error al hacer seek:", err);
+    }
+  });
 
   function msToTime(ms) {
     const m = Math.floor(ms / 60000);
@@ -85,25 +107,52 @@
   const playElement = document.querySelector(".play-action");
 
   playElement?.addEventListener("click", async () => {
-    let played = false;
     const imgElement = document.querySelector(".play-action-icon");
-    if (imgElement.dataset.action === "pause") {
+    if (imgElement.dataset.action === "stopped") {
       imgElement.src = "/iconPause.svg";
       imgElement.dataset.action = "play";
-      const lastPlayed = localStorageGet("lastPlayedHistory");
-      if (!played) {
+
+      const state = await window.player?.getCurrentState();
+      const pending = window.__pendingResume;
+      if (pending && !state) {
+        window.__pendingResume = null;
         await spotifyPlayerAction("play", {
-          uris: [`spotify:track:${lastPlayed.trackId}`],
+          uris: [pending.uri],
+          position_ms: pending.position,
           deviceId: window.deviceId,
         });
+      } else if (state && state.track_window?.current_track) {
+        await spotifyPlayerAction("play", { deviceId: window.deviceId });
+      } else {
+        const lastPlayed = localStorageGet("lastPlayedHistory");
+        if (lastPlayed?.trackId) {
+          await spotifyPlayerAction("play", {
+            uris: [`spotify:track:${lastPlayed.trackId}`],
+            deviceId: window.deviceId,
+          });
+        }
       }
       playerEvents.dispatchEvent(new Event("resume"));
+
+      try {
+        const toggleRestButton = localStorageGet("icon-play");
+        const iconImageButton = document.querySelector(
+          `.${toggleRestButton[0].className}`,
+        );
+        iconImageButton.src = "/pause.svg";
+      } catch (error) {}
     } else if (imgElement.dataset.action === "play") {
       imgElement.src = PlayIcon;
-      imgElement.dataset.action = "pause";
-      // await spotifyPlayerAction("pause", {
-      //   deviceId: window.deviceId,
-      // });
+      imgElement.dataset.action = "stopped";
+      await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+
+      try {
+        const toggleRestButton = localStorageGet("icon-play");
+        const iconImageButton = document.querySelector(
+          `.${toggleRestButton[0].className}`,
+        );
+        iconImageButton.src = "/play.svg";
+      } catch (error) {}
       playerEvents.dispatchEvent(new Event("pause"));
     }
   });

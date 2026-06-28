@@ -5,7 +5,7 @@ const { tracks, artists } = Astro.props;
 <link rel="stylesheet" href="/Home.css" />
 <div class="grid8">
   {
-    tracks.items?.map((item) => (
+    tracks.items?.map((item, index) => (
       <div class="card">
         <img
           src={item.album.images[2].url}
@@ -17,8 +17,9 @@ const { tracks, artists } = Astro.props;
           style="border-radius: 5px 0 0 5px;"
         />
         <div style="display: flex;flex:1; justify-content: space-between;">
-          <span>{item.album.name}</span>
+          <span id={`span-play-top-view-${index}`}>{item.album.name}</span>
           <button
+            id={`button-play-top-view-${index}`}
             class="btn-hidden playSong-Album-Carrousel"
             data-track-album={item.album.uri}
             data-track={JSON.stringify({
