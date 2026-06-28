@@ -11,7 +11,7 @@ let followers = artist?.followers?.total
 <!doctype html>
 <html lang="es">
   <head>
-    <link rel="stylesheet" href="Hero.css" />
+    <link rel="stylesheet" href="/Hero.css" />
     <style>
       .skeleton {
         background: linear-gradient(
@@ -74,7 +74,7 @@ let followers = artist?.followers?.total
           hasData ? (
             <>
               <h1 class="artist-banner__name">{artist.name}</h1>
-              <p class="artist-banner__stats">{followers} Followers</p>
+              <p class="artist-banner__stats">{followers}</p>
             </>
           ) : (
             <>

@@ -36,6 +36,7 @@
   let position = 0;
   let lastUpdate = 0;
   let isPlaying = false;
+  let isDragging = false;
 
   const bar = document.getElementById("progress-bar");
   const knob = document.getElementById("progress-knob");
@@ -43,26 +44,54 @@
   const timeTotal = document.getElementById("time-total");
   const container = document.getElementById("progress-container");
 
-  container.addEventListener("click", async (e) => {
-    if (!window.deviceId || !duration) return;
-
+  function positionFromEvent(e) {
     const rect = container.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const percent = Math.min(Math.max(clickX / rect.width, 0), 1);
-    const newPosition = Math.floor(duration * percent);
+    const x = e.clientX - rect.left;
+    const percent = Math.min(Math.max(x / rect.width, 0), 1);
+    return Math.floor(duration * percent);
+  }
 
-    position = newPosition;
+  async function commitSeek(ms) {
+    position = ms;
     lastUpdate = Date.now();
     updateUI();
-
+    if (window.__pendingResume) {
+      window.__pendingResume.position = ms;
+      return;
+    }
     try {
       await spotifyPlayerAction("seek", {
-        position_ms: newPosition,
+        position_ms: ms,
         deviceId: window.deviceId,
       });
     } catch (err) {
       console.error("Error al hacer seek:", err);
     }
+  }
+
+  container.addEventListener("pointerdown", (e) => {
+    if (!window.deviceId || !duration) return;
+    isDragging = true;
+    container.setPointerCapture?.(e.pointerId);
+    position = positionFromEvent(e);
+    updateUI();
+  });
+
+  container.addEventListener("pointermove", (e) => {
+    if (!isDragging) return;
+    position = positionFromEvent(e);
+    updateUI();
+  });
+
+  container.addEventListener("pointerup", async (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    container.releasePointerCapture?.(e.pointerId);
+    await commitSeek(positionFromEvent(e));
+  });
+
+  container.addEventListener("pointercancel", () => {
+    isDragging = false;
   });
 
   function msToTime(ms) {
@@ -80,7 +109,7 @@
   }
 
   function animate() {
-    if (isPlaying) {
+    if (isPlaying && !isDragging) {
       const now = Date.now();
       position += now - lastUpdate;
       if (position > duration) position = duration;
@@ -95,10 +124,26 @@
   import { localStorageGet } from "/scripts/localStorage.js";
 
   import { playerEvents } from "/scripts/playerEvents.js";
+  import { goPrevious, goNext } from "/scripts/playHistory.js";
 
   const PlayIcon = "/iconPlay.svg";
   const previousElement = document.querySelector(".previous-action");
   previousElement?.addEventListener("click", async () => {
+    const state = await window.player?.getCurrentState();
+    if (state?.track_window?.previous_tracks?.length > 0) {
+      window.__navInProgress = true;
+      await window.player.previousTrack();
+      return;
+    }
+    const prev = goPrevious();
+    if (prev) {
+      window.__navInProgress = true;
+      await spotifyPlayerAction("play", {
+        uris: [prev.uri],
+        deviceId: window.deviceId,
+      });
+      return;
+    }
     try {
       await spotifyPlayerAction("previous", { deviceId: window.deviceId });
     } catch (error) {}
@@ -160,7 +205,7 @@
     const state = e.detail;
     if (!state) return;
     duration = state.duration;
-    position = state.position;
+    if (!isDragging) position = state.position;
     isPlaying = !state.paused;
     lastUpdate = Date.now();
     updateUI();
@@ -168,6 +213,21 @@
   animate();
   const nextElement = document.querySelector(".next-action");
   nextElement?.addEventListener("click", async () => {
+    const state = await window.player?.getCurrentState();
+    if (state?.track_window?.next_tracks?.length > 0) {
+      window.__navInProgress = true;
+      await window.player.nextTrack();
+      return;
+    }
+    const nxt = goNext();
+    if (nxt) {
+      window.__navInProgress = true;
+      await spotifyPlayerAction("play", {
+        uris: [nxt.uri],
+        deviceId: window.deviceId,
+      });
+      return;
+    }
     try {
       await spotifyPlayerAction("next", { deviceId: window.deviceId });
     } catch (error) {}

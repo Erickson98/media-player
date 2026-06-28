@@ -1,38 +1,36 @@
 ---
 import Hero from "src/components/Artist/Hero.astro";
 import PopularTracks from "src/components/Artist/PopularTracks.astro";
+import AlbumCarrousel from "src/components/AlbumCarrousel.astro";
 
 const { id } = Astro.params;
+
+const headers = new Headers({ Accept: "application/json" });
+const cookie = Astro.request.headers.get("cookie");
+if (cookie) headers.set("cookie", cookie);
 
 const getArtist = new URL(`/api/spotify/artists/${id}`, Astro.url);
 const getPopularTracksArtist = new URL(
   `/api/spotify/artists/${id}/top-tracks`,
   Astro.url
 );
-
-const headers = new Headers({ Accept: "application/json" });
-const cookie = Astro.request.headers.get("cookie");
-if (cookie) headers.set("cookie", cookie);
+const getAlbums = new URL(`/api/spotify/artists/${id}/albums`, Astro.url);
 
 const res = await fetch(getArtist, { headers });
 if (!res.ok) {
-  throw new Error(`No se pudo cargar el álbum ${id} (status ${res.status})`);
+  throw new Error(`No se pudo cargar el artista ${id} (status ${res.status})`);
 }
-
 const artist = await res.json();
 
-const resPopularTracks = await fetch(getPopularTracksArtist, { headers });
-if (!res.ok) {
-  throw new Error(
-    `No se pudo cargar el álbum ${id} (status ${resPopularTracks.status})`
-  );
-}
+const [resPopular, resAlbums] = await Promise.all([
+  fetch(getPopularTracksArtist, { headers }),
+  fetch(getAlbums, { headers }),
+]);
 
-const Popular = await resPopularTracks.json();
-// album.artist_line = album.artists?.map((a: any) => a.name).join(", ") ?? "";
-
-// Astro.response.headers.set("Content-Type", "text/html; charset=utf-8");
+const Popular = resPopular.ok ? await resPopular.json() : { tracks: [] };
+const albums = resAlbums.ok ? await resAlbums.json() : { items: [] };
 ---
 
 <Hero artist={artist ?? []} />
 <PopularTracks Popular={Popular ?? []} />
+<AlbumCarrousel album={albums ?? { items: [] }} title="Discografía" />

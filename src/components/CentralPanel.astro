@@ -341,7 +341,85 @@
   import { localStorageGet, localStorageSet } from "/scripts/localStorage.js";
   import { handleColorGreen } from "/scripts/handleColorGreen.js";
   import { handleCarousel } from "/scripts/handleCarousel.js";
+  import { playerEvents } from "/scripts/playerEvents.js";
   const root = document.getElementById("center-panel");
+
+  function refreshAlbumUI(state) {
+    const currentId = state?.track_window?.current_track?.id;
+    const isPaused = state?.paused ?? true;
+    const contextUri = state?.context?.uri;
+
+    root.querySelectorAll(".tr-row").forEach((row) => {
+      const isCurrent = row.dataset.trackId === currentId;
+      row.classList.toggle("playing", isCurrent);
+      const icon = row.querySelector(".track-row-icon");
+      if (icon) icon.src = isCurrent && !isPaused ? "/pause.svg" : "/play.svg";
+    });
+
+    const albumBtn = document.getElementById("playSong");
+    const albumIcon = albumBtn?.querySelector(".play-album-icon");
+    if (albumBtn && albumIcon) {
+      const playingThisAlbum =
+        contextUri === albumBtn.dataset.albumUri && !isPaused;
+      albumIcon.src = playingThisAlbum ? "/pause.svg" : "/play.svg";
+    }
+  }
+  playerEvents.addEventListener("state", (e) => refreshAlbumUI(e.detail));
+
+  function refreshPlayingButtons(state) {
+    const currentTrackId = state?.track_window?.current_track?.id;
+    const contextUri = state?.context?.uri;
+    const isPaused = state?.paused ?? true;
+
+    document
+      .querySelectorAll(
+        ".playSong-Album-Carrousel, .playSong-Artists-Carrousel, .playSong-top-songs",
+      )
+      .forEach((btn) => {
+        const img = btn.querySelector("img");
+        if (!img) return;
+        const itemUri =
+          btn.dataset.trackAlbum ||
+          btn.dataset.trackArtist ||
+          btn.dataset.trackUri;
+        let trackId = null;
+        try {
+          trackId = JSON.parse(btn.dataset.track || "null")?.id;
+        } catch (_) {}
+
+        const isThis =
+          (contextUri && itemUri && contextUri === itemUri) ||
+          (currentTrackId && trackId && currentTrackId === trackId);
+
+        if (isThis && !isPaused) {
+          img.src = "/pause.svg";
+          img.dataset.state = "stopped";
+        } else {
+          img.src = "/play.svg";
+          img.dataset.state = "play";
+        }
+      });
+  }
+  playerEvents.addEventListener("state", (e) =>
+    refreshPlayingButtons(e.detail),
+  );
+
+  function wireCarouselPlay(scope) {
+    scope.querySelectorAll(".playSong-Album-Carrousel").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const trackData = JSON.parse(btn.dataset.track);
+        localStorageSet("lastPlayedTrack", trackData);
+        handleColorGreen({ allowed: "playSong-Album-Carrousel", trackData });
+      });
+    });
+    scope.querySelectorAll(".playSong-Artists-Carrousel").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const trackData = JSON.parse(btn.dataset.track);
+        localStorageSet("lastPlayedTrack", trackData);
+        handleColorGreen({ allowed: "playSong-Artists-Carrousel", trackData });
+      });
+    });
+  }
   import { OverlayScrollbars } from "https://cdn.jsdelivr.net/npm/overlayscrollbars/+esm";
   let osInstance = null;
 
@@ -637,59 +715,63 @@
         `/api/genius/artist-bio?q=${encodeURIComponent(artistName)}`,
       );
       const { bio, image } = await res.json();
-      root.querySelectorAll(".track-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const artists = JSON.parse(btn.dataset.trackArtists);
-          localStorageSet("lastPlayedHistory", {
-            albumId: btn.dataset.albumId,
-            trackId: btn.dataset.trackId,
-            trackName: btn.dataset.trackName,
-            imgAlbum: JSON.parse(btn.dataset.imgAlbum)[0].url,
-            artistImg: image,
-            trackArtists: artists,
-            bioArtist: bio,
-            artistName: artistName,
-            albumName: albumName,
-          });
-          window.dispatchEvent(new CustomEvent("route:playing"));
-        });
-      });
-
-      document
-        .getElementById("playSong")
-        .addEventListener("click", async () => {
-          const track_uri = JSON.parse(
-            document.querySelector(".btn-play")?.dataset.tracksAlbum,
-          );
+      const albumPlayBtn = document.getElementById("playSong");
+      albumPlayBtn?.addEventListener("click", async () => {
+        const albumUri = albumPlayBtn.dataset.albumUri;
+        const state = await window.player?.getCurrentState();
+        const isThisAlbum = state?.context?.uri === albumUri;
+        if (isThisAlbum && state && !state.paused) {
+          await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+        } else if (isThisAlbum && state && state.paused) {
+          await spotifyPlayerAction("play", { deviceId: window.deviceId });
+        } else {
           await spotifyPlayerAction("play", {
-            uris: track_uri,
+            context_uri: albumUri,
             deviceId: window.deviceId,
           });
-        });
+        }
+      });
 
-      document
-        .getElementById("pauseSong")
-        .addEventListener("click", async () => {
-          await spotifyPlayerAction("pause");
-        });
-      const trCollectionListener = document.querySelectorAll(".tr-row");
-      trCollectionListener.forEach((element) => {
-        element.addEventListener("click", () => {
-          const artists = JSON.parse(element.dataset.trackArtists);
+      root.querySelectorAll(".tr-row").forEach((row) => {
+        row.addEventListener("click", async () => {
+          const trackId = row.dataset.trackId;
+          const albumUri = `spotify:album:${row.dataset.albumId}`;
+          const index = Number(row.dataset.trackIndex);
+
           localStorageSet("lastPlayedHistory", {
-            albumId: element.dataset.albumId,
-            trackId: element.dataset.trackId,
-            trackName: element.dataset.trackName,
-            imgAlbum: JSON.parse(element.dataset.imgAlbum)[0].url,
+            albumId: row.dataset.albumId,
+            trackId,
+            trackName: row.dataset.trackName,
+            imgAlbum: JSON.parse(row.dataset.imgAlbum)[0].url,
             artistImg: image,
-            trackArtists: artists,
+            trackArtists: JSON.parse(row.dataset.trackArtists),
             bioArtist: bio,
             artistName: artistName,
             albumName: albumName,
           });
+
+          const state = await window.player?.getCurrentState();
+          const current = state?.track_window?.current_track?.id;
+          if (current === trackId && state && !state.paused) {
+            await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+          } else if (current === trackId && state && state.paused) {
+            await spotifyPlayerAction("play", { deviceId: window.deviceId });
+          } else {
+            await spotifyPlayerAction("play", {
+              context_uri: albumUri,
+              offset: index,
+              deviceId: window.deviceId,
+            });
+          }
           window.dispatchEvent(new CustomEvent("route:playing"));
         });
       });
+
+      wireCarouselPlay(root);
+
+      const initialState = await window.player?.getCurrentState();
+      refreshAlbumUI(initialState);
+      refreshPlayingButtons(initialState);
     } catch (e) {
       root.innerHTML = `<p>Error cargando álbum.</p>`;
       console.error(e);
@@ -707,8 +789,54 @@
 
       root.innerHTML = html;
       getColor();
+
+      addEventNavArtist(".artist-with-search");
+      addEventNavAlbum(".btn-album-go-to");
+
+      wireCarouselPlay(root);
+
+      const popularRows = Array.from(
+        root.querySelectorAll(".popular-tracks .tr-row"),
+      );
+      const popularUris = popularRows.map((r) => r.dataset.trackUri);
+      popularRows.forEach((row) => {
+        row.addEventListener("click", async () => {
+          const trackId = row.dataset.trackId;
+          const index = Number(row.dataset.trackIndex);
+          const state = await window.player?.getCurrentState();
+          const current = state?.track_window?.current_track?.id;
+          if (current === trackId && state && !state.paused) {
+            await spotifyPlayerAction("pause", { deviceId: window.deviceId });
+          } else if (current === trackId && state && state.paused) {
+            await spotifyPlayerAction("play", { deviceId: window.deviceId });
+          } else {
+            await spotifyPlayerAction("play", {
+              uris: popularUris,
+              offset: index,
+              deviceId: window.deviceId,
+            });
+          }
+        });
+      });
+
+      handleCarousel(
+        ".albums-carousel",
+        ".container-for-albums-carrusel",
+        ".arrow.left",
+        ".arrow.right",
+      );
+      handleCarousel(
+        ".carousel",
+        ".carousel-track",
+        ".arrow.left",
+        ".arrow.right",
+      );
+
+      const initialState = await window.player?.getCurrentState();
+      refreshAlbumUI(initialState);
+      refreshPlayingButtons(initialState);
     } catch (e) {
-      root.innerHTML = `<p>Error cargando álbum.</p>`;
+      root.innerHTML = `<p>Error cargando artista.</p>`;
       console.error(e);
     }
   }
@@ -738,6 +866,10 @@
         ".arrow.left",
         ".arrow.right",
       );
+
+      wireCarouselPlay(root);
+      const searchState = await window.player?.getCurrentState();
+      refreshPlayingButtons(searchState);
     } catch (e) {
       root.innerHTML = `<p>Error.</p>`;
       console.error(e);

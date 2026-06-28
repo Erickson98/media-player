@@ -335,6 +335,7 @@ const { title } = Astro.props;
     <script nonce={Astro.locals.nonce} type="module">
       import { playerEvents } from "/scripts/playerEvents.js";
       import { getSpotifyToken } from "/scripts/getSpotifyToken.js";
+      import { pushTrack } from "/scripts/playHistory.js";
       try {
         window.onSpotifyWebPlaybackSDKReady = async () => {
           const player = new Spotify.Player({
@@ -354,35 +355,112 @@ const { title } = Astro.props;
           });
 
           window.deviceId = null;
+
+          function savePlaybackSnapshot(state) {
+            if (!state || !state.track_window?.current_track) return;
+            localStorage.setItem(
+              "playbackSnapshot",
+              JSON.stringify({
+                uri: state.track_window.current_track.uri,
+                position: state.position,
+                duration: state.duration,
+                paused: state.paused,
+                savedAt: Date.now(),
+              })
+            );
+          }
+
+          let lastTrackId = null;
+          function syncNowPlaying(state) {
+            const track = state?.track_window?.current_track;
+            if (!track || track.id === lastTrackId) return;
+            lastTrackId = track.id;
+            const prev =
+              JSON.parse(localStorage.getItem("lastPlayedHistory") || "null") ||
+              {};
+            localStorage.setItem(
+              "lastPlayedHistory",
+              JSON.stringify({
+                ...prev,
+                trackId: track.id,
+                trackName: track.name,
+                imgAlbum: track.album?.images?.[0]?.url || "",
+                trackArtists: track.artists,
+                artistName: track.artists?.[0]?.name || "",
+                albumName: track.album?.name || "",
+              })
+            );
+            window.dispatchEvent(new CustomEvent("route:playing"));
+
+            if (window.__navInProgress) {
+              window.__navInProgress = false;
+              return;
+            }
+
+            pushTrack({
+              uri: track.uri,
+              id: track.id,
+              name: track.name,
+              image: track.album?.images?.[0]?.url || "",
+              artistName: track.artists?.[0]?.name || "",
+              albumName: track.album?.name || "",
+            });
+          }
+
           player.addListener("player_state_changed", (state) => {
             playerEvents.dispatchEvent(
               new CustomEvent("state", { detail: state })
             );
+            savePlaybackSnapshot(state);
+            syncNowPlaying(state);
           });
+          async function restorePlayback() {
+            let snap = null;
+            try {
+              snap = JSON.parse(
+                localStorage.getItem("playbackSnapshot") || "null"
+              );
+            } catch (_) {}
+
+            if (!snap?.uri) {
+              try {
+                const res = await fetch("/api/spotify/me/player");
+                if (res.status === 200) {
+                  const data = await res.json();
+                  if (data?.item) {
+                    snap = {
+                      uri: data.item.uri,
+                      position: data.progress_ms || 0,
+                      duration: data.item.duration_ms,
+                    };
+                  }
+                }
+              } catch (e) {
+                console.error("No se pudo consultar /me/player:", e);
+              }
+            }
+
+            if (!snap?.uri) return;
+
+            window.__pendingResume = {
+              uri: snap.uri,
+              position: snap.position || 0,
+            };
+            playerEvents.dispatchEvent(
+              new CustomEvent("state", {
+                detail: {
+                  duration: snap.duration || 0,
+                  position: snap.position || 0,
+                  paused: true,
+                },
+              })
+            );
+          }
+
           player.addListener("ready", async ({ device_id }) => {
             window.deviceId = device_id;
             console.log("Player ready with device ID", device_id);
-            try {
-              const res = await fetch("/api/spotify/me/player");
-              if (res.status !== 200) return;
-              const data = await res.json();
-              if (!data?.item) return;
-              window.__pendingResume = {
-                uri: data.item.uri,
-                position: data.progress_ms || 0,
-              };
-              playerEvents.dispatchEvent(
-                new CustomEvent("state", {
-                  detail: {
-                    duration: data.item.duration_ms,
-                    position: data.progress_ms || 0,
-                    paused: true,
-                  },
-                })
-              );
-            } catch (e) {
-              console.error("No se pudo restaurar la reproducción:", e);
-            }
+            await restorePlayback();
           });
 
           player.addListener("initialization_error", ({ message }) => {
@@ -399,6 +477,12 @@ const { title } = Astro.props;
           });
 
           player.connect();
+
+          setInterval(async () => {
+            const s = await player.getCurrentState();
+            if (s && !s.paused) savePlaybackSnapshot(s);
+          }, 3000);
+
           playerEvents.addEventListener("pause", () => player.pause());
           playerEvents.addEventListener("resume", () => player.resume());
           playerEvents.addEventListener("toggle", () => player.togglePlay());
