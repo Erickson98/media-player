@@ -51,11 +51,12 @@ function formatDuration(ms: number) {
       <button
         id="playSong"
         class="btn-play"
-        data-tracks-album={JSON.stringify(album.tracks.items.map((x) => x.uri))}
-        data-album-id={album.id}>▶</button
+        data-album-uri={`spotify:album:${album.id}`}
+        data-album-id={album.id}
+        aria-label="play album"
       >
-      <button id="pauseSong">Pause Song</button>
-      <!-- <button class="btn-icon" aria-label="favorite">❤️</button> -->
+        <img src="/play.svg" class="play-album-icon" width="18" alt="" />
+      </button>
     </div>
   </div>
 </div>
@@ -70,31 +71,27 @@ function formatDuration(ms: number) {
   </thead>
   <tbody>
     {
-      album.tracks.items.map((track) => (
+      album.tracks.items.map((track, i) => (
         <tr
           class="tr-row"
-          style="cursor: default;"
           data-track-artists={JSON.stringify(track.artists)}
           data-img-album={JSON.stringify(album.images)}
           data-img-artist={JSON.stringify(album.images)}
           data-album-id={album.id}
           data-track-id={track.id}
+          data-track-uri={track.uri}
+          data-track-index={i}
           data-track-name={track.name}
         >
-          <td class="td-track-number">{track.track_number}</td>
+          <td class="td-track-number">
+            <span class="track-num">{track.track_number}</span>
+            <img class="track-row-icon" src="/play.svg" alt="play" />
+          </td>
           <td>
             <div class="track-title">
-              <button
-                class="track-name track-btn"
-                data-track-artists={JSON.stringify(track.artists)}
-                data-img-album={JSON.stringify(album.images)}
-                data-img-artist={JSON.stringify(album.images)}
-                data-album-id={album.id}
-                data-track-id={track.id}
-                data-track-name={track.name}
-              >
+              <span class={`track-name track-song-${track.id}`}>
                 {track.name}
-              </button>
+              </span>
               <span class="track-artist">
                 {track.artists.map((a) => a.name).join(", ")}
               </span>

@@ -168,3 +168,29 @@ align-items: center;
 .td-track-number{
     width: 50px;
 }
+
+.tr-row {
+    cursor: pointer;
+}
+.btn-play img {
+    display: block;
+}
+.track-row-icon {
+    display: none;
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+.tr-row:hover .track-num,
+.tr-row.playing .track-num {
+    display: none;
+}
+.tr-row:hover .track-row-icon,
+.tr-row.playing .track-row-icon {
+    display: inline-block;
+}
+.tr-row.playing .track-name,
+.tr-row.playing .track-num {
+    color: #0077ff;
+}

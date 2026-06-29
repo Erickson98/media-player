@@ -42,6 +42,17 @@ export async function spotifyPlayerAction(
       break;
     }
 
+    case "seek": {
+      if (typeof position_ms !== "number") {
+        throw new Error("La acción 'seek' requiere position_ms (number)");
+      }
+      url = `https://api.spotify.com/v1/me/player/seek?position_ms=${Math.max(
+        0,
+        Math.floor(position_ms)
+      )}${deviceId ? `&device_id=${encodeURIComponent(deviceId)}` : ""}`;
+      break;
+    }
+
     case "pause":
       url = "https://api.spotify.com/v1/me/player/pause";
       break;
@@ -77,9 +88,7 @@ export async function spotifyPlayerAction(
   let data = null;
   try {
     data = await res.json();
-  } catch (_) {
-    /* ignore */
-  }
+  } catch (_) {}
   console.error(`❌ Acción ${action} falló:`, data || res.statusText);
   return { ok: false, status: res.status, error: data || res.statusText };
 }

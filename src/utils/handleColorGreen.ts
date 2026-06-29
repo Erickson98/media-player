@@ -283,19 +283,36 @@ async function handleAlbumCarrousel(trackData) {
   }
 }
 
+function handlePlayerComponent() {
+  const playIcon = document.querySelector(
+    ".play-action-icon"
+  ) as HTMLImageElement;
+  const PlayIcon = "/iconPlay.svg";
+  const PauseIcon = "/iconPause.svg";
+  if (playIcon.dataset.action === "pause") {
+    playIcon.src = PauseIcon;
+    return;
+  }
+  playIcon.src = PlayIcon;
+}
+
 export function handleColorGreen(actions) {
   switch (actions.allowed) {
     case "playSong-main-top-song":
       handleMainTopSong(actions.trackData);
+      handlePlayerComponent();
       break;
     case "playSong-top-songs":
       handleTopSongs(actions.trackData);
+      handlePlayerComponent();
       break;
     case "playSong-Artists-Carrousel":
       handleArtistCarrousel(actions.trackData);
+      handlePlayerComponent();
       break;
     case "playSong-Album-Carrousel":
       handleAlbumCarrousel(actions.trackData);
+      handlePlayerComponent();
       break;
   }
 }

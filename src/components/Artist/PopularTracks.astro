@@ -1,5 +1,5 @@
 ---
-const { Popular } = Astro.props;
+const { Popular } = Astro.props as { Popular: any };
 function formatDuration(ms: number) {
   const m = Math.floor(ms / 60000);
   const s = Math.floor((ms % 60000) / 1000)
@@ -9,33 +9,32 @@ function formatDuration(ms: number) {
 }
 ---
 
-<a
-  href="/"
-  target="_blank"
-  aria-label="Popular tracks"
-  rel="noopener noreferrer">Popular</a
->
-<table class="track-list">
+<h2 class="popular-title">Popular</h2>
+<table class="track-list popular-tracks">
   <tbody>
     {
-      Popular.tracks.map((info, index) => (
-        <tr>
-          <td>{++index}</td>
+      Popular.tracks.map((info: any, index: number) => (
+        <tr
+          class="tr-row"
+          data-track-artists={JSON.stringify(info.artists)}
+          data-img-album={JSON.stringify(info.album.images)}
+          data-album-id={info.album.id}
+          data-track-id={info.id}
+          data-track-uri={info.uri}
+          data-track-index={index}
+          data-track-name={info.name}
+        >
+          <td class="td-track-number">
+            <span class="track-num">{index + 1}</span>
+            <img class="track-row-icon" src="/play.svg" alt="play" />
+          </td>
           <td>
             <div class="track-title">
-              <button
-                class="track-name track-btn"
-                data-track-artists={JSON.stringify(info.artists)}
-                data-img-album={info.album.images[0].url}
-                data-img-artist={JSON.stringify(info.album.images)}
-                data-album-id={info.album.id}
-                data-track-id={info.id}
-                data-track-name={info.name}
-              >
+              <span class={`track-name track-song-${info.id}`}>
                 {info.name}
-              </button>
+              </span>
               <span class="track-artist">
-                {info.artists.map((a) => a.name).join(", ")}
+                {info.artists.map((a: any) => a.name).join(", ")}
               </span>
             </div>
           </td>

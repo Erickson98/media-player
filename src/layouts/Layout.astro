@@ -20,24 +20,12 @@ const { title } = Astro.props;
       href="https://cdn.jsdelivr.net/npm/overlayscrollbars/styles/overlayscrollbars.css"
     />
 
-    <!-- <link
-      rel="preload"
-      as="script"
-      href="https://sdk.scdn.co/spotify-player.js"
-      crossorigin
-    /> -->
-
     <link
       rel="dns-prefetch preconnect"
       href="https://api.spotify.com"
       crossorigin
     />
     <link rel="dns-prefetch preconnect" href="https://i.scdn.co" crossorigin />
-    <!-- <link
-      rel="dns-prefetch preconnect"
-      href="https://sdk.scdn.co"
-      crossorigin
-    /> -->
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/Layout.css" />
@@ -339,7 +327,6 @@ const { title } = Astro.props;
       </div>
       <div class="player">
         <Index />
-        <!-- <button class="toggle">Toggle Right Panel</button> -->
       </div>
     </div>
 
@@ -348,10 +335,11 @@ const { title } = Astro.props;
     <script nonce={Astro.locals.nonce} type="module">
       import { playerEvents } from "/scripts/playerEvents.js";
       import { getSpotifyToken } from "/scripts/getSpotifyToken.js";
+      import { pushTrack } from "/scripts/playHistory.js";
       try {
         window.onSpotifyWebPlaybackSDKReady = async () => {
           const player = new Spotify.Player({
-            name: "Media Player",
+            name: "Media dsPlayer",
             getOAuthToken: async (cb) => {
               try {
                 const token = await getSpotifyToken();
@@ -360,18 +348,119 @@ const { title } = Astro.props;
                 console.error("Error fetching token", err);
               }
             },
-            volume: 0.5,
+            volume: 0.1,
+          });
+          player.setVolume(0.0).then(() => {
+            console.log("Volume updated!");
           });
 
           window.deviceId = null;
+
+          function savePlaybackSnapshot(state) {
+            if (!state || !state.track_window?.current_track) return;
+            localStorage.setItem(
+              "playbackSnapshot",
+              JSON.stringify({
+                uri: state.track_window.current_track.uri,
+                position: state.position,
+                duration: state.duration,
+                paused: state.paused,
+                savedAt: Date.now(),
+              })
+            );
+          }
+
+          let lastTrackId = null;
+          function syncNowPlaying(state) {
+            const track = state?.track_window?.current_track;
+            if (!track || track.id === lastTrackId) return;
+            lastTrackId = track.id;
+            const prev =
+              JSON.parse(localStorage.getItem("lastPlayedHistory") || "null") ||
+              {};
+            localStorage.setItem(
+              "lastPlayedHistory",
+              JSON.stringify({
+                ...prev,
+                trackId: track.id,
+                trackName: track.name,
+                imgAlbum: track.album?.images?.[0]?.url || "",
+                trackArtists: track.artists,
+                artistName: track.artists?.[0]?.name || "",
+                albumName: track.album?.name || "",
+              })
+            );
+            window.dispatchEvent(new CustomEvent("route:playing"));
+
+            if (window.__navInProgress) {
+              window.__navInProgress = false;
+              return;
+            }
+
+            pushTrack({
+              uri: track.uri,
+              id: track.id,
+              name: track.name,
+              image: track.album?.images?.[0]?.url || "",
+              artistName: track.artists?.[0]?.name || "",
+              albumName: track.album?.name || "",
+            });
+          }
+
           player.addListener("player_state_changed", (state) => {
             playerEvents.dispatchEvent(
               new CustomEvent("state", { detail: state })
             );
+            savePlaybackSnapshot(state);
+            syncNowPlaying(state);
           });
-          player.addListener("ready", ({ device_id }) => {
+          async function restorePlayback() {
+            let snap = null;
+            try {
+              snap = JSON.parse(
+                localStorage.getItem("playbackSnapshot") || "null"
+              );
+            } catch (_) {}
+
+            if (!snap?.uri) {
+              try {
+                const res = await fetch("/api/spotify/me/player");
+                if (res.status === 200) {
+                  const data = await res.json();
+                  if (data?.item) {
+                    snap = {
+                      uri: data.item.uri,
+                      position: data.progress_ms || 0,
+                      duration: data.item.duration_ms,
+                    };
+                  }
+                }
+              } catch (e) {
+                console.error("No se pudo consultar /me/player:", e);
+              }
+            }
+
+            if (!snap?.uri) return;
+
+            window.__pendingResume = {
+              uri: snap.uri,
+              position: snap.position || 0,
+            };
+            playerEvents.dispatchEvent(
+              new CustomEvent("state", {
+                detail: {
+                  duration: snap.duration || 0,
+                  position: snap.position || 0,
+                  paused: true,
+                },
+              })
+            );
+          }
+
+          player.addListener("ready", async ({ device_id }) => {
             window.deviceId = device_id;
             console.log("Player ready with device ID", device_id);
+            await restorePlayback();
           });
 
           player.addListener("initialization_error", ({ message }) => {
@@ -388,6 +477,12 @@ const { title } = Astro.props;
           });
 
           player.connect();
+
+          setInterval(async () => {
+            const s = await player.getCurrentState();
+            if (s && !s.paused) savePlaybackSnapshot(s);
+          }, 3000);
+
           playerEvents.addEventListener("pause", () => player.pause());
           playerEvents.addEventListener("resume", () => player.resume());
           playerEvents.addEventListener("toggle", () => player.togglePlay());
@@ -396,6 +491,7 @@ const { title } = Astro.props;
           playerEvents.addEventListener("seek", (e) =>
             player.seek(e.detail.position)
           );
+          window.player = player;
         };
       } catch (error) {
         console.log(error);
